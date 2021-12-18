@@ -86,6 +86,7 @@ class ConstructionLine : public ConstructionData
 class ByComplexScalar : public ConstructionPoint
 {
 	ComplexScalar* parent;
+public:
 	Equation* recreate() override;
 };
 
@@ -93,6 +94,8 @@ class IntersectionOfTwoLines : public ConstructionPoint // intersect 2 lines
 {
 	Line* firstParent;
 	Line* secondParent;
+public:
+	IntersectionOfTwoLines(Line* firstParent, Line* secondParent);
 	Equation* recreate() override;
 };
 
@@ -101,6 +104,7 @@ class ByTwoPointsAndParametr : public ConstructionPoint
 	Point* firstParent;
 	Point* secondParent;
 	ParametrObject* thirdParent;
+public:
 	Equation* recreate() override;
 };
 
@@ -160,7 +164,7 @@ class VisibleObject : public Object
 	void insert();
 	void erase();
 	ConstructionData construction;
-	
+
 public:
 	virtual bool isNearby(Vector2f mouseCoord) = 0;
 	virtual void draw() = 0;
@@ -227,11 +231,11 @@ private:
 
 
 public:
-	double distance(Vector2f point);
+	//double distance(Vector2f point);
 public:
-	Line(Point* first, Point* second);
+	//Line(Point* first, Point* second);
 	bool isNearby(Vector2f mouseCoord);
-	void draw();
+	//void draw();
 	void drawDescription();
 };
 
@@ -248,8 +252,8 @@ public:
 	//static Vector2f intersectLines(Line::equationLine FirstEq, Line::equationLine SecondEq);
 	Vector2f getCoordinate();
 	Point(Vector2f mouseCoord);
-	Point(Line* first, Line* second);
-	Point(Line* line, Vector2f mouseCoord);
+	//Point(Line* first, Line* second);
+	//Point(Line* line, Vector2f mouseCoord);
 	Point(Line* line, Point* point);
 	Point(UnitCircle* unitCircle, Vector2f mouseCoord);
 	bool isNearby(Vector2f mouseCoord) override;

@@ -105,7 +105,8 @@ void UnitCircle::draw()
 
 bool Line::isNearby(Vector2f mouseCoord)
 {
-	return distance(mouseCoord) < epsilon;
+	//return distance(mouseCoord) < epsilon;
+	return 0;
 }
 
 /*void Line::draw()
@@ -283,8 +284,14 @@ void Point::drawDescription()
 
 Equation* ByComplexScalar::recreate()
 {
-	parent
-	return new Equation;
+	ComplexScalarEquation* equation = dynamic_cast<ComplexScalarEquation*>(parent->getEquation());
+	return new PointEquation((*equation).point);
+}
+
+IntersectionOfTwoLines::IntersectionOfTwoLines(Line* first, Line* second)
+	:firstParent(first), secondParent(second)
+{
+
 }
 
 Equation* IntersectionOfTwoLines::recreate()
@@ -303,7 +310,14 @@ Equation* IntersectionOfTwoLines::recreate()
 
 Equation* ByTwoPointsAndParametr::recreate()
 {
-	return new Equation;
+	PointEquation* firstEquation = dynamic_cast<PointEquation*>(firstParent->getEquation());
+	PointEquation* secondEquation = dynamic_cast<PointEquation*>(secondParent->getEquation());
+	ScalarEquation* thirdEquation = dynamic_cast<ScalarEquation*>(firstParent->getEquation());
+	Vector2f firstCoord = (*firstEquation).point;
+	Vector2f secondCoord = (*secondEquation).point;
+	float ratio = (*thirdEquation).ratio;
+	Vector2f pointCoord = (secondCoord * ratio + firstCoord * 1.f) / (ratio + 1.f);
+	return new PointEquation(pointCoord);
 }
 
 Equation* Pole::recreate()
@@ -391,6 +405,10 @@ LineEquation::LineEquation(double _A, double _B, double _C)
 }
 
 PointEquation::PointEquation(Vector2f _point)
-	:point(_point)
+	: point(_point)
+{
+}
+
+Equation::~Equation()
 {
 }

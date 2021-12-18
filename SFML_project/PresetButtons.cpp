@@ -56,80 +56,44 @@ Button moveButton = Button(Vector2f(10, 10), Vector2f(100, 100), &window,
 	});
 
 Button pointButton = Button(Vector2f(120, 10), Vector2f(100, 100), &window,
-	"H:\\Textures\\Test.jpg", Vector2i(0, 0), maxTextureResolution,
-	MODE_POINT, []()->VisibleObject* {
+	"C:\\Textures\\SFML_project\\Test.jpg", Vector2i(0, 0), maxTextureResolution,
+	MODE_POINT, []() {
 		Waiter wait;
 		InterruptionChecker interruptionChecker;
+		Finder find;
 		wait.untilClick(interruptionChecker);
-		Vector2f MousePosition = (window).mapPixelToCoords(Mouse::getPosition(window), view);
-		vector<Line*> lines;
-		for (VisibleObject* object : ConstructionData::allVisibleObjects)
-		{
-			Point* point = dynamic_cast<Point*>(object);
-			if (point)
-			{
-				if (point->isNearby(MousePosition))
-				{
-					Creation::Create();
-					return nullptr;
-				}
-			}
-			Line* line = dynamic_cast<Line*>(object);
-			if (line)
-			{
-				if (line->isNearby(MousePosition))
-				{
-					lines.push_back(line);
-				}
-			}
-			UnitCircle* unitCircle = dynamic_cast<UnitCircle*>(object);
-
-		}
-
-
-
-		if (lines.size() == 2)
-		{
-			if (!interruptionChecker.checkInterruption())
-				return nullptr;
-
-			Creation::Create();
-			Point* point = new Point(lines[0], lines[1]);
-			ConstructionData::allVisibleObjects.push_back(point);
-			return nullptr;
-		}
-		//Unit circle check
-		if (unitCircle->isNearby(MousePosition))
+		Vector2f mousePosition = (window).mapPixelToCoords(Mouse::getPosition(window), view);
+		Point* point = find.nearbyPoint(mousePosition);
+		if (point)
 		{
 			if (!interruptionChecker.checkInterruption())
 				return nullptr;
 			Creation::Create();
-			Point* point = new Point(unitCircle, MousePosition);
 			ConstructionData::allVisibleObjects.push_back(point);
-			return nullptr;
+			return;
+
 		}
-		if (lines.size() == 1)
+
+		point = find.nearbyIntersection(mousePosition);
+		if (point)
 		{
 			if (!interruptionChecker.checkInterruption())
-			{
-				return nullptr;
-			}
+				return;
+
 			Creation::Create();
-			Point* point = new Point(lines[0], MousePosition);
 			ConstructionData::allVisibleObjects.push_back(point);
-			return nullptr;
+			return;
 		}
-		if (!interruptionChecker.checkInterruption())
-			return nullptr;
+		
+		point = new Point(mousePosition);
 		Creation::Create();
-		Point* point = new Point(MousePosition);
 		ConstructionData::allVisibleObjects.push_back(point);
-		return nullptr;
+		return;
 	});
 
 
 Button lineButton = Button(Vector2f(230, 10), Vector2f(100, 100), &window,
-	"H:\\Textures\\Test.jpg", Vector2i(0, 0), maxTextureResolution,
+	"C:\\Textures\\SFML_project\\Test.jpg", Vector2i(0, 0), maxTextureResolution,
 	MODE_NOTHING, []()->VisibleObject* {
 		InterruptionChecker interruptionChecker;
 		const int twotimes = 2;
@@ -184,9 +148,9 @@ Button lineButton = Button(Vector2f(230, 10), Vector2f(100, 100), &window,
 				if (!interruptionChecker.checkInterruption())
 					return nullptr;
 
-				Point* point = new Point(lines[0], lines[1]);
-				ConstructionData::allVisibleObjects.push_back(point);
-				points.push_back(point);
+				//Point* point = new Point(lines[0], lines[1]);
+				//ConstructionData::allVisibleObjects.push_back(point);
+				//points.push_back(point);
 				continue;
 			}
 			//Unit circle check
@@ -207,9 +171,9 @@ Button lineButton = Button(Vector2f(230, 10), Vector2f(100, 100), &window,
 					return nullptr;
 				}
 
-				Point* point = new Point(lines[0], MousePosition);
-				ConstructionData::allVisibleObjects.push_back(point);
-				points.push_back(point);
+				//Point* point = new Point(lines[0], MousePosition);
+				//ConstructionData::allVisibleObjects.push_back(point);
+				//points.push_back(point);
 				continue;
 			}
 			if (!interruptionChecker.checkInterruption())
@@ -224,8 +188,8 @@ Button lineButton = Button(Vector2f(230, 10), Vector2f(100, 100), &window,
 		if (!interruptionChecker.checkInterruption(points))
 			return nullptr;
 		Creation::Create();
-		ConstructionData::allVisibleObjects.push_back(new Line(points[0], points[1]));
-		return new Line(points[0], points[1]);
+		//ConstructionData::allVisibleObjects.push_back(new Line(points[0], points[1]));
+		//return new Line(points[0], points[1]);
 
 	});
 Button perpendicularButton = Button(Vector2f(340, 10), Vector2f(239, 100), &window,
@@ -238,4 +202,77 @@ Button midPointButton = Button(Vector2f(450, 10), Vector2f(100, 239), &window,
 	MODE_NOTHING, []()->VisibleObject* {
 		return nullptr;
 	});
-	
+
+Point* Finder::nearbyPoint(Vector2f mousePosition)
+{
+	for (VisibleObject* object : ConstructionData::allVisibleObjects)
+	{
+		Point* point = dynamic_cast<Point*>(object);
+		if (point)
+		{
+			if (point->isNearby(mousePosition))
+			{
+				return point;
+			}
+		}
+
+	}
+	return nullptr;
+}
+
+Line* Finder::nearbyLine(Vector2f mousePosition)
+{
+	for (VisibleObject* object : ConstructionData::allVisibleObjects)
+	{
+		Line* line = dynamic_cast<Line*>(object);
+		if (line)
+		{
+			if (line->isNearby(mousePosition))
+			{
+				return line;
+			}
+		}
+
+	}
+	return nullptr;
+}
+
+pair<Line*, Line*> Finder::nearbyLines(Vector2f mousePosition)
+{
+	pair<Line*, Line*> lines = { nullptr,nullptr };
+	for (VisibleObject* object : ConstructionData::allVisibleObjects)
+	{
+		Line* line = dynamic_cast<Line*>(object);
+		if (line)
+		{
+			if (line->isNearby(mousePosition))
+			{
+				if (!get<0>(lines))
+				{
+					lines.first = line;
+				}
+				else
+				{
+					lines.second = line;
+					return lines;
+				}
+			}
+		}
+	}
+	return { nullptr,nullptr };
+}
+
+Point* Finder::nearbyIntersection(Vector2f mousePosition)
+{
+	pair<Line*, Line*> lines = nearbyLines(mousePosition);
+	if (lines.first)
+	{
+		//return new Point(lines.first, lines.second);
+	}
+	return nullptr;
+}
+
+UnitCircle* Finder::nearbyUnitCircle(Vector2f mousePosition)
+{
+	return nullptr;
+}
