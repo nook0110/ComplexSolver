@@ -3,7 +3,7 @@
 using namespace std;
 using namespace sf;
 
-extern RenderWindow  window;
+extern RenderWindow window;
 extern View view;
 extern Vector2i maxTextureResolution;
 
@@ -24,7 +24,7 @@ void Button::setTexture(string _textureLocation, Vector2i _textureStart, Vector2
 
 Button::Button(Vector2f _position, Vector2f _size, RenderWindow* _window,
 	string _textureLocation, Vector2i _textureStart, Vector2i _textureSize,
-	MODES _mode, function<VisibleObject* (void)> _modeFunction)
+	MODES _mode, function<void(void)> _modeFunction)
 	:position(_position),
 	size(_size),
 	window(_window),
@@ -38,7 +38,7 @@ Button::Button(Vector2f _position, Vector2f _size, RenderWindow* _window,
 
 Button::Button(Vector2f _position, Vector2f _size, RenderWindow* _window,
 	string _textureLocation, string _texturePressedLocation,
-	MODES _mode, function<VisibleObject* (void)> _modeFunction)
+	MODES _mode, function<void(void)> _modeFunction)
 	:position(_position),
 	size(_size),
 	window(_window),
@@ -53,7 +53,7 @@ Button::Button(Vector2f _position, Vector2f _size, RenderWindow* _window,
 Button::Button(Vector2f _position, Vector2f _size, RenderWindow* _window,
 	string _textureLocation, Vector2i _textureStart, Vector2i _textureSize,
 	string _texturePressedLocation, Vector2i _texturePressedStart, Vector2i _texturePressedSize,
-	MODES _mode, function<VisibleObject* (void)> _modeFunction)
+	MODES _mode, function<void(void)> _modeFunction)
 	:position(_position),
 	size(_size),
 	window(_window),
@@ -161,7 +161,7 @@ bool Button::getPressed()
 	return pressed;
 }
 
-function<VisibleObject* (void)> Button::getObjectCreationMethod()
+function<void(void)> Button::getObjectCreationMethod()
 {
 	return modeFunction;
 }
@@ -181,7 +181,7 @@ Menu::Menu(RenderWindow* _window)
 }
 void Menu::update(Event event)
 {
-	sf::FloatRect visibleArea(menuView.getCenter().x -menuView.getSize().x / 2, menuView.getCenter().y - menuView.getSize().y / 2, event.size.width * viewport.width, event.size.height * viewport.height);
+	sf::FloatRect visibleArea(menuView.getCenter().x - menuView.getSize().x / 2, menuView.getCenter().y - menuView.getSize().y / 2, event.size.width * viewport.width, event.size.height * viewport.height);
 	(*window).setView(sf::View(visibleArea));
 	menuView = sf::View(visibleArea);
 }
@@ -239,7 +239,7 @@ void Menu::draw()
 		Button.setPosition(Button.getLocalPosition());
 		Button.draw();
 	}
-	
+
 }
 
 /*

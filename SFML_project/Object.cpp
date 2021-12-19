@@ -273,14 +273,10 @@ void Point::drawDescription()
 }
 
 
-/*Line::Line(Point* first, Point* second)
+Line::Line(Point* first, Point* second)
 {
-	Vector2f CoordFirst = first->getCoordinate();
-	Vector2f CoordSecond = second->getCoordinate();
-	lineEq.A = CoordSecond.y - CoordFirst.y;
-	lineEq.B = -(CoordSecond.x - CoordFirst.x);
-	lineEq.C = CoordFirst.y * (CoordSecond.x - CoordFirst.x) - CoordFirst.x * (CoordSecond.y - CoordFirst.y);
-}*/
+	construction = new ByTwoPoints(first, second);
+}
 
 Equation* ByComplexScalar::recreate()
 {
@@ -327,7 +323,14 @@ Equation* Pole::recreate()
 
 Equation* ByTwoPoints::recreate()
 {
-	return new Equation;
+	PointEquation* firstEquation = dynamic_cast<PointEquation*>(firstParent->getEquation());
+	PointEquation* secondEquation = dynamic_cast<PointEquation*>(secondParent->getEquation());
+	Vector2f firstCoord = (*firstEquation).point;
+	Vector2f secondCoord = (*secondEquation).point;
+	double A = -firstCoord.y + secondCoord.y;
+	double B = -(-firstCoord.x + secondCoord.x);
+	double C = firstCoord.x * (firstCoord.y - secondCoord.y) - firstCoord.y * (firstCoord.x - secondCoord.x);
+	return new LineEquation(A, B, C);
 }
 
 Equation* PerpendicularBisector::recreate()

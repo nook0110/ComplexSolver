@@ -118,6 +118,8 @@ class ByTwoPoints : public ConstructionLine
 {
 	Point* firstParent;
 	Point* secondParent;
+public:
+	ByTwoPoints(Point* firstparent, Point* secondParent)
 	Equation* recreate() override;
 };
 
@@ -163,6 +165,7 @@ class VisibleObject : public Object
 	list<VisibleObject*>::iterator it;
 	void insert();
 	void erase();
+protected:
 	ConstructionData construction;
 
 public:
@@ -233,7 +236,7 @@ private:
 public:
 	//double distance(Vector2f point);
 public:
-	//Line(Point* first, Point* second);
+	Line(Point* first, Point* second);
 	bool isNearby(Vector2f mouseCoord);
 	//void draw();
 	void drawDescription();
