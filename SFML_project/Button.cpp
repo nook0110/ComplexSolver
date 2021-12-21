@@ -186,6 +186,15 @@ void Menu::update(Event event)
 	menuView = sf::View(visibleArea);
 }
 
+bool Menu::mouseOnMenu()
+{
+	Vector2f mousePosition = (*window).mapPixelToCoords(Mouse::getPosition(*window), menuView);
+	if (background.getGlobalBounds().contains(mousePosition)) {
+		return true;
+	}
+	else return false;
+}
+
 
 void Menu::pushButton(Button newButton)
 {

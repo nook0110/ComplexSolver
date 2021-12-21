@@ -83,6 +83,7 @@ private:
 public:
 	Menu(RenderWindow* _window);
 	void update(Event);
+	bool mouseOnMenu();
 	//Vector2f getSize();
 	//Vector2f getLocalPosition();
 	//Vector2f getGlobalPosition();

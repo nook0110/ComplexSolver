@@ -9,6 +9,8 @@
 #include "Creation.h"
 #include <ctime>
 
+extern Menu mainMenu;
+
 class InterruptionChecker
 {
 private:
@@ -54,29 +56,24 @@ public:
 
 class Waiter
 {
+private:
+	InterruptionChecker interruptionChecker;
 public:
-	bool untilClick(InterruptionChecker interruptionChecker)
+	bool untilClick()
 	{
 		while (Mouse::isButtonPressed(Mouse::Button::Left))
 		{
 			if (!interruptionChecker.checkInterruption())
-				return 1;
+				return true;
 			std::this_thread::sleep_for(std::chrono::nanoseconds(1000));
 		}
-		while (!Mouse::isButtonPressed(Mouse::Button::Left))
+		while (!Mouse::isButtonPressed(Mouse::Button::Left) || mainMenu.mouseOnMenu())
 		{
 			if (!interruptionChecker.checkInterruption())
-				return 1;
+				return true;
 			std::this_thread::sleep_for(std::chrono::nanoseconds(1000));
 		}
-		return 0;
-	}
-	void untilUnclick()
-	{
-		while (Mouse::isButtonPressed(Mouse::Button::Left))
-		{
-			std::this_thread::sleep_for(std::chrono::nanoseconds(1000));
-		}
+		return false;
 	}
 };
 

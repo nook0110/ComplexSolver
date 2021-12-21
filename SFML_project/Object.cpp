@@ -283,6 +283,12 @@ Line::Line(Point* first, Point* second)
 	equation = construction->recreate();
 }
 
+Line::Line(Line* first, Point* second)
+{
+	construction = new Perpendicular(first, second);
+	equation = construction->recreate();
+}
+
 ByComplexScalar::ByComplexScalar(ComplexScalar* ComplexScalar)
 	:parent(ComplexScalar)
 {
@@ -352,9 +358,20 @@ Equation* PerpendicularBisector::recreate()
 	return new Equation;
 }
 
+Perpendicular::Perpendicular(Line* _firstParent, Point* _secondParent)
+	:firstParent(_firstParent), secondParent(_secondParent)
+{
+}
+
 Equation* Perpendicular::recreate()
 {
-	return new Equation;
+	LineEquation* firstEquation = dynamic_cast<LineEquation*>(firstParent->getEquation());
+	PointEquation* secondEquation = dynamic_cast<PointEquation*>(secondParent->getEquation());
+	Vector2f coord = (*secondEquation).point;
+	double A = -(*firstEquation).B;
+	double B = (*firstEquation).A;
+	double C = (*firstEquation).B * coord.x - (*firstEquation).A * coord.y;
+	return new LineEquation(A,B,C);
 }
 
 Equation* Polar::recreate()

@@ -139,11 +139,7 @@ int main()
 	view.setViewport(sf::FloatRect(0.f, 0.2f, 1.0f, 1.0f));
 	window.setPosition(Vector2i(0, 0));
 
-	Button TestButton = Button(Vector2f(300.f, 10.f), Vector2f(100.f, 200.f), &window, "C:\\Textures\\SFML_project\\Test.jpg");
-	//Point TestPoint1 = Point(Vector2f(100.f, 0.f));
-	//Point TestPoint2 = Point(Vector2f(600.f, 250.f));
-	//Line TestLine = Line(&TestPoint1, &TestPoint2);
-
+	
 
 	window.setVerticalSyncEnabled(true);
 	Creation::Create();
@@ -179,21 +175,7 @@ int main()
 			{
 				window.close();
 			}
-			if ((TestButton).leftClickCheck(view))
-			{
-
-				if (!TestButton.getPressed())
-				{
-
-					TestButton.press();
-					view.move(Vector2f(10, -10));
-
-				}
-				else
-				{
-					TestButton.unpress();
-				}
-			}
+			
 			window.setView(view);
 			Button* X = mainMenu.leftClickCheck();
 			if (X != nullptr)
@@ -212,11 +194,7 @@ int main()
 				}
 			}
 			window.setView(view);
-			if ((TestButton).rightClickCheck(view))
-			{
-
-				//exit(0);
-			}
+			
 
 
 		}
@@ -228,9 +206,6 @@ int main()
 
 		//plane->draw();
 		unitCircle->draw();
-		//(TestPoint1).draw();
-		//(TestPoint2).draw();
-		//(TestLine).draw();
 
 
 
@@ -238,7 +213,7 @@ int main()
 		{
 			X->draw();
 		}
-		(TestButton).draw();
+		
 		window.setView(view);
 		mainMenu.draw();
 		window.setView(view);
