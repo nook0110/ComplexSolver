@@ -60,7 +60,7 @@ Button pointButton = Button(Vector2f(120, 10), Vector2f(100, 100), &window,
 	MODE_POINT, []() {
 		Waiter wait;
 		Finder find;
-		if(wait.untilClick())
+		if (wait.untilClick())
 		{
 			return;
 		}
@@ -96,7 +96,7 @@ Button lineButton = Button(Vector2f(230, 10), Vector2f(100, 100), &window,
 		for (int i = 0; i < twotimes; ++i)
 		{
 			//std::this_thread::sleep_for(std::chrono::seconds(1));
-			if(wait.untilClick())
+			if (wait.untilClick())
 			{
 				return;
 			}
@@ -263,4 +263,47 @@ Point* Finder::nearbyIntersection(Vector2f mousePosition)
 UnitCircle* Finder::nearbyUnitCircle(Vector2f mousePosition)
 {
 	return nullptr;
+}
+
+InterruptionChecker::InterruptionChecker()
+{
+	checker.checkMode();
+}
+
+bool InterruptionChecker::checkInterruption()
+{
+	if (!checker.checkMode())
+	{
+		Creation::Create();
+		return false;
+	}
+	return true;
+}
+
+bool InterruptionChecker::checkInterruption(VisibleObject* object)
+{
+	if (!checker.checkMode())
+	{
+		Creation::Create();
+		//delete object;
+		return false;
+	}
+	return true;
+}
+
+bool Waiter::untilClick()
+{
+	while (Mouse::isButtonPressed(Mouse::Button::Left))
+	{
+		if (!interruptionChecker.checkInterruption())
+			return true;
+		std::this_thread::sleep_for(std::chrono::nanoseconds(1000));
+	}
+	while (!Mouse::isButtonPressed(Mouse::Button::Left) || mainMenu.mouseOnMenu())
+	{
+		if (!interruptionChecker.checkInterruption())
+			return true;
+		std::this_thread::sleep_for(std::chrono::nanoseconds(1000));
+	}
+	return false;
 }

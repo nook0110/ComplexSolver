@@ -16,30 +16,10 @@ class InterruptionChecker
 private:
 	Checker checker;
 public:
-	InterruptionChecker()
-	{
-		checker.checkMode();
-	}
-	bool checkInterruption()
-	{
-		if (!checker.checkMode())
-		{
-			Creation::Create();
-			return false;
-		}
-		return true;
-	}
-	bool checkInterruption(VisibleObject* object)
-	{
-		if (!checker.checkMode())
-		{
-			Creation::Create();
-			//delete object;
-			return false;
-		}
-		return true;
-	}
-	bool checkInterruption(vector<Point*> objects)
+	InterruptionChecker();
+	bool checkInterruption();
+	bool checkInterruption(VisibleObject* object);
+	/*bool checkInterruption(vector<Point*> objects)
 	{
 		if (!checker.checkMode())
 		{
@@ -51,7 +31,7 @@ public:
 			return false;
 		}
 		return true;
-	}
+	}*/
 };
 
 class Waiter
@@ -59,22 +39,7 @@ class Waiter
 private:
 	InterruptionChecker interruptionChecker;
 public:
-	bool untilClick()
-	{
-		while (Mouse::isButtonPressed(Mouse::Button::Left))
-		{
-			if (!interruptionChecker.checkInterruption())
-				return true;
-			std::this_thread::sleep_for(std::chrono::nanoseconds(1000));
-		}
-		while (!Mouse::isButtonPressed(Mouse::Button::Left) || mainMenu.mouseOnMenu())
-		{
-			if (!interruptionChecker.checkInterruption())
-				return true;
-			std::this_thread::sleep_for(std::chrono::nanoseconds(1000));
-		}
-		return false;
-	}
+	bool untilClick();
 };
 
 class Finder
