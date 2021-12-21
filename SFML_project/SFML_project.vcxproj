@@ -165,7 +165,6 @@
     <ClCompile Include="PresetButtons.cpp" />
     <ClCompile Include="GlobalVariables.cpp" />
     <ClCompile Include="Creation.cpp" />
-    <ClCompile Include="PresetButton%27.cpp" />
     <ClCompile Include="WrapMouse.cpp" />
   </ItemGroup>
   <ItemGroup>
