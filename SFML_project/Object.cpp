@@ -275,7 +275,8 @@ void Point::drawDescription()
 
 Line::Line(Point* first, Point* second)
 {
-	construction = new ByTwoPoints(first, second);
+	construction = ByTwoPoints(first, second);
+	equation = construction.recreate();
 }
 
 Equation* ByComplexScalar::recreate()
@@ -319,6 +320,11 @@ Equation* ByTwoPointsAndParametr::recreate()
 Equation* Pole::recreate()
 {
 	return new Equation;
+}
+
+ByTwoPoints::ByTwoPoints(Point* _firstParent, Point* _secondParent)
+	:firstParent(_firstParent), secondParent(_secondParent)
+{
 }
 
 Equation* ByTwoPoints::recreate()

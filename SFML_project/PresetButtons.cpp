@@ -68,21 +68,17 @@ Button pointButton = Button(Vector2f(120, 10), Vector2f(100, 100), &window,
 			return;
 		if (point)
 		{
-
 			Creation::Create();
 			ConstructionData::allVisibleObjects.push_back(point);
 			return;
-
 		}
 		point = find.nearbyIntersection(mousePosition);
 		if (point)
 		{
-
 			Creation::Create();
 			ConstructionData::allVisibleObjects.push_back(point);
 			return;
 		}
-
 		point = new Point(mousePosition);
 		Creation::Create();
 		ConstructionData::allVisibleObjects.push_back(point);

@@ -15,7 +15,7 @@ private:
 	//static MODES last;
 	Checker checker;
 public:
-	function<VisibleObject* (void)> CurrentMethod = []()->VisibleObject* {
+	function<void (void)> CurrentMethod = [](){
 		std::this_thread::sleep_for(std::chrono::seconds(1));
 		Create();
 		return nullptr;

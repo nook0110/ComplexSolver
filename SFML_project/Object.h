@@ -51,8 +51,9 @@ class Object
 {
 public:
 	list<Object*> children;
-private:
+protected:
 	Equation* equation;
+private:
 	void deleteChildren();
 	void eraseChild(Object* child);
 public:
@@ -119,7 +120,7 @@ class ByTwoPoints : public ConstructionLine
 	Point* firstParent;
 	Point* secondParent;
 public:
-	ByTwoPoints(Point* firstparent, Point* secondParent)
+	ByTwoPoints(Point* _firstParent, Point* _secondParent);
 	Equation* recreate() override;
 };
 
