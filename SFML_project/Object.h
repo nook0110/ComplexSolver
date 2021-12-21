@@ -65,6 +65,7 @@ class Line;
 class Point;
 class UnitCircle;
 class ParametrObject;
+class Scalar;
 class ComplexScalar;
 class ConstructionData
 {
@@ -88,6 +89,7 @@ class ByComplexScalar : public ConstructionPoint
 {
 	ComplexScalar* parent;
 public:
+	ByComplexScalar(ComplexScalar* ComplexScalar);
 	Equation* recreate() override;
 };
 
@@ -100,11 +102,11 @@ public:
 	Equation* recreate() override;
 };
 
-class ByTwoPointsAndParametr : public ConstructionPoint
+class ByTwoPointsAndScalar : public ConstructionPoint
 {
 	Point* firstParent;
 	Point* secondParent;
-	ParametrObject* thirdParent;
+	Scalar* thirdParent;
 public:
 	Equation* recreate() override;
 };
@@ -158,16 +160,13 @@ class Tangent : public ConstructionLine
 	Equation* recreate() override;
 };
 
-
-
-
 class VisibleObject : public Object
 {
 	list<VisibleObject*>::iterator it;
 	void insert();
 	void erase();
 protected:
-	ConstructionData construction;
+	ConstructionData* construction;
 
 public:
 	virtual bool isNearby(Vector2f mouseCoord) = 0;
@@ -183,12 +182,12 @@ class ParametrObject : public Object
 
 class Scalar : public ParametrObject
 {
-
 };
 
 class ComplexScalar : public Scalar
 {
-
+public:
+	ComplexScalar(Vector2f coord);
 };
 
 class Plane : public ParametrObject
@@ -239,7 +238,7 @@ public:
 public:
 	Line(Point* first, Point* second);
 	bool isNearby(Vector2f mouseCoord);
-	//void draw();
+	void draw() override;
 	void drawDescription();
 };
 

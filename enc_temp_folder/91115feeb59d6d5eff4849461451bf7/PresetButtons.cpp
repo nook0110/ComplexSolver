@@ -104,41 +104,33 @@ Button lineButton = Button(Vector2f(230, 10), Vector2f(100, 100), &window,
 				return;
 			if (point)
 			{
-				if (get<0>(points))
+				if (get<0>(points) && point != get<0>(points))
 				{
-					if (point != get<0>(points))
-					{
-						points.second = point;
-						ConstructionData::allVisibleObjects.push_back(point);
-						break;
-					}
+					points.second = point;
+					ConstructionData::allVisibleObjects.push_back(point);
 				}
 				else
 				{
 					points.first = point;
 					ConstructionData::allVisibleObjects.push_back(point);
-					break;
 				}
-				
+				break;
 			}
 			point = find.nearbyIntersection(mousePosition);
 			if (point)
 			{
-				if (get<0>(points))
+				if (get<0>(points) && point != get<0>(points))
 				{
-					if (point != get<0>(points))
-					{
-						points.second = point;
-						ConstructionData::allVisibleObjects.push_back(point);
-						break;
-					}
+					points.second = point;
+					break;
+					ConstructionData::allVisibleObjects.push_back(point);
 				}
 				else
 				{
 					points.first = point;
 					ConstructionData::allVisibleObjects.push_back(point);
-					break;
 				}
+				break;
 			}
 
 			point = new Point(mousePosition);

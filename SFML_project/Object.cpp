@@ -109,8 +109,9 @@ bool Line::isNearby(Vector2f mouseCoord)
 	return 0;
 }
 
-/*void Line::draw()
+void Line::draw()
 {
+	LineEquation lineEq = *(dynamic_cast<LineEquation*>(getEquation()));
 	if (lineEq.A == 0)
 	{
 		double x1 = view.getCenter().x - (view.getSize().x / 2);
@@ -166,7 +167,7 @@ bool Line::isNearby(Vector2f mouseCoord)
 			window.draw(line, 2, sf::Lines);
 		}
 	}
-}*/
+}
 
 void Line::drawDescription()
 {
@@ -207,6 +208,9 @@ Point::Point(Vector2f mouseCoord)
 	shape.setOrigin(pointSize, pointSize);
 	shape.setPosition(mouseCoord);
 	shape.setFillColor(Color::Black);
+	construction = new ByComplexScalar(new ComplexScalar(mouseCoord));
+	equation = construction->recreate();
+	equation;
 }
 
 /*Point::Point(Line* first, Line* second)
@@ -275,8 +279,13 @@ void Point::drawDescription()
 
 Line::Line(Point* first, Point* second)
 {
-	construction = ByTwoPoints(first, second);
-	equation = construction.recreate();
+	construction = new ByTwoPoints(first, second);
+	equation = construction->recreate();
+}
+
+ByComplexScalar::ByComplexScalar(ComplexScalar* ComplexScalar)
+	:parent(ComplexScalar)
+{
 }
 
 Equation* ByComplexScalar::recreate()
@@ -288,7 +297,6 @@ Equation* ByComplexScalar::recreate()
 IntersectionOfTwoLines::IntersectionOfTwoLines(Line* first, Line* second)
 	:firstParent(first), secondParent(second)
 {
-
 }
 
 Equation* IntersectionOfTwoLines::recreate()
@@ -305,7 +313,7 @@ Equation* IntersectionOfTwoLines::recreate()
 	return new PointEquation(pointCoord);
 }
 
-Equation* ByTwoPointsAndParametr::recreate()
+Equation* ByTwoPointsAndScalar::recreate()
 {
 	PointEquation* firstEquation = dynamic_cast<PointEquation*>(firstParent->getEquation());
 	PointEquation* secondEquation = dynamic_cast<PointEquation*>(secondParent->getEquation());
@@ -419,5 +427,15 @@ PointEquation::PointEquation(Vector2f _point)
 }
 
 Equation::~Equation()
+{
+}
+
+ComplexScalar::ComplexScalar(Vector2f coord)
+{
+	equation = new ComplexScalarEquation(coord);
+}
+
+ComplexScalarEquation::ComplexScalarEquation(Vector2f _point)
+	:point(_point)
 {
 }

@@ -57,6 +57,12 @@ class Waiter
 public:
 	bool untilClick(InterruptionChecker interruptionChecker)
 	{
+		while (Mouse::isButtonPressed(Mouse::Button::Left))
+		{
+			if (!interruptionChecker.checkInterruption())
+				return 1;
+			std::this_thread::sleep_for(std::chrono::nanoseconds(1000));
+		}
 		while (!Mouse::isButtonPressed(Mouse::Button::Left))
 		{
 			if (!interruptionChecker.checkInterruption())
