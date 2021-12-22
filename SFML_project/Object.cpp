@@ -283,7 +283,7 @@ Line::Line(Point* first, Point* second)
 	equation = construction->recreate();
 }
 
-Line::Line(Line* first, Point* second)
+Line::Line(Point* first, Line* second)
 {
 	construction = new Perpendicular(first, second);
 	equation = construction->recreate();
@@ -358,19 +358,19 @@ Equation* PerpendicularBisector::recreate()
 	return new Equation;
 }
 
-Perpendicular::Perpendicular(Line* _firstParent, Point* _secondParent)
+Perpendicular::Perpendicular(Point* _firstParent, Line* _secondParent)
 	:firstParent(_firstParent), secondParent(_secondParent)
 {
 }
 
 Equation* Perpendicular::recreate()
 {
-	LineEquation* firstEquation = dynamic_cast<LineEquation*>(firstParent->getEquation());
-	PointEquation* secondEquation = dynamic_cast<PointEquation*>(secondParent->getEquation());
-	Vector2f coord = (*secondEquation).point;
-	double A = -(*firstEquation).B;
-	double B = (*firstEquation).A;
-	double C = (*firstEquation).B * coord.x - (*firstEquation).A * coord.y;
+	PointEquation* firstEquation = dynamic_cast<PointEquation*>(firstParent->getEquation());
+	LineEquation* secondEquation = dynamic_cast<LineEquation*>(secondParent->getEquation());
+	Vector2f coord = (*firstEquation).point;
+	double A = -(*secondEquation).B;
+	double B = (*secondEquation).A;
+	double C = (*secondEquation).B * coord.x - (*secondEquation).A * coord.y;
 	return new LineEquation(A,B,C);
 }
 

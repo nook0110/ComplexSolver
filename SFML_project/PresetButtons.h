@@ -20,19 +20,6 @@ public:
 	InterruptionChecker();
 	bool checkInterruption();
 	bool checkInterruption(VisibleObject* object);
-	/*bool checkInterruption(vector<Point*> objects)
-	{
-		if (!checker.checkMode())
-		{
-			Creation::Create();
-			for (auto object : objects)
-			{
-				//delete object;
-			}
-			return false;
-		}
-		return true;
-	}*/
 };
 
 class Waiter

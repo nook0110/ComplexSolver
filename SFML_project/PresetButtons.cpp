@@ -81,13 +81,13 @@ Button pointButton = Button(Vector2f(120, 10), Vector2f(100, 100), &window,
 Button lineButton = Button(Vector2f(230, 10), Vector2f(100, 100), &window,
 	"C:\\Textures\\SFML_project\\Test.jpg", Vector2i(0, 0), maxTextureResolution,
 	MODE_NOTHING, []() {
+		cout << 1;
 		Waiter wait;
 		Finder find;
 		const int twotimes = 2;
-		pair<Point*, Point*> points;
+		pair<Point*, Point*> points(nullptr, nullptr);
 		for (int i = 0; i < twotimes; ++i)
 		{
-			//std::this_thread::sleep_for(std::chrono::seconds(1));
 			if (wait.untilClick())
 			{
 				return;
@@ -131,7 +131,7 @@ Button lineButton = Button(Vector2f(230, 10), Vector2f(100, 100), &window,
 				}
 			}
 			point = new Point(mousePosition);
-			if (get<0>(points) && point != get<0>(points))
+			if (get<0>(points))
 			{
 				points.second = point;
 				ConstructionData::allVisibleObjects.push_back(point);
@@ -142,8 +142,8 @@ Button lineButton = Button(Vector2f(230, 10), Vector2f(100, 100), &window,
 				ConstructionData::allVisibleObjects.push_back(point);
 			}
 		}
-		Creation::Create();
 		ConstructionData::allVisibleObjects.push_back(new Line(points.first, points.second));
+		Creation::Create();
 		return;
 	});
 Button perpendicularButton = Button(Vector2f(340, 10), Vector2f(239, 100), &window,
@@ -152,35 +152,29 @@ Button perpendicularButton = Button(Vector2f(340, 10), Vector2f(239, 100), &wind
 		Waiter wait;
 		InterruptionChecker interruptionChecker;
 		Finder find;
-		//wait.untilClick(interruptionChecker);
 		Vector2f mousePosition = (window).mapPixelToCoords(Mouse::getPosition(window), view);
-		Line* line = find.nearbyLine(mousePosition);
-		if (line)
+		Point* point = find.nearbyPoint(mousePosition);
+		if (!point)
 		{
-			//wait.untilClick(interruptionChecker);
-			Vector2f mousePosition = (window).mapPixelToCoords(Mouse::getPosition(window), view);
-			Point* point = find.nearbyPoint(mousePosition);
-			if (!interruptionChecker.checkInterruption())
-				return;
-			if (point)
-			{
-				Creation::Create();
-				ConstructionData::allVisibleObjects.push_back(new Line(line, point));
-				return;
-			}
 			point = find.nearbyIntersection(mousePosition);
-			if (point)
+			if (!point)
 			{
-				Creation::Create();
-				ConstructionData::allVisibleObjects.push_back(new Line(line, point));
+				point = new Point(mousePosition);
 				ConstructionData::allVisibleObjects.push_back(point);
-				return;
 			}
-			point = new Point(mousePosition);
-			Creation::Create();
-			ConstructionData::allVisibleObjects.push_back(point);
-			return;
 		}
+
+		Line* line = nullptr;
+		while (!line)
+		{
+			line = find.nearbyLine(mousePosition);
+			std::this_thread::sleep_for(std::chrono::nanoseconds(1000));
+		}
+		Creation::Create();
+		ConstructionData::allVisibleObjects.push_back(new Line(point, line));
+		ConstructionData::allVisibleObjects.push_back(point);
+		return;
+
 	});
 Button midPointButton = Button(Vector2f(450, 10), Vector2f(100, 239), &window,
 	"C:\\Textures\\SFML_project\\Test.jpg", Vector2i(0, 0), maxTextureResolution,
@@ -289,7 +283,7 @@ bool Waiter::mouseOnTheScreen()
 	Vector2f center = view.getCenter();
 	Vector2f size = view.getSize();
 	Vector2f leftUpCorner = center - size / 2.f;
-	Vector2f rightDownCorner = (center + size/2.f);
+	Vector2f rightDownCorner = (center + size / 2.f);
 	rightDownCorner.y += size.y * (mainWindowRect.height - mainWindowRect.top) - size.y;
 	return mousePosition.x > leftUpCorner.x && mousePosition.y > leftUpCorner.y &&
 		mousePosition.x < rightDownCorner.x&& mousePosition.y < rightDownCorner.y;

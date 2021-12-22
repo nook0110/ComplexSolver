@@ -135,10 +135,10 @@ class PerpendicularBisector : public ConstructionLine
 
 class Perpendicular : public ConstructionLine
 {
-	Line* firstParent;
-	Point* secondParent;
+	Point* firstParent;
+	Line* secondParent;
 public:
-	Perpendicular(Line* _firstParent, Point* _secondParent);
+	Perpendicular(Point* _firstParent, Line* _secondParent);
 	Equation* recreate() override;
 };
 
@@ -239,7 +239,7 @@ public:
 	//double distance(Vector2f point);
 public:
 	Line(Point* first, Point* second);
-	Line(Line* first, Point* second);
+	Line(Point* first, Line* second);
 	bool isNearby(Vector2f mouseCoord);
 	void draw() override;
 	void drawDescription();
