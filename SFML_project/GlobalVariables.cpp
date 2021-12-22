@@ -17,4 +17,5 @@ double const epsilon = unitSeg / 10;
 Vector2i maxTextureResolution = Vector2i(10000, 10000);
 Menu mainMenu(&window);
 MODES Mousemode = MODE_NOTHING;
+FloatRect mainWindowRect(0.f, 0.2f, 1.0f, 1.0f);
 

@@ -13,7 +13,6 @@
 using namespace std;
 using namespace sf;
 
-
 extern RenderWindow window;//
 extern View view;//
 extern Vector2i maxTextureResolution;//
@@ -22,11 +21,6 @@ extern Menu mainMenu;//
 extern Plane* plane;//
 extern UnitCircle* unitCircle;
 list<VisibleObject*> ConstructionData::allVisibleObjects;
-
-
-//
-
-
 
 Button moveButton = Button(Vector2f(10, 10), Vector2f(100, 100), &window,
 	"H:\\Textures\\Test.jpg", Vector2i(0, 0), maxTextureResolution,
@@ -49,8 +43,6 @@ Button moveButton = Button(Vector2f(10, 10), Vector2f(100, 100), &window,
 			MousePosition = Vector2f(Mouse::getPosition(window));
 			std::this_thread::sleep_for(std::chrono::milliseconds(1));
 		}
-		if (!interruptionChecker.checkInterruption())
-			return;
 		Creation::Create();
 		return;
 	});
@@ -291,6 +283,18 @@ bool InterruptionChecker::checkInterruption(VisibleObject* object)
 	return true;
 }
 
+bool Waiter::mouseOnTheScreen()
+{
+	Vector2f mousePosition = (window).mapPixelToCoords(Mouse::getPosition(window));
+	Vector2f center = view.getCenter();
+	Vector2f size = view.getSize();
+	Vector2f leftUpCorner = center - size / 2.f;
+	Vector2f rightDownCorner = (center + size/2.f);
+	rightDownCorner.y += size.y * (mainWindowRect.height - mainWindowRect.top) - size.y;
+	return mousePosition.x > leftUpCorner.x && mousePosition.y > leftUpCorner.y &&
+		mousePosition.x < rightDownCorner.x&& mousePosition.y < rightDownCorner.y;
+}
+
 bool Waiter::untilClick()
 {
 	while (Mouse::isButtonPressed(Mouse::Button::Left))
@@ -299,7 +303,7 @@ bool Waiter::untilClick()
 			return true;
 		std::this_thread::sleep_for(std::chrono::nanoseconds(1000));
 	}
-	while (!Mouse::isButtonPressed(Mouse::Button::Left) || mainMenu.mouseOnMenu())
+	while (!Mouse::isButtonPressed(Mouse::Button::Left) || mainMenu.mouseOnMenu() || !mouseOnTheScreen())
 	{
 		if (!interruptionChecker.checkInterruption())
 			return true;
