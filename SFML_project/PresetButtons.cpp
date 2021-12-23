@@ -73,7 +73,6 @@ Button pointButton = Button(Vector2f(120, 10), Vector2f(100, 100), &window,
 Button lineButton = Button(Vector2f(230, 10), Vector2f(100, 100), &window,
 	"C:\\Textures\\SFML_project\\Test.jpg", Vector2i(0, 0), maxTextureResolution,
 	MODE_NOTHING, []() {
-		cout << 1;
 		Waiter wait;
 		Finder find;
 		const int twotimes = 2;
@@ -174,8 +173,44 @@ Button midPointButton = Button(Vector2f(450, 10), Vector2f(100, 239), &window,
 	MODE_NOTHING, []() {
 		return nullptr;
 	});
-
+Button tangentButton = Button(Vector2f(450, 10), Vector2f(100, 239), &window,
+	"C:\\Textures\\SFML_project\\Test.jpg", Vector2i(0, 0), maxTextureResolution,
+	MODE_TANGENT, []() {
+		Waiter wait;
+		Finder find;
+		if (wait.untilClick())
+		{
+			return;
+		}
+		Vector2f mousePosition = (window).mapPixelToCoords(Mouse::getPosition(window), view);
+		Point* point = find.nearbyConstructedPointOnCircle(mousePosition);
+		if (point)
+		{
+			Creation::Create();
+			return;
+		}
+		point = find.nearbyNewPoint(mousePosition);
+		Creation::Create();
+		ConstructionData::allVisibleObjects.push_back(point);
+		return;
+	});
 Point* Finder::nearbyConstructedPoint(Vector2f mousePosition)
+{
+	for (VisibleObject* object : ConstructionData::allVisibleObjects)
+	{
+		Point* point = dynamic_cast<Point*>(object);
+		if (point)
+		{
+			if (point->isNearby(mousePosition))
+			{
+				return point;
+			}
+		}
+	}
+	return nullptr;
+}
+
+Point* Finder::nearbyConstructedPointOnCircle(Vector2f mousePosition)
 {
 	for (VisibleObject* object : ConstructionData::allVisibleObjects)
 	{
@@ -198,6 +233,15 @@ Point* Finder::nearbyNewPoint(Vector2f mousePosition)
 	{
 		return point;
 	}
+	if (unitCircle->isNearby(mousePosition))
+	{
+		point = new Point(unitCircle, mousePosition);
+	}
+	//Line* line = nearbyLine(mousePosition);
+	//if (line)
+	//{
+	//	point = new Point(line, mousePosition);
+	//}
 	point = new Point(mousePosition);
 	return point;
 }

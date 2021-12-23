@@ -35,6 +35,7 @@ class Finder
 {
 public:
 	Point* nearbyConstructedPoint(Vector2f mousePosition);
+	Point* nearbyConstructedPointOnCircle(Vector2f mousePosition);
 	Point* nearbyNewPoint(Vector2f mousePosition);
 	Line* nearbyLine(Vector2f mousePosition);
 	pair<Line*, Line*> nearbyLines(Vector2f mousePosition);

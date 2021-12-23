@@ -16,9 +16,9 @@ private:
 	Checker checker;
 public:
 	function<void (void)> CurrentMethod = [](){
-		std::this_thread::sleep_for(std::chrono::seconds(1));
+		std::this_thread::sleep_for(std::chrono::nanoseconds(1000));
 		Create();
-		return nullptr;
+		return;
 	};
 private:
 	thread running;

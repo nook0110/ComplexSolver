@@ -16,34 +16,37 @@ extern double const unitSeg;
 extern thread Creator;
 extern MODES Mousemode;
 
+class LineEquation;
+class PointEquation;
 struct Equation
 {
 	virtual ~Equation();
+public:
+	static Vector2f Projection(LineEquation lineEquation, PointEquation pointEquation);
 };
-
 
 struct LineEquation : public Equation
 {
 	double A, B, C;
-	LineEquation(double _A, double _B, double _C);
+	LineEquation(double A, double B, double C);
 };
 
 struct PointEquation : public Equation
 {
 	Vector2f point;
-	PointEquation(Vector2f _point);
+	PointEquation(Vector2f point);
 };
 
 struct ScalarEquation : public Equation
 {
-	double ratio;
-	ScalarEquation(double _ratio);
+	double value;
+	ScalarEquation(double value);
 };
 
 struct ComplexScalarEquation : public Equation
 {
 	Vector2f point;
-	ComplexScalarEquation(Vector2f _point);
+	ComplexScalarEquation(Vector2f point);
 };
 
 
@@ -55,8 +58,9 @@ protected:
 	Equation* equation;
 private:
 	void deleteChildren();
-	void eraseChild(Object* child);
 public:
+	void eraseChild(Object* child);
+	void addChild(Object* child);
 	Equation* getEquation();
 };
 
@@ -67,6 +71,7 @@ class UnitCircle;
 class ParametrObject;
 class Scalar;
 class ComplexScalar;
+
 class ConstructionData
 {
 public:
@@ -108,7 +113,26 @@ class ByTwoPointsAndScalar : public ConstructionPoint
 	Point* secondParent;
 	Scalar* thirdParent;
 public:
+	ByTwoPointsAndScalar(Point* firstParent, Point* secondParent, Scalar* thirdParent);
 	Equation* recreate() override;
+};
+
+class ByLineAndScalar : public ConstructionPoint
+{
+	Line* firstParent;
+	Scalar* secondParent;
+public:
+	ByLineAndScalar(Line* firstParent, Scalar* secondParent);
+	Equation* recreate() override;
+};
+
+class ByCircleAndScalar : public ConstructionPoint
+{
+	UnitCircle* firstParent;
+	Scalar* secondParent;
+public:
+	ByCircleAndScalar(UnitCircle* firstParent, Scalar* secondParent);
+	//Equation* recreate() override;
 };
 
 class Pole : public ConstructionPoint
@@ -122,7 +146,7 @@ class ByTwoPoints : public ConstructionLine
 	Point* firstParent;
 	Point* secondParent;
 public:
-	ByTwoPoints(Point* _firstParent, Point* _secondParent);
+	ByTwoPoints(Point* firstParent, Point* secondParent);
 	Equation* recreate() override;
 };
 
@@ -138,7 +162,7 @@ class Perpendicular : public ConstructionLine
 	Point* firstParent;
 	Line* secondParent;
 public:
-	Perpendicular(Point* _firstParent, Line* _secondParent);
+	Perpendicular(Point* firstParent, Line* secondParent);
 	Equation* recreate() override;
 };
 
@@ -162,6 +186,7 @@ class Tangent : public ConstructionLine
 	Equation* recreate() override;
 };
 
+
 class VisibleObject : public Object
 {
 	list<VisibleObject*>::iterator it;
@@ -171,7 +196,7 @@ protected:
 	ConstructionData* construction;
 
 public:
-	virtual bool isNearby(Vector2f mouseCoord) = 0;
+	virtual bool isNearby(Vector2f mousePosition) = 0;
 	virtual void draw() = 0;
 	virtual void drawDescription() = 0;
 	//virtual ~VisibleObject();
@@ -179,14 +204,17 @@ public:
 
 class ParametrObject : public Object
 {
-
 };
+
 
 class Scalar : public ParametrObject
 {
+	double value;
+public:
+	Scalar(double value);
 };
 
-class ComplexScalar : public Scalar
+class ComplexScalar : public ParametrObject
 {
 public:
 	ComplexScalar(Vector2f coord);
@@ -197,17 +225,10 @@ class Plane : public ParametrObject
 private:
 	Plane();
 	static Plane* plane;
-	//static Color color;
-	//double getDistance(Vector2f point);
-	//RectangleShape Shape;
-	//double const OutlineThickness = unitSeg / 10;
 public:
 	static Plane* getInstance();
-	//bool isNearby(Vector2f mouseCoord);
-	//void draw();
-	//void drawDescription() {}
-	//static Color getColor();
 };
+
 
 class UnitCircle : public VisibleObject
 {
@@ -219,12 +240,10 @@ private:
 	double const OutlineThickness = unitSeg / 100;
 public:
 	static UnitCircle* getInstance();
-	bool isNearby(Vector2f mouseCoord);
+	bool isNearby(Vector2f mousePosition);
 	void draw();
 	void drawDescription() {}
 };
-
-
 
 class Point;
 class Line : public VisibleObject
@@ -232,11 +251,9 @@ class Line : public VisibleObject
 private:
 	double distance(Vector2f point);
 public:
-	//double distance(Vector2f point);
-public:
 	Line(Point* first, Point* second);
 	Line(Point* first, Line* second);
-	bool isNearby(Vector2f mouseCoord);
+	bool isNearby(Vector2f mousePosition);
 	void draw() override;
 	void drawDescription();
 };
@@ -254,33 +271,12 @@ private:
 public:
 	//static Vector2f intersectLines(Line::equationLine FirstEq, Line::equationLine SecondEq);
 	Vector2f getCoordinate();
-	Point(Vector2f mouseCoord);
+	Point(Vector2f mousePosition);
 	Point(Line* first, Line* second);
-	//Point(Line* line, Vector2f mouseCoord);
+	Point(Line* line, Vector2f mousePosition);
 	Point(Line* line, Point* point);
-	Point(UnitCircle* unitCircle, Vector2f mouseCoord);
-	bool isNearby(Vector2f mouseCoord) override;
+	Point(UnitCircle* unitCircle, Vector2f mousePosition);
+	bool isNearby(Vector2f mousePosition) override;
 	void draw() override;
 	void drawDescription() override;
 };
-
-
-/*
-Point:
-by parametrObject
-by 2 lines;
-by 2 points and parametrObject;
-by line and unit circle(pole)
-Line:
-by 2 points;
-by 2 points;(perp bisector)
-by point and line(perp);
-by point and unit circle(polar);
-by point and line(||);
-by point and circle;
-
-*/
-
-
-
-

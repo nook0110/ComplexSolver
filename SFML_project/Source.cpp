@@ -30,15 +30,10 @@ Vector2f CamCenter = Vector2f(0, 0);
 Plane* plane = Plane::getInstance();
 UnitCircle* unitCircle = UnitCircle::getInstance();
 
-
 int main()
 {
-
 	view.setViewport(sf::FloatRect(0.f, 0.2f, 1.0f, 1.0f));
 	window.setPosition(Vector2i(0, 0));
-
-	
-
 	window.setVerticalSyncEnabled(true);
 	Creation::Create();
 	//Menu initialization
@@ -46,10 +41,8 @@ int main()
 	mainMenu.pushButton(lineButton);
 	mainMenu.pushButton(pointButton);
 	mainMenu.pushButton(perpendicularButton);
-
 	//mainMenu.pushButton(midPointButton);*/
 	view.move(-500, -500);
-
 	while (window.isOpen())
 	{
 		window.setView(view);
@@ -66,14 +59,12 @@ int main()
 				view = sf::View(visibleArea);
 				view.setViewport(mainWindowRect);
 			}
-
 			WrapMouse::checkPress(Mouse::Button::Left);
 			WrapMouse::checkPress(Mouse::Button::Right);
 			if (event.type == Event::Closed)
 			{
 				window.close();
 			}
-			
 			window.setView(view);
 			Button* X = mainMenu.leftClickCheck();
 			if (X != nullptr)
@@ -92,33 +83,19 @@ int main()
 				}
 			}
 			window.setView(view);
-			
-
-
 		}
-
 		Cr();
 		window.clear(Color::White);
-
-
-
-		//plane->draw();
 		unitCircle->draw();
-
-
-
 		for (auto X : ConstructionData::allVisibleObjects)
 		{
 			X->draw();
 		}
-		
 		window.setView(view);
 		mainMenu.draw();
 		window.setView(view);
-
 		window.display();
 	}
-
 	return 0;
 }
 
