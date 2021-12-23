@@ -24,6 +24,8 @@ extern MODES Mousemode;
 extern Button moveButton;
 extern Button pointButton;
 extern Button lineButton;
+extern Button perpendicularButton;
+
 Vector2f CamCenter = Vector2f(0, 0);
 Plane* plane = Plane::getInstance();
 UnitCircle* unitCircle = UnitCircle::getInstance();
@@ -43,8 +45,8 @@ int main()
 	mainMenu.pushButton(moveButton);
 	mainMenu.pushButton(lineButton);
 	mainMenu.pushButton(pointButton);
+	mainMenu.pushButton(perpendicularButton);
 
-	//mainMenu.pushButton(perpendicularButton);
 	//mainMenu.pushButton(midPointButton);*/
 	view.move(-500, -500);
 

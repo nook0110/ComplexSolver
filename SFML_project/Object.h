@@ -230,11 +230,7 @@ class Point;
 class Line : public VisibleObject
 {
 private:
-
-
-private:
-
-
+	double distance(Vector2f point);
 public:
 	//double distance(Vector2f point);
 public:
@@ -254,11 +250,12 @@ private:
 	*/
 	CircleShape shape = CircleShape(pointSize);
 	double distance(Vector2f Point);
+	void Init();
 public:
 	//static Vector2f intersectLines(Line::equationLine FirstEq, Line::equationLine SecondEq);
 	Vector2f getCoordinate();
 	Point(Vector2f mouseCoord);
-	//Point(Line* first, Line* second);
+	Point(Line* first, Line* second);
 	//Point(Line* line, Vector2f mouseCoord);
 	Point(Line* line, Point* point);
 	Point(UnitCircle* unitCircle, Vector2f mouseCoord);

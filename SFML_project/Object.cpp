@@ -93,20 +93,18 @@ void UnitCircle::draw()
 }
 
 
-/*double Line::distance(Vector2f point)
+double Line::distance(Vector2f point)
 {
-	return abs(
-		(lineEq.A * point.x + lineEq.B * point.y + lineEq.C)
-		/ sqrt(
-			pow(lineEq.A, 2) + pow(lineEq.B, 2)
-		)
-	);
-}*/
-
+	LineEquation* lineEquation = dynamic_cast<LineEquation*>(getEquation());
+	double A = (*lineEquation).A;
+	double B = (*lineEquation).B;
+	double C = (*lineEquation).C;
+	double x = abs((A * point.x + B * point.y + C) / sqrt(A * A + B * B));
+	return x;
+}
 bool Line::isNearby(Vector2f mouseCoord)
 {
-	//return distance(mouseCoord) < epsilon;
-	return 0;
+	return distance(mouseCoord) < epsilon;
 }
 
 void Line::draw()
@@ -203,26 +201,29 @@ Vector2f Point::getCoordinate()
 	return shape.getPosition();
 }
 
+
+void Point::Init()
+{
+	equation = construction->recreate();
+	shape.setOrigin(pointSize, pointSize);
+	PointEquation* pointEquation = dynamic_cast<PointEquation*>(construction->recreate());
+	Vector2f position = (*pointEquation).point;
+	shape.setPosition(position);
+	shape.setFillColor(Color::Black);
+}
+
 Point::Point(Vector2f mouseCoord)
 {
-	shape.setOrigin(pointSize, pointSize);
-	shape.setPosition(mouseCoord);
-	shape.setFillColor(Color::Black);
 	construction = new ByComplexScalar(new ComplexScalar(mouseCoord));
-	equation = construction->recreate();
-	equation;
+	Init();
 }
 
-/*Point::Point(Line* first, Line* second)
-
+Point::Point(Line* first, Line* second)
 {
-	shape.setOrigin(pointSize, pointSize);
-	shape.setPosition((intersectLines(first->getEquation(), second->getEquation())));
-	shape.setFillColor(Color::Black);
-	//complex coord
-
+	construction = new IntersectionOfTwoLines(first, second);
+	Init();
 }
-
+/*
 Point::Point(Line* line, Vector2f mouseCoord)
 {
 	shape.setOrigin(pointSize, pointSize);
@@ -371,7 +372,7 @@ Equation* Perpendicular::recreate()
 	double A = -(*secondEquation).B;
 	double B = (*secondEquation).A;
 	double C = (*secondEquation).B * coord.x - (*secondEquation).A * coord.y;
-	return new LineEquation(A,B,C);
+	return new LineEquation(A, B, C);
 }
 
 Equation* Polar::recreate()

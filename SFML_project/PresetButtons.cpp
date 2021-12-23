@@ -23,7 +23,7 @@ extern UnitCircle* unitCircle;
 list<VisibleObject*> ConstructionData::allVisibleObjects;
 
 Button moveButton = Button(Vector2f(10, 10), Vector2f(100, 100), &window,
-	"H:\\Textures\\Test.jpg", Vector2i(0, 0), maxTextureResolution,
+	"C:\\Textures\\SFML_project\\Test.jpg", Vector2i(0, 0), maxTextureResolution,
 	MODE_NOTHING, []() {
 		Waiter wait;
 		InterruptionChecker interruptionChecker;
@@ -57,21 +57,13 @@ Button pointButton = Button(Vector2f(120, 10), Vector2f(100, 100), &window,
 			return;
 		}
 		Vector2f mousePosition = (window).mapPixelToCoords(Mouse::getPosition(window), view);
-		Point* point = find.nearbyPoint(mousePosition);
+		Point* point = find.nearbyConstructedPoint(mousePosition);
 		if (point)
 		{
 			Creation::Create();
-			ConstructionData::allVisibleObjects.push_back(point);
 			return;
 		}
-		point = find.nearbyIntersection(mousePosition);
-		if (point)
-		{
-			Creation::Create();
-			ConstructionData::allVisibleObjects.push_back(point);
-			return;
-		}
-		point = new Point(mousePosition);
+		point = find.nearbyNewPoint(mousePosition);
 		Creation::Create();
 		ConstructionData::allVisibleObjects.push_back(point);
 		return;
@@ -93,7 +85,7 @@ Button lineButton = Button(Vector2f(230, 10), Vector2f(100, 100), &window,
 				return;
 			}
 			Vector2f mousePosition = (window).mapPixelToCoords(Mouse::getPosition(window), view);
-			Point* point = find.nearbyPoint(mousePosition);
+			Point* point = find.nearbyConstructedPoint(mousePosition);
 			if (point)
 			{
 				if (get<0>(points))
@@ -103,17 +95,21 @@ Button lineButton = Button(Vector2f(230, 10), Vector2f(100, 100), &window,
 						points.second = point;
 						break;
 					}
+					else
+					{
+						i--;
+						continue;
+					}
 				}
 				else
 				{
 					points.first = point;
-					break;
+					continue;
 				}
-
 			}
-			point = find.nearbyIntersection(mousePosition);
-			if (point)
+			else
 			{
+				point = find.nearbyNewPoint(mousePosition);
 				if (get<0>(points))
 				{
 					if (point != get<0>(points))
@@ -122,24 +118,18 @@ Button lineButton = Button(Vector2f(230, 10), Vector2f(100, 100), &window,
 						ConstructionData::allVisibleObjects.push_back(point);
 						break;
 					}
+					else
+					{
+						i--;
+						continue;
+					}
 				}
 				else
 				{
 					points.first = point;
 					ConstructionData::allVisibleObjects.push_back(point);
-					break;
+					continue;
 				}
-			}
-			point = new Point(mousePosition);
-			if (get<0>(points))
-			{
-				points.second = point;
-				ConstructionData::allVisibleObjects.push_back(point);
-			}
-			else
-			{
-				points.first = point;
-				ConstructionData::allVisibleObjects.push_back(point);
 			}
 		}
 		ConstructionData::allVisibleObjects.push_back(new Line(points.first, points.second));
@@ -148,31 +138,34 @@ Button lineButton = Button(Vector2f(230, 10), Vector2f(100, 100), &window,
 	});
 Button perpendicularButton = Button(Vector2f(340, 10), Vector2f(239, 100), &window,
 	"C:\\Textures\\SFML_project\\Test.jpg", Vector2i(0, 0), maxTextureResolution,
-	MODE_NOTHING, []() {
+	MODE_PERPENDICULAR, []() {
 		Waiter wait;
 		InterruptionChecker interruptionChecker;
 		Finder find;
+		if (wait.untilClick())
+		{
+			return;
+		}
 		Vector2f mousePosition = (window).mapPixelToCoords(Mouse::getPosition(window), view);
-		Point* point = find.nearbyPoint(mousePosition);
+		Point* point = find.nearbyConstructedPoint(mousePosition);
 		if (!point)
 		{
-			point = find.nearbyIntersection(mousePosition);
-			if (!point)
-			{
-				point = new Point(mousePosition);
-				ConstructionData::allVisibleObjects.push_back(point);
-			}
+			point = find.nearbyNewPoint(mousePosition);
+			ConstructionData::allVisibleObjects.push_back(point);
 		}
-
 		Line* line = nullptr;
 		while (!line)
 		{
+			if (wait.untilClick())
+			{
+				return;
+			}
+			mousePosition = (window).mapPixelToCoords(Mouse::getPosition(window), view);
 			line = find.nearbyLine(mousePosition);
 			std::this_thread::sleep_for(std::chrono::nanoseconds(1000));
 		}
 		Creation::Create();
 		ConstructionData::allVisibleObjects.push_back(new Line(point, line));
-		ConstructionData::allVisibleObjects.push_back(point);
 		return;
 
 	});
@@ -182,7 +175,7 @@ Button midPointButton = Button(Vector2f(450, 10), Vector2f(100, 239), &window,
 		return nullptr;
 	});
 
-Point* Finder::nearbyPoint(Vector2f mousePosition)
+Point* Finder::nearbyConstructedPoint(Vector2f mousePosition)
 {
 	for (VisibleObject* object : ConstructionData::allVisibleObjects)
 	{
@@ -194,9 +187,19 @@ Point* Finder::nearbyPoint(Vector2f mousePosition)
 				return point;
 			}
 		}
-
 	}
 	return nullptr;
+}
+
+Point* Finder::nearbyNewPoint(Vector2f mousePosition)
+{
+	Point* point = nearbyIntersection(mousePosition);
+	if (point)
+	{
+		return point;
+	}
+	point = new Point(mousePosition);
+	return point;
 }
 
 Line* Finder::nearbyLine(Vector2f mousePosition)
@@ -204,14 +207,10 @@ Line* Finder::nearbyLine(Vector2f mousePosition)
 	for (VisibleObject* object : ConstructionData::allVisibleObjects)
 	{
 		Line* line = dynamic_cast<Line*>(object);
-		if (line)
+		if (line && line->isNearby(mousePosition))
 		{
-			if (line->isNearby(mousePosition))
-			{
-				return line;
-			}
+			return line;
 		}
-
 	}
 	return nullptr;
 }
@@ -241,7 +240,11 @@ Point* Finder::nearbyIntersection(Vector2f mousePosition)
 	pair<Line*, Line*> lines = nearbyLines(mousePosition);
 	if (lines.first)
 	{
-		//return new Point(lines.first, lines.second);
+		Point* point = new Point(lines.first, lines.second);
+		if (point->isNearby(mousePosition))
+		{
+			return point;
+		}
 	}
 	return nullptr;
 }
