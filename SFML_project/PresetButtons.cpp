@@ -19,7 +19,6 @@ extern Vector2i maxTextureResolution;//
 extern MODES Mousemode;//
 extern Menu mainMenu;//
 extern Plane* plane;//
-extern UnitCircle* unitCircle;
 list<VisibleObject*> ConstructionData::allVisibleObjects;
 
 Button moveButton = Button(Vector2f(10, 10), Vector2f(100, 100), &window,
@@ -184,16 +183,19 @@ Button tangentButton = Button(Vector2f(450, 10), Vector2f(100, 239), &window,
 		}
 		Vector2f mousePosition = (window).mapPixelToCoords(Mouse::getPosition(window), view);
 		Point* point = find.nearbyConstructedPointOnCircle(mousePosition);
+		if (!point)
+		{
+			point = find.nearbyNewPointOnCircle(mousePosition);
+		}
 		if (point)
 		{
-			Creation::Create();
-			return;
+			ConstructionData::allVisibleObjects.push_back(point);
+			ConstructionData::allVisibleObjects.push_back(new Line(unitCircle, point));
 		}
-		point = find.nearbyNewPoint(mousePosition);
 		Creation::Create();
-		ConstructionData::allVisibleObjects.push_back(point);
 		return;
 	});
+
 Point* Finder::nearbyConstructedPoint(Vector2f mousePosition)
 {
 	for (VisibleObject* object : ConstructionData::allVisibleObjects)
@@ -217,7 +219,7 @@ Point* Finder::nearbyConstructedPointOnCircle(Vector2f mousePosition)
 		Point* point = dynamic_cast<Point*>(object);
 		if (point)
 		{
-			if (point->isNearby(mousePosition))
+			if (point->isNearby(mousePosition) && point->isOnCircle())
 			{
 				return point;
 			}
@@ -233,10 +235,7 @@ Point* Finder::nearbyNewPoint(Vector2f mousePosition)
 	{
 		return point;
 	}
-	if (unitCircle->isNearby(mousePosition))
-	{
-		point = new Point(unitCircle, mousePosition);
-	}
+
 	//Line* line = nearbyLine(mousePosition);
 	//if (line)
 	//{
@@ -244,6 +243,14 @@ Point* Finder::nearbyNewPoint(Vector2f mousePosition)
 	//}
 	point = new Point(mousePosition);
 	return point;
+}
+
+Point* Finder::nearbyNewPointOnCircle(Vector2f mousePosition)
+{
+	if (unitCircle->isNearby(mousePosition))
+	{
+		return new Point(unitCircle, mousePosition);
+	}
 }
 
 Line* Finder::nearbyLine(Vector2f mousePosition)

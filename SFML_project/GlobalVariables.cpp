@@ -8,7 +8,7 @@
 #include "Button.h"
 #include <ctime>
 
-double const unitSeg = 150;
+double const unitSeg = 200;
 thread Creator;
 ContextSettings settings(0, 0, 8);
 RenderWindow  window(VideoMode(1000, 1000), "TEAM SPIRIT", Style::Default, settings);

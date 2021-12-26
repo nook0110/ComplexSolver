@@ -132,7 +132,7 @@ class ByCircleAndScalar : public ConstructionPoint
 	Scalar* secondParent;
 public:
 	ByCircleAndScalar(UnitCircle* firstParent, Scalar* secondParent);
-	//Equation* recreate() override;
+	Equation* recreate() override;
 };
 
 class Pole : public ConstructionPoint
@@ -181,8 +181,10 @@ class Parallel : public ConstructionLine
 
 class Tangent : public ConstructionLine
 {
-	Point* firstParent;
-	UnitCircle* secondParent;
+	UnitCircle* firstParent;
+	Point* secondParent;
+public:
+	Tangent(UnitCircle* firstParent, Point* secondParent);
 	Equation* recreate() override;
 };
 
@@ -199,6 +201,7 @@ public:
 	virtual bool isNearby(Vector2f mousePosition) = 0;
 	virtual void draw() = 0;
 	virtual void drawDescription() = 0;
+	bool isOnCircle();
 	//virtual ~VisibleObject();
 };
 
@@ -209,7 +212,6 @@ class ParametrObject : public Object
 
 class Scalar : public ParametrObject
 {
-	double value;
 public:
 	Scalar(double value);
 };
@@ -253,6 +255,7 @@ private:
 public:
 	Line(Point* first, Point* second);
 	Line(Point* first, Line* second);
+	Line(UnitCircle* first, Point* second);
 	bool isNearby(Vector2f mousePosition);
 	void draw() override;
 	void drawDescription();

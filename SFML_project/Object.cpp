@@ -39,6 +39,11 @@ void VisibleObject::erase()
 	ConstructionData::allVisibleObjects.erase(it);
 }
 
+bool VisibleObject::isOnCircle()
+{
+	return dynamic_cast<ByCircleAndScalar*>(construction);
+}
+
 Plane* Plane::plane = nullptr;
 Plane::Plane()
 {
@@ -198,6 +203,12 @@ void Line::drawDescription()
 {
 }
 
+Line::Line(UnitCircle* first, Point* second)
+{
+	construction = new Tangent(first, second);
+	equation = construction->recreate();
+}
+
 Line::Line(Point* first, Point* second)
 {
 	construction = new ByTwoPoints(first, second);
@@ -264,11 +275,11 @@ Point::Point(Line* line, Point* point)
 
 Point::Point(UnitCircle* unitCircle, Vector2f mousePosition)
 {
-	shape.setFillColor(Color::Black);
-	shape.setOrigin(pointSize, pointSize);
-	Vector2f coord = mousePosition
-		/ sqrt(mousePosition.x * mousePosition.x + mousePosition.y * mousePosition.y) * (float)unitSeg;
-	shape.setPosition(coord);
+	auto scalar = new Scalar(atan2(mousePosition.y, mousePosition.x));
+	construction = new ByCircleAndScalar(unitCircle, scalar);
+	unitCircle->addChild(this);
+	scalar->addChild(this);
+	Init();
 }
 
 bool Point::isNearby(Vector2f mousePosition)
@@ -306,10 +317,10 @@ Equation* IntersectionOfTwoLines::recreate()
 	LineEquation* firstEquation = dynamic_cast<LineEquation*>(firstParent->getEquation());
 	LineEquation* secondEquation = dynamic_cast<LineEquation*>(secondParent->getEquation());
 	Vector2f pointCoord = Vector2f(
-		((*firstEquation).B * (*secondEquation).C - (*firstEquation).C * (*secondEquation).B)
-		/ ((*firstEquation).A * (*secondEquation).B - (*firstEquation).B * (*secondEquation).A),
-		((*firstEquation).C * (*secondEquation).A - (*firstEquation).A * (*secondEquation).C)
-		/ ((*firstEquation).A * (*secondEquation).B - (*firstEquation).B * (*secondEquation).A)
+		(firstEquation->B * (*secondEquation).C - firstEquation->C * (*secondEquation).B)
+		/ (firstEquation->A * (*secondEquation).B - firstEquation->B * (*secondEquation).A),
+		(firstEquation->C * (*secondEquation).A - firstEquation->A * (*secondEquation).C)
+		/ (firstEquation->A * (*secondEquation).B - firstEquation->B * (*secondEquation).A)
 	);
 	return new PointEquation(pointCoord);
 }
@@ -324,7 +335,7 @@ Equation* ByTwoPointsAndScalar::recreate()
 	PointEquation* firstEquation = dynamic_cast<PointEquation*>(firstParent->getEquation());
 	PointEquation* secondEquation = dynamic_cast<PointEquation*>(secondParent->getEquation());
 	ScalarEquation* thirdEquation = dynamic_cast<ScalarEquation*>(firstParent->getEquation());
-	Vector2f firstCoord = (*firstEquation).point;
+	Vector2f firstCoord = firstEquation->point;
 	Vector2f secondCoord = (*secondEquation).point;
 	float ratio = (*thirdEquation).value;
 	Vector2f pointCoord = (secondCoord * ratio + firstCoord * 1.f) / (ratio + 1.f);
@@ -345,7 +356,7 @@ Equation* ByTwoPoints::recreate()
 {
 	PointEquation* firstEquation = dynamic_cast<PointEquation*>(firstParent->getEquation());
 	PointEquation* secondEquation = dynamic_cast<PointEquation*>(secondParent->getEquation());
-	Vector2f firstCoord = (*firstEquation).point;
+	Vector2f firstCoord = firstEquation->point;
 	Vector2f secondCoord = (*secondEquation).point;
 	double A = -firstCoord.y + secondCoord.y;
 	double B = -(-firstCoord.x + secondCoord.x);
@@ -367,7 +378,7 @@ Equation* Perpendicular::recreate()
 {
 	PointEquation* firstEquation = dynamic_cast<PointEquation*>(firstParent->getEquation());
 	LineEquation* secondEquation = dynamic_cast<LineEquation*>(secondParent->getEquation());
-	Vector2f coord = (*firstEquation).point;
+	Vector2f coord = firstEquation->point;
 	double A = -(*secondEquation).B;
 	double B = (*secondEquation).A;
 	double C = (*secondEquation).B * coord.x - (*secondEquation).A * coord.y;
@@ -384,9 +395,21 @@ Equation* Parallel::recreate()
 	return new Equation;
 }
 
+Tangent::Tangent(UnitCircle* firstParent, Point* secondParent)
+	:firstParent(firstParent), secondParent(secondParent)
+{
+	if (!secondParent->isOnCircle())
+		throw invalid_argument("Point isnt on circle?!");
+}
+
 Equation* Tangent::recreate()
 {
-	return new Equation;
+	PointEquation* secondEquation = dynamic_cast<PointEquation*>(secondParent->getEquation());
+	Vector2f coord = secondEquation->point;
+	double A = coord.x;
+	double B = coord.y;
+	double C = -(coord.x * coord.x + coord.y * coord.y);
+	return new LineEquation(A, B, C);
 }
 
 Equation* ConstructionLine::recreate()
@@ -461,7 +484,6 @@ Equation* ByLineAndScalar::recreate()
 }
 
 Scalar::Scalar(double value)
-	:value(value)
 {
 	equation = new ScalarEquation(value);
 }
@@ -474,4 +496,11 @@ ScalarEquation::ScalarEquation(double value)
 ByCircleAndScalar::ByCircleAndScalar(UnitCircle* firstParent, Scalar* secondParent)
 	: firstParent(firstParent), secondParent(secondParent)
 {
+}
+
+Equation* ByCircleAndScalar::recreate()
+{
+	ScalarEquation* scalarEquation = dynamic_cast<ScalarEquation*>(secondParent->getEquation());
+	double angle = (*scalarEquation).value;
+	return new PointEquation(Vector2f(cos(angle)*unitSeg, sin(angle)*unitSeg));
 }
