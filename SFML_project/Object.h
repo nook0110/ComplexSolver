@@ -1,11 +1,6 @@
 #pragma once
 #include <SFML/Graphics.hpp>
-#include <vector>
-#include <cmath>
-#include <future>
-#include <functional>
 #include <list>
-#include <thread>
 #include "gui.h"
 #include "Creation.h"
 using namespace std;
@@ -62,21 +57,24 @@ public:
 	void eraseChild(Object* child);
 	void addChild(Object* child);
 	Equation* getEquation();
+	virtual ~Object();
 };
 
 class VisibleObject;
 class Line;
 class Point;
 class UnitCircle;
-class ParametrObject;
+class Parametr;
 class Scalar;
 class ComplexScalar;
 
 class ConstructionData
 {
+protected:
+	Object* object;
 public:
 	static list<VisibleObject*> allVisibleObjects;
-	static list<ParametrObject*> allParametrs;
+	static list<Parametr*> allParametrs;
 	virtual Equation* recreate();
 };
 
@@ -96,6 +94,7 @@ class ByComplexScalar : public ConstructionPoint
 public:
 	ByComplexScalar(ComplexScalar* ComplexScalar);
 	Equation* recreate() override;
+	~ByComplexScalar();
 };
 
 class IntersectionOfTwoLines : public ConstructionPoint // intersect 2 lines
@@ -105,6 +104,7 @@ class IntersectionOfTwoLines : public ConstructionPoint // intersect 2 lines
 public:
 	IntersectionOfTwoLines(Line* firstParent, Line* secondParent);
 	Equation* recreate() override;
+	~IntersectionOfTwoLines();
 };
 
 class ByTwoPointsAndScalar : public ConstructionPoint
@@ -202,27 +202,27 @@ public:
 	virtual void draw() = 0;
 	virtual void drawDescription() = 0;
 	bool isOnCircle();
-	//virtual ~VisibleObject();
+
 };
 
-class ParametrObject : public Object
+class Parametr : public Object
 {
 };
 
 
-class Scalar : public ParametrObject
+class Scalar : public Parametr
 {
 public:
 	Scalar(double value);
 };
 
-class ComplexScalar : public ParametrObject
+class ComplexScalar : public Parametr
 {
 public:
 	ComplexScalar(Vector2f coord);
 };
 
-class Plane : public ParametrObject
+class Plane : public Parametr
 {
 private:
 	Plane();
@@ -235,11 +235,11 @@ public:
 class UnitCircle : public VisibleObject
 {
 private:
+	const double outlineThickness = unitSeg / 100;
 	UnitCircle();
 	static UnitCircle* unitCircle;
 	double getDistance(Vector2f point);
 	CircleShape Shape;
-	double const OutlineThickness = unitSeg / 100;
 public:
 	static UnitCircle* getInstance();
 	bool isNearby(Vector2f mousePosition);

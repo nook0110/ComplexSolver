@@ -1,12 +1,5 @@
-#include <SFML/Graphics.hpp>
-#include <vector>
-#include <cmath>
-#include <thread>
-#include <functional>
-#include <future>
 #include "Button.h"
 #include "Creation.h"
-#include <ctime>
 using namespace std;
 using namespace sf;
 Creation Cr;

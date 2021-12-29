@@ -1,10 +1,5 @@
 #pragma once
 #include <SFML/Graphics.hpp>
-#include <vector>
-#include <cmath>
-#include <future>
-#include <functional>
-#include "object.h"
 #include "gui.h"
 #include "WrapMouse.h"
 using namespace std;
@@ -75,18 +70,12 @@ private:
 	const FloatRect viewport = FloatRect(0.f, 0.f, 1.0f, 0.2f);
 	const Color color = Color(128, 128, 128, 255);
 	const Vector2f position = Vector2f(0, 0);
-	//Vector2f position = Vector2f(0, 0);
 	vector<Button> buttons;
 	RectangleShape background;
-	//void resize();
-	//void reposition();
 public:
 	Menu(RenderWindow* _window);
 	void update(Event);
 	bool mouseOnMenu();
-	//Vector2f getSize();
-	//Vector2f getLocalPosition();
-	//Vector2f getGlobalPosition();
 	void pushButton(Button newButton);
 	bool checkMouse();
 	Button* leftClickCheck();

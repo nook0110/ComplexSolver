@@ -1,12 +1,5 @@
-#include <SFML/Graphics.hpp>
-#include <vector>
-#include <iostream>
-#include <cmath>
-#include <thread>
-#include <functional>
-#include <future>
 #include "Button.h"
-#include <ctime>
+#include "Object.h"
 
 double const unitSeg = 200;
 thread Creator;

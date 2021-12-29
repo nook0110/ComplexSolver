@@ -173,7 +173,7 @@ Button midPointButton = Button(Vector2f(450, 10), Vector2f(100, 239), &window,
 		return nullptr;
 	});
 Button tangentButton = Button(Vector2f(450, 10), Vector2f(100, 239), &window,
-	"C:\\Textures\\SFML_project\\Test.jpg", Vector2i(0, 0), maxTextureResolution,
+	"C:\\Textures\\SFML_project\\Test.jpg", Vector2i(0, 0), maxTextureResolution, 
 	MODE_TANGENT, []() {
 		Waiter wait;
 		Finder find;

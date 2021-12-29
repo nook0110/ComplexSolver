@@ -1,5 +1,11 @@
 #pragma once
+#include <cmath>
+#include <functional>
+#include <thread>
 #include "Object.h"
+
+using namespace std;
+
 class VisibleObject;
 class Checker
 {

@@ -20,8 +20,6 @@ void Button::setTexture(string _textureLocation, Vector2i _textureStart, Vector2
 
 }
 
-
-
 Button::Button(Vector2f _position, Vector2f _size, RenderWindow* _window,
 	string _textureLocation, Vector2i _textureStart, Vector2i _textureSize,
 	MODES _mode, function<void(void)> _modeFunction)
@@ -167,8 +165,6 @@ function<void(void)> Button::getObjectCreationMethod()
 }
 
 
-
-
 Menu::Menu(RenderWindow* _window)
 {
 	window = _window;
@@ -189,10 +185,7 @@ void Menu::update(Event event)
 bool Menu::mouseOnMenu()
 {
 	Vector2f mousePosition = (*window).mapPixelToCoords(Mouse::getPosition(*window), menuView);
-	if (background.getGlobalBounds().contains(mousePosition)) {
-		return true;
-	}
-	else return false;
+	return background.getGlobalBounds().contains(mousePosition);
 }
 
 
@@ -237,8 +230,6 @@ void Menu::unpress()
 void Menu::draw()
 {
 	(*window).setView(menuView);
-	//update();
-	//cout << (*window).mapPixelToCoords(Mouse::getPosition(*window), menuView).x << " " << (*window).mapPixelToCoords(Mouse::getPosition(*window), menuView).y << endl;
 	menuView.setViewport(sf::FloatRect(0.f, 0.f, 1.f, 0.2f));
 	background.setSize(menuView.getSize());
 	background.setPosition(position);
@@ -250,100 +241,3 @@ void Menu::draw()
 	}
 
 }
-
-/*
-void Menu::update()
-{
-	for (auto& Button : buttons)
-	{
-		Button.updatePosition();
-	}
-}
-*/
-/*
-void Menu::reposition()
-{
-	update();
-	double xmin = view.getCenter().x + (view.getSize().x / 2),
-		ymin = view.getCenter().y + (view.getSize().y / 2);
-	for (auto& Button : buttons)
-	{
-		if (Button.getLocalPosition().x < xmin)
-		{
-			xmin = Button.getLocalPosition().x;
-		}
-		if (Button.getLocalPosition().y < ymin)
-		{
-			ymin = Button.getLocalPosition().y;
-		}
-	}
-	position = Vector2f(xmin, ymin);
-}
-
-Vector2f Menu::getLocalPosition()
-{
-
-	return position;
-}
-
-Vector2f Menu::getGlobalPosition()
-{
-	double xmin = view.getCenter().x - (view.getSize().x / 2),
-		ymin = view.getCenter().y - (view.getSize().y / 2);
-	for (auto& Button : buttons)
-	{
-		if (Button.getGlobalPosition().x < xmin)
-		{
-			xmin = Button.getGlobalPosition().x;
-		}
-		if (Button.getGlobalPosition().y < ymin)
-		{
-			ymin = Button.getGlobalPosition().y;
-		}
-	}
-	return Vector2f(xmin, ymin);
-}
-*/
-/*
-void Menu::resize()
-{
-
-	double
-		xmin = view.getCenter().x + (view.getSize().x / 2),
-		xmax = view.getCenter().x - (view.getSize().x / 2),
-		ymin = view.getCenter().y + (view.getSize().y / 2),
-		ymax = view.getCenter().y - (view.getSize().y / 2);
-	for (auto& Button : buttons)
-	{
-		if (Button.getGlobalPosition().x < xmin)
-		{
-			xmin = Button.getGlobalPosition().x;
-		}
-		if (Button.getGlobalPosition().y < ymin)
-		{
-			ymin = Button.getGlobalPosition().y;
-		}
-
-		if (Button.getGlobalPosition().x + Button.getSize().x > xmax)
-		{
-			xmax = Button.getGlobalPosition().x + Button.getSize().x;
-		}
-
-		if (Button.getGlobalPosition().y + Button.getSize().x > ymax)
-		{
-			ymax = Button.getGlobalPosition().y + Button.getSize().y;
-		}
-	}
-	Outline = ymin;
-	size = Vector2f(view.getCenter().x + (view.getSize().x / 2), ymax + Outline);
-
-}
-*/
-/*
-Vector2f Menu::getSize()
-{
-	return size;
-}
-
-
-*/

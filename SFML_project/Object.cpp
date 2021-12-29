@@ -11,6 +11,10 @@ Equation* Object::getEquation()
 	return equation;
 }
 
+Object::~Object()
+{
+}
+
 void Object::deleteChildren()
 {
 	for (auto child : children)
@@ -44,6 +48,9 @@ bool VisibleObject::isOnCircle()
 	return dynamic_cast<ByCircleAndScalar*>(construction);
 }
 
+
+
+
 Plane* Plane::plane = nullptr;
 Plane::Plane()
 {
@@ -56,44 +63,16 @@ Plane* Plane::getInstance()
 	}
 	return plane;
 }
-/*
-double Plane::getDistance(Vector2f point)
-{
-	return NULL;
-}
 
-bool Plane::isNearby(Vector2f mousePosition)
-{
-	Vector2i MouseCoords = Mouse::getPosition(window);
-	Vector2f Offset = getOffset(view);
-	return Shape.getGlobalBounds().contains(MouseCoords.x + Offset.x, MouseCoords.y + Offset.y);
-}
-
-
-void Plane::draw()
-{
-	//mainMenu.update();
-	Vector2f position = view.getCenter() + view.getSize();
-	position.x = view.getCenter().x - (view.getSize().x / 2);
-	position.y = view.getCenter().y - (view.getSize().y / 2);
-	Shape.setPosition(position);
-	Shape.setSize(view.getSize());
-	window.draw(Shape);
-}
-
-Color Plane::getColor()
-{
-	return color;
-}
-*/
 
 UnitCircle* UnitCircle::unitCircle = nullptr;
 UnitCircle::UnitCircle()
 {
+	Shape.setPointCount(100);
 	Shape.setPosition(Vector2f(0, 0));
-	Shape.setRadius(unitSeg);
-	Shape.setOrigin(unitSeg, unitSeg);
-	Shape.setOutlineThickness(unitSeg / 50);
+	Shape.setOrigin(unitSeg - outlineThickness / 2, unitSeg - outlineThickness / 2);
+	Shape.setOutlineThickness(outlineThickness);
+	Shape.setRadius(unitSeg - outlineThickness / 2);
 	Shape.setOutlineColor(Color::Black);
 }
 
@@ -307,6 +286,11 @@ Equation* ByComplexScalar::recreate()
 	return new PointEquation((*equation).point);
 }
 
+ByComplexScalar::~ByComplexScalar()
+{
+	parent->eraseChild(object);
+}
+
 IntersectionOfTwoLines::IntersectionOfTwoLines(Line* first, Line* second)
 	:firstParent(first), secondParent(second)
 {
@@ -323,6 +307,12 @@ Equation* IntersectionOfTwoLines::recreate()
 		/ (firstEquation->A * (*secondEquation).B - firstEquation->B * (*secondEquation).A)
 	);
 	return new PointEquation(pointCoord);
+}
+
+IntersectionOfTwoLines::~IntersectionOfTwoLines()
+{
+	firstParent->eraseChild(object);
+	secondParent->eraseChild(object);
 }
 
 ByTwoPointsAndScalar::ByTwoPointsAndScalar(Point* firstParent, Point* secondParent, Scalar* thirdParent)
@@ -502,5 +492,5 @@ Equation* ByCircleAndScalar::recreate()
 {
 	ScalarEquation* scalarEquation = dynamic_cast<ScalarEquation*>(secondParent->getEquation());
 	double angle = (*scalarEquation).value;
-	return new PointEquation(Vector2f(cos(angle)*unitSeg, sin(angle)*unitSeg));
+	return new PointEquation(Vector2f(cos(angle) * unitSeg, sin(angle) * unitSeg));
 }

@@ -1,14 +1,6 @@
 #pragma once
-#include <SFML/Graphics.hpp>
-#include <vector>
-#include <cmath>
-#include <thread>
-#include <functional>
-#include <future>
-#include <iostream>
 #include "Button.h"
 #include "Creation.h"
-#include <ctime>
 
 extern Menu mainMenu;
 extern FloatRect mainWindowRect;

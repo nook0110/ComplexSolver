@@ -1,14 +1,9 @@
 #pragma once
-#include <SFML/Graphics.hpp>
-#include <vector>
-#include <cmath>
-#include <future>
-#include <functional>
 
-using namespace std;
-using namespace sf;
 
-extern Vector2i maxTextureResolution;
+
+
+
 
 
 enum MODES

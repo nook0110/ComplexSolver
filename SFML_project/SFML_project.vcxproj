@@ -160,7 +160,6 @@
   <ItemGroup>
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="Source.cpp" />
-    <ClCompile Include="gui.cpp" />
     <ClCompile Include="Button.cpp" />
     <ClCompile Include="PresetButtons.cpp" />
     <ClCompile Include="GlobalVariables.cpp" />
