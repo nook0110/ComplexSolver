@@ -18,14 +18,8 @@ Object::~Object()
 
 void Object::deleteChildren()
 {
-	for (auto child : children)
-	{
-		if (child)
-		{
-			delete child;
-			child = nullptr;
-		}
-	}
+	for (auto it = children.begin(); it!=children.end();it++)
+		delete (*it);
 }
 
 void Object::eraseChild(Object* child)
@@ -36,11 +30,6 @@ void Object::eraseChild(Object* child)
 void Object::addChild(Object* child)
 {
 	children.push_back(child);
-}
-
-void Object::clearChildren()
-{
-	children.remove(nullptr);
 }
 
 void VisibleObject::erase()

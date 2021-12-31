@@ -52,7 +52,6 @@ class Object
 {
 public:
 	list<Object*> children;
-	list<Object*>::iterator it;
 protected:
 	Equation* equation;
 private:
@@ -60,7 +59,6 @@ private:
 public:
 	void eraseChild(Object* child);
 	void addChild(Object* child);
-	void clearChildren();
 	Equation* getEquation();
 	virtual ~Object();
 };

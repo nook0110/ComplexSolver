@@ -1,5 +1,11 @@
 #pragma once
 
+
+
+
+
+
+
 enum MODES
 {
 	MODE_NOTHING = 0,

@@ -19,7 +19,7 @@ extern Button pointButton;
 extern Button lineButton;
 extern Button perpendicularButton;
 extern Button tangentButton;
-
+extern Button deleteButton;
 
 Vector2f CamCenter = Vector2f(0, 0);
 Plane* plane = Plane::getInstance();
@@ -37,6 +37,7 @@ int main()
 	mainMenu.pushButton(pointButton);
 	mainMenu.pushButton(perpendicularButton);
 	mainMenu.pushButton(tangentButton);
+	mainMenu.pushButton(deleteButton);
 	view.move(-500, -500);
 	while (window.isOpen())
 	{
