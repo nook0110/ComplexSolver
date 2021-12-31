@@ -164,7 +164,6 @@ function<void(void)> Button::getObjectCreationMethod()
 	return modeFunction;
 }
 
-
 Menu::Menu(RenderWindow* _window)
 {
 	window = _window;
@@ -206,6 +205,7 @@ bool Menu::checkMouse()
 	}
 	return false;
 }
+
 Button* Menu::leftClickCheck()
 {
 	(*window).setView(menuView);
@@ -227,6 +227,7 @@ void Menu::unpress()
 		Button.unpress();
 	}
 }
+
 void Menu::draw()
 {
 	(*window).setView(menuView);
@@ -239,5 +240,4 @@ void Menu::draw()
 		Button.setPosition(Button.getLocalPosition());
 		Button.draw();
 	}
-
 }

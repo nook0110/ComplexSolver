@@ -28,6 +28,7 @@ public:
 class Finder
 {
 public:
+	Object* nearbyObject(Vector2f mousePosition);
 	Point* nearbyConstructedPoint(Vector2f mousePosition);
 	Point* nearbyConstructedPointOnCircle(Vector2f mousePosition);
 	Point* nearbyNewPoint(Vector2f mousePosition);

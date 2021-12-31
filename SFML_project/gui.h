@@ -1,11 +1,5 @@
 #pragma once
 
-
-
-
-
-
-
 enum MODES
 {
 	MODE_NOTHING = 0,
@@ -21,8 +15,3 @@ enum MODES
 	MODE_REFLECT_POINT,
 	MODE_INTERSECT
 };
-
-
-
-
-

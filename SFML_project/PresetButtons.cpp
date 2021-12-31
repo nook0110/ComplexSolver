@@ -134,7 +134,7 @@ Button lineButton = Button(Vector2f(230, 10), Vector2f(100, 100), &window,
 		Creation::Create();
 		return;
 	});
-Button perpendicularButton = Button(Vector2f(340, 10), Vector2f(239, 100), &window,
+Button perpendicularButton = Button(Vector2f(340, 10), Vector2f(100, 100), &window,
 	"C:\\Textures\\SFML_project\\Test.jpg", Vector2i(0, 0), maxTextureResolution,
 	MODE_PERPENDICULAR, []() {
 		Waiter wait;
@@ -167,13 +167,13 @@ Button perpendicularButton = Button(Vector2f(340, 10), Vector2f(239, 100), &wind
 		return;
 
 	});
-Button midPointButton = Button(Vector2f(450, 10), Vector2f(100, 239), &window,
+Button midPointButton = Button(Vector2f(450, 10), Vector2f(100, 100), &window,
 	"C:\\Textures\\SFML_project\\Test.jpg", Vector2i(0, 0), maxTextureResolution,
 	MODE_NOTHING, []() {
 		return nullptr;
 	});
-Button tangentButton = Button(Vector2f(450, 10), Vector2f(100, 239), &window,
-	"C:\\Textures\\SFML_project\\Test.jpg", Vector2i(0, 0), maxTextureResolution, 
+Button tangentButton = Button(Vector2f(450, 10), Vector2f(100, 100), &window,
+	"C:\\Textures\\SFML_project\\Test.jpg", Vector2i(0, 0), maxTextureResolution,
 	MODE_TANGENT, []() {
 		Waiter wait;
 		Finder find;
@@ -195,6 +195,40 @@ Button tangentButton = Button(Vector2f(450, 10), Vector2f(100, 239), &window,
 		Creation::Create();
 		return;
 	});
+
+Button deleteButton = Button(Vector2f(560, 10), Vector2f(100, 100), &window,
+	"C:\\Textures\\SFML_project\\Test.jpg", Vector2i(0, 0), maxTextureResolution,
+	MODE_TANGENT, []() {
+		Waiter wait;
+		Finder find;
+		if (wait.untilClick())
+		{
+			return;
+		}
+		Vector2f mousePosition = (window).mapPixelToCoords(Mouse::getPosition(window), view);
+		Object* object = find.nearbyObject(mousePosition);
+		if (object)
+		{
+			delete object;
+		}
+		Creation::Create();
+		return;
+	});
+
+Object* Finder::nearbyObject(Vector2f mousePosition)
+{
+	for (VisibleObject* object : ConstructionData::allVisibleObjects)
+	{
+		if (object)
+		{
+			if (object->isNearby(mousePosition))
+			{
+				return object;
+			}
+		}
+	}
+	return nullptr;
+}
 
 Point* Finder::nearbyConstructedPoint(Vector2f mousePosition)
 {
@@ -349,13 +383,13 @@ bool Waiter::untilClick()
 	{
 		if (!interruptionChecker.checkInterruption())
 			return true;
-		std::this_thread::sleep_for(std::chrono::nanoseconds(1000));
+		std::this_thread::sleep_for(std::chrono::nanoseconds(100));
 	}
 	while (!Mouse::isButtonPressed(Mouse::Button::Left) || mainMenu.mouseOnMenu() || !mouseOnTheScreen())
 	{
 		if (!interruptionChecker.checkInterruption())
 			return true;
-		std::this_thread::sleep_for(std::chrono::nanoseconds(1000));
+		std::this_thread::sleep_for(std::chrono::nanoseconds(100));
 	}
 	return false;
 }

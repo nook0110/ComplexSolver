@@ -37,4 +37,3 @@ void Creation::Create()
 {
 	created = true;
 }
-

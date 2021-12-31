@@ -13,12 +13,19 @@ Equation* Object::getEquation()
 
 Object::~Object()
 {
+	deleteChildren();
 }
 
 void Object::deleteChildren()
 {
 	for (auto child : children)
-		delete child;
+	{
+		if (child)
+		{
+			delete child;
+			child = nullptr;
+		}
+	}
 }
 
 void Object::eraseChild(Object* child)
@@ -31,25 +38,26 @@ void Object::addChild(Object* child)
 	children.push_back(child);
 }
 
-void VisibleObject::insert()
+void Object::clearChildren()
 {
-	ConstructionData::allVisibleObjects.push_back(this);
-	it = prev(ConstructionData::allVisibleObjects.end());
-	Creation::Create();
+	children.remove(nullptr);
 }
 
 void VisibleObject::erase()
 {
-	ConstructionData::allVisibleObjects.erase(it);
+	ConstructionData::allVisibleObjects.remove(this);
+}
+
+VisibleObject::~VisibleObject()
+{
+	erase();
+	delete construction;
 }
 
 bool VisibleObject::isOnCircle()
 {
 	return dynamic_cast<ByCircleAndScalar*>(construction);
 }
-
-
-
 
 Plane* Plane::plane = nullptr;
 Plane::Plane()
@@ -184,19 +192,25 @@ void Line::drawDescription()
 
 Line::Line(UnitCircle* first, Point* second)
 {
-	construction = new Tangent(first, second);
+	first->addChild(this);
+	second->addChild(this);
+	construction = new Tangent(this, first, second);
 	equation = construction->recreate();
 }
 
 Line::Line(Point* first, Point* second)
 {
-	construction = new ByTwoPoints(first, second);
+	first->addChild(this);
+	second->addChild(this);
+	construction = new ByTwoPoints(this, first, second);
 	equation = construction->recreate();
 }
 
 Line::Line(Point* first, Line* second)
 {
-	construction = new Perpendicular(first, second);
+	first->addChild(this);
+	second->addChild(this);
+	construction = new Perpendicular(this, first, second);
 	equation = construction->recreate();
 }
 
@@ -224,14 +238,14 @@ void Point::Init()
 Point::Point(Vector2f mousePosition)
 {
 	auto parent = new ComplexScalar(mousePosition);
-	construction = new ByComplexScalar(parent);
+	construction = new ByComplexScalar(this, parent);
 	parent->addChild(this);
 	Init();
 }
 
 Point::Point(Line* first, Line* second)
 {
-	construction = new IntersectionOfTwoLines(first, second);
+	construction = new IntersectionOfTwoLines(this, first, second);
 	first->addChild(this);
 	second->addChild(this);
 	Init();
@@ -240,7 +254,7 @@ Point::Point(Line* first, Line* second)
 Point::Point(Line* line, Vector2f mousePosition)
 {
 	auto scalar = new Scalar(0.0);
-	construction = new ByLineAndScalar(line, scalar);
+	construction = new ByLineAndScalar(this, line, scalar);
 	line->addChild(this);
 	scalar->addChild(this);
 	Init();
@@ -255,7 +269,7 @@ Point::Point(Line* line, Point* point)
 Point::Point(UnitCircle* unitCircle, Vector2f mousePosition)
 {
 	auto scalar = new Scalar(atan2(mousePosition.y, mousePosition.x));
-	construction = new ByCircleAndScalar(unitCircle, scalar);
+	construction = new ByCircleAndScalar(this, unitCircle, scalar);
 	unitCircle->addChild(this);
 	scalar->addChild(this);
 	Init();
@@ -275,9 +289,10 @@ void Point::drawDescription()
 {
 }
 
-ByComplexScalar::ByComplexScalar(ComplexScalar* ComplexScalar)
+ByComplexScalar::ByComplexScalar(Object* object, ComplexScalar* ComplexScalar)
 	:parent(ComplexScalar)
 {
+	ConstructionData::object = object;
 }
 
 Equation* ByComplexScalar::recreate()
@@ -288,12 +303,13 @@ Equation* ByComplexScalar::recreate()
 
 ByComplexScalar::~ByComplexScalar()
 {
-	parent->eraseChild(object);
+	//delete parent;
 }
 
-IntersectionOfTwoLines::IntersectionOfTwoLines(Line* first, Line* second)
+IntersectionOfTwoLines::IntersectionOfTwoLines(Object* object, Line* first, Line* second)
 	:firstParent(first), secondParent(second)
 {
+	ConstructionData::object = object;
 }
 
 Equation* IntersectionOfTwoLines::recreate()
@@ -315,9 +331,10 @@ IntersectionOfTwoLines::~IntersectionOfTwoLines()
 	secondParent->eraseChild(object);
 }
 
-ByTwoPointsAndScalar::ByTwoPointsAndScalar(Point* firstParent, Point* secondParent, Scalar* thirdParent)
+ByTwoPointsAndScalar::ByTwoPointsAndScalar(Object* object, Point* firstParent, Point* secondParent, Scalar* thirdParent)
 	:firstParent(firstParent), secondParent(secondParent), thirdParent(thirdParent)
 {
+	ConstructionData::object = object;
 }
 
 Equation* ByTwoPointsAndScalar::recreate()
@@ -337,9 +354,10 @@ Equation* Pole::recreate()
 	return new Equation;
 }
 
-ByTwoPoints::ByTwoPoints(Point* firstParent, Point* secondParent)
+ByTwoPoints::ByTwoPoints(Object* object, Point* firstParent, Point* secondParent)
 	:firstParent(firstParent), secondParent(secondParent)
 {
+	ConstructionData::object = object;
 }
 
 Equation* ByTwoPoints::recreate()
@@ -354,14 +372,21 @@ Equation* ByTwoPoints::recreate()
 	return new LineEquation(A, B, C);
 }
 
+ByTwoPoints::~ByTwoPoints()
+{
+	firstParent->eraseChild(object);
+	secondParent->eraseChild(object);
+}
+
 Equation* PerpendicularBisector::recreate()
 {
 	return new Equation;
 }
 
-Perpendicular::Perpendicular(Point* firstParent, Line* secondParent)
+Perpendicular::Perpendicular(Object* object, Point* firstParent, Line* secondParent)
 	:firstParent(firstParent), secondParent(secondParent)
 {
+	ConstructionData::object = object;
 }
 
 Equation* Perpendicular::recreate()
@@ -385,11 +410,12 @@ Equation* Parallel::recreate()
 	return new Equation;
 }
 
-Tangent::Tangent(UnitCircle* firstParent, Point* secondParent)
+Tangent::Tangent(Object* object, UnitCircle* firstParent, Point* secondParent)
 	:firstParent(firstParent), secondParent(secondParent)
 {
 	if (!secondParent->isOnCircle())
 		throw invalid_argument("Point isnt on circle?!");
+	ConstructionData::object = object;
 }
 
 Equation* Tangent::recreate()
@@ -407,14 +433,26 @@ Equation* ConstructionLine::recreate()
 	return new Equation;
 }
 
+ConstructionLine::~ConstructionLine()
+{
+}
+
+
+
 Equation* ConstructionPoint::recreate()
 {
 	return new Equation;
 }
 
+
+
 Equation* ConstructionData::recreate()
 {
 	return new Equation;
+}
+
+ConstructionData::~ConstructionData()
+{
 }
 
 LineEquation::LineEquation(double A, double B, double C)
@@ -453,9 +491,10 @@ ComplexScalarEquation::ComplexScalarEquation(Vector2f point)
 {
 }
 
-ByLineAndScalar::ByLineAndScalar(Line* firstParent, Scalar* secondParent)
+ByLineAndScalar::ByLineAndScalar(Object* object, Line* firstParent, Scalar* secondParent)
 	: firstParent(firstParent), secondParent(secondParent)
 {
+	ConstructionData::object = object;
 }
 
 Equation* ByLineAndScalar::recreate()
@@ -483,9 +522,10 @@ ScalarEquation::ScalarEquation(double value)
 {
 }
 
-ByCircleAndScalar::ByCircleAndScalar(UnitCircle* firstParent, Scalar* secondParent)
+ByCircleAndScalar::ByCircleAndScalar(Object* object, UnitCircle* firstParent, Scalar* secondParent)
 	: firstParent(firstParent), secondParent(secondParent)
 {
+	ConstructionData::object = object;
 }
 
 Equation* ByCircleAndScalar::recreate()

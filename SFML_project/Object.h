@@ -3,6 +3,9 @@
 #include <list>
 #include "gui.h"
 #include "Creation.h"
+
+#include <iostream>
+
 using namespace std;
 using namespace sf;
 
@@ -49,6 +52,7 @@ class Object
 {
 public:
 	list<Object*> children;
+	list<Object*>::iterator it;
 protected:
 	Equation* equation;
 private:
@@ -56,6 +60,7 @@ private:
 public:
 	void eraseChild(Object* child);
 	void addChild(Object* child);
+	void clearChildren();
 	Equation* getEquation();
 	virtual ~Object();
 };
@@ -76,23 +81,28 @@ public:
 	static list<VisibleObject*> allVisibleObjects;
 	static list<Parametr*> allParametrs;
 	virtual Equation* recreate();
+	virtual ~ConstructionData();
 };
 
 class ConstructionPoint : public ConstructionData
 {
-	Equation* recreate() override;
+public:
+	virtual Equation* recreate();
+
 };
 
 class ConstructionLine : public ConstructionData
 {
-	Equation* recreate() override;
+public:
+	virtual Equation* recreate();
+	virtual ~ConstructionLine();
 };
 
 class ByComplexScalar : public ConstructionPoint
 {
 	ComplexScalar* parent;
 public:
-	ByComplexScalar(ComplexScalar* ComplexScalar);
+	ByComplexScalar(Object* object, ComplexScalar* ComplexScalar);
 	Equation* recreate() override;
 	~ByComplexScalar();
 };
@@ -102,9 +112,9 @@ class IntersectionOfTwoLines : public ConstructionPoint // intersect 2 lines
 	Line* firstParent;
 	Line* secondParent;
 public:
-	IntersectionOfTwoLines(Line* firstParent, Line* secondParent);
+	IntersectionOfTwoLines(Object* object, Line* firstParent, Line* secondParent);
 	Equation* recreate() override;
-	~IntersectionOfTwoLines();
+	~IntersectionOfTwoLines() override;
 };
 
 class ByTwoPointsAndScalar : public ConstructionPoint
@@ -113,7 +123,7 @@ class ByTwoPointsAndScalar : public ConstructionPoint
 	Point* secondParent;
 	Scalar* thirdParent;
 public:
-	ByTwoPointsAndScalar(Point* firstParent, Point* secondParent, Scalar* thirdParent);
+	ByTwoPointsAndScalar(Object* object, Point* firstParent, Point* secondParent, Scalar* thirdParent);
 	Equation* recreate() override;
 };
 
@@ -122,7 +132,7 @@ class ByLineAndScalar : public ConstructionPoint
 	Line* firstParent;
 	Scalar* secondParent;
 public:
-	ByLineAndScalar(Line* firstParent, Scalar* secondParent);
+	ByLineAndScalar(Object* object, Line* firstParent, Scalar* secondParent);
 	Equation* recreate() override;
 };
 
@@ -131,7 +141,7 @@ class ByCircleAndScalar : public ConstructionPoint
 	UnitCircle* firstParent;
 	Scalar* secondParent;
 public:
-	ByCircleAndScalar(UnitCircle* firstParent, Scalar* secondParent);
+	ByCircleAndScalar(Object* object, UnitCircle* firstParent, Scalar* secondParent);
 	Equation* recreate() override;
 };
 
@@ -146,7 +156,8 @@ class ByTwoPoints : public ConstructionLine
 	Point* firstParent;
 	Point* secondParent;
 public:
-	ByTwoPoints(Point* firstParent, Point* secondParent);
+	ByTwoPoints(Object* object, Point* firstParent, Point* secondParent);
+	~ByTwoPoints() override;
 	Equation* recreate() override;
 };
 
@@ -162,7 +173,7 @@ class Perpendicular : public ConstructionLine
 	Point* firstParent;
 	Line* secondParent;
 public:
-	Perpendicular(Point* firstParent, Line* secondParent);
+	Perpendicular(Object* object, Point* firstParent, Line* secondParent);
 	Equation* recreate() override;
 };
 
@@ -184,15 +195,13 @@ class Tangent : public ConstructionLine
 	UnitCircle* firstParent;
 	Point* secondParent;
 public:
-	Tangent(UnitCircle* firstParent, Point* secondParent);
+	Tangent(Object* object, UnitCircle* firstParent, Point* secondParent);
 	Equation* recreate() override;
 };
 
 
 class VisibleObject : public Object
 {
-	list<VisibleObject*>::iterator it;
-	void insert();
 	void erase();
 protected:
 	ConstructionData* construction;
@@ -202,7 +211,7 @@ public:
 	virtual void draw() = 0;
 	virtual void drawDescription() = 0;
 	bool isOnCircle();
-
+	~VisibleObject();
 };
 
 class Parametr : public Object
