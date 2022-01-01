@@ -217,14 +217,21 @@ Button deleteButton = Button(Vector2f(560, 10), Vector2f(100, 100), &window,
 
 Object* Finder::nearbyObject(Vector2f mousePosition)
 {
+	Point* point = nearbyConstructedPoint(mousePosition);
+	if (point)
+	{
+		return point;
+	}
+	Line* line = nearbyLine(mousePosition);
+	if (line)
+	{
+		return line;
+	}
 	for (VisibleObject* object : ConstructionData::allVisibleObjects)
 	{
-		if (object)
+		if (object && object->isNearby(mousePosition))
 		{
-			if (object->isNearby(mousePosition))
-			{
-				return object;
-			}
+			return object;
 		}
 	}
 	return nullptr;
@@ -235,12 +242,9 @@ Point* Finder::nearbyConstructedPoint(Vector2f mousePosition)
 	for (VisibleObject* object : ConstructionData::allVisibleObjects)
 	{
 		Point* point = dynamic_cast<Point*>(object);
-		if (point)
+		if (point && point->isNearby(mousePosition))
 		{
-			if (point->isNearby(mousePosition))
-			{
-				return point;
-			}
+			return point;
 		}
 	}
 	return nullptr;
@@ -269,7 +273,6 @@ Point* Finder::nearbyNewPoint(Vector2f mousePosition)
 	{
 		return point;
 	}
-
 	//Line* line = nearbyLine(mousePosition);
 	//if (line)
 	//{

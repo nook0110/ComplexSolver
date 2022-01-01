@@ -142,6 +142,7 @@ class ByCircleAndScalar : public ConstructionPoint
 	Scalar* secondParent;
 public:
 	ByCircleAndScalar(Object* object, UnitCircle* firstParent, Scalar* secondParent);
+	~ByCircleAndScalar();
 	Equation* recreate() override;
 };
 
@@ -174,6 +175,7 @@ class Perpendicular : public ConstructionLine
 	Line* secondParent;
 public:
 	Perpendicular(Object* object, Point* firstParent, Line* secondParent);
+	~Perpendicular();
 	Equation* recreate() override;
 };
 
@@ -196,6 +198,7 @@ class Tangent : public ConstructionLine
 	Point* secondParent;
 public:
 	Tangent(Object* object, UnitCircle* firstParent, Point* secondParent);
+	~Tangent();
 	Equation* recreate() override;
 };
 

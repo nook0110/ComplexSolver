@@ -18,13 +18,9 @@ Object::~Object()
 
 void Object::deleteChildren()
 {
-	for (auto child : children)
+	while (!children.empty())
 	{
-		if (child)
-		{
-			delete child;
-			child = nullptr;
-		}
+		delete (*children.begin());
 	}
 }
 
@@ -303,7 +299,8 @@ Equation* ByComplexScalar::recreate()
 
 ByComplexScalar::~ByComplexScalar()
 {
-	//delete parent;
+	parent->eraseChild(object);
+	delete parent;
 }
 
 IntersectionOfTwoLines::IntersectionOfTwoLines(Object* object, Line* first, Line* second)
@@ -389,6 +386,12 @@ Perpendicular::Perpendicular(Object* object, Point* firstParent, Line* secondPar
 	ConstructionData::object = object;
 }
 
+Perpendicular::~Perpendicular()
+{
+	firstParent->eraseChild(object);
+	secondParent->eraseChild(object);
+}
+
 Equation* Perpendicular::recreate()
 {
 	PointEquation* firstEquation = dynamic_cast<PointEquation*>(firstParent->getEquation());
@@ -416,6 +419,12 @@ Tangent::Tangent(Object* object, UnitCircle* firstParent, Point* secondParent)
 	if (!secondParent->isOnCircle())
 		throw invalid_argument("Point isnt on circle?!");
 	ConstructionData::object = object;
+}
+
+Tangent::~Tangent()
+{
+	firstParent->eraseChild(object);
+	secondParent->eraseChild(object);
 }
 
 Equation* Tangent::recreate()
@@ -526,6 +535,13 @@ ByCircleAndScalar::ByCircleAndScalar(Object* object, UnitCircle* firstParent, Sc
 	: firstParent(firstParent), secondParent(secondParent)
 {
 	ConstructionData::object = object;
+}
+
+ByCircleAndScalar::~ByCircleAndScalar()
+{
+	firstParent->eraseChild(object);
+	secondParent->eraseChild(object);
+	delete secondParent;
 }
 
 Equation* ByCircleAndScalar::recreate()
