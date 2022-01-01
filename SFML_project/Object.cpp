@@ -229,6 +229,7 @@ void Point::Init()
 	Vector2f position = (*pointEquation).point;
 	shape.setPosition(position);
 	shape.setFillColor(Color::Black);
+	ConstructionData::allVisibleObjects.push_back(this);
 }
 
 Point::Point(Vector2f mousePosition)
@@ -249,7 +250,14 @@ Point::Point(Line* first, Line* second)
 
 Point::Point(Line* line, Vector2f mousePosition)
 {
-	auto scalar = new Scalar(0.0);
+	LineEquation* lineEquation = dynamic_cast<LineEquation*>(line->getEquation());
+	Vector2f firstProj = Equation::Projection(*lineEquation, PointEquation(mousePosition));
+	Vector2f secondProj = Equation::Projection(*lineEquation, PointEquation(Vector2f(0, 0)));
+	Vector2f delta = firstProj - secondProj;
+	double distance = sqrt(delta.x * delta.x + delta.y * delta.y);
+	double phi = atan2(delta.y, delta.x);
+	int sign = (phi > 0) - (phi < 0);
+	Scalar* scalar = new Scalar(distance * sign);
 	construction = new ByLineAndScalar(this, line, scalar);
 	line->addChild(this);
 	scalar->addChild(this);
@@ -506,6 +514,13 @@ ByLineAndScalar::ByLineAndScalar(Object* object, Line* firstParent, Scalar* seco
 	ConstructionData::object = object;
 }
 
+ByLineAndScalar::~ByLineAndScalar()
+{
+	firstParent->eraseChild(object);
+	secondParent->eraseChild(object);
+	delete secondParent;
+}
+
 Equation* ByLineAndScalar::recreate()
 {
 	LineEquation* lineEquation = dynamic_cast<LineEquation*>(firstParent->getEquation());
@@ -516,9 +531,8 @@ Equation* ByLineAndScalar::recreate()
 	Vector2f direction = Vector2f(-B, A);
 	direction /= (float)sqrt(A * A + B * B);
 	direction *= (float)(*scalarEquation).value;
-	//Vector2f projection = Projection(lineEquation, new PointEquation(Vector2f(0, 0));
-	//return new PointEquation(projection + direction);
-	return nullptr;
+	Vector2f projection = Equation::Projection(*lineEquation, PointEquation(Vector2f(0, 0)));
+	return new PointEquation(projection + direction);
 }
 
 Scalar::Scalar(double value)

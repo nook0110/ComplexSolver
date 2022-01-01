@@ -133,6 +133,7 @@ class ByLineAndScalar : public ConstructionPoint
 	Scalar* secondParent;
 public:
 	ByLineAndScalar(Object* object, Line* firstParent, Scalar* secondParent);
+	~ByLineAndScalar();
 	Equation* recreate() override;
 };
 

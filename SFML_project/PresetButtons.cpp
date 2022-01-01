@@ -64,7 +64,6 @@ Button pointButton = Button(Vector2f(120, 10), Vector2f(100, 100), &window,
 		}
 		point = find.nearbyNewPoint(mousePosition);
 		Creation::Create();
-		ConstructionData::allVisibleObjects.push_back(point);
 		return;
 	});
 
@@ -113,7 +112,6 @@ Button lineButton = Button(Vector2f(230, 10), Vector2f(100, 100), &window,
 					if (point != get<0>(points))
 					{
 						points.second = point;
-						ConstructionData::allVisibleObjects.push_back(point);
 						break;
 					}
 					else
@@ -125,7 +123,6 @@ Button lineButton = Button(Vector2f(230, 10), Vector2f(100, 100), &window,
 				else
 				{
 					points.first = point;
-					ConstructionData::allVisibleObjects.push_back(point);
 					continue;
 				}
 			}
@@ -149,7 +146,6 @@ Button perpendicularButton = Button(Vector2f(340, 10), Vector2f(100, 100), &wind
 		if (!point)
 		{
 			point = find.nearbyNewPoint(mousePosition);
-			ConstructionData::allVisibleObjects.push_back(point);
 		}
 		Line* line = nullptr;
 		while (!line)
@@ -273,13 +269,12 @@ Point* Finder::nearbyNewPoint(Vector2f mousePosition)
 	{
 		return point;
 	}
-	//Line* line = nearbyLine(mousePosition);
-	//if (line)
-	//{
-	//	point = new Point(line, mousePosition);
-	//}
-	point = new Point(mousePosition);
-	return point;
+	Line* line = nearbyLine(mousePosition);
+	if (line)
+	{
+		return new Point(line, mousePosition);
+	}
+	return new Point(mousePosition);
 }
 
 Point* Finder::nearbyNewPointOnCircle(Vector2f mousePosition)
