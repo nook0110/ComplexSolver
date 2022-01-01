@@ -531,6 +531,13 @@ Equation* ByLineAndScalar::recreate()
 	Vector2f direction = Vector2f(-B, A);
 	direction /= (float)sqrt(A * A + B * B);
 	direction *= (float)(*scalarEquation).value;
+	double phi = atan2(direction.y, direction.x);
+	int signPhi = (phi > 0) - (phi < 0);
+	int signScalar = ((*scalarEquation).value > 0) - ((*scalarEquation).value < 0);
+	if (signPhi != signScalar)
+	{
+		direction *= -1.f;
+	}
 	Vector2f projection = Equation::Projection(*lineEquation, PointEquation(Vector2f(0, 0)));
 	return new PointEquation(projection + direction);
 }
