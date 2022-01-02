@@ -1,8 +1,11 @@
 #pragma once
 
+
+//All modes of button
 enum MODES
 {
 	MODE_NOTHING = 0,
+	MODE_DELETE,
 	MODE_MOVE,
 	MODE_POINT,
 	MODE_LINE,

@@ -6,6 +6,8 @@
 
 #include <iostream>
 
+//The "heart" of the programme. This is file is about objects.
+
 using namespace std;
 using namespace sf;
 
@@ -16,6 +18,8 @@ extern MODES Mousemode;
 
 class LineEquation;
 class PointEquation;
+
+//equation for all objects
 struct Equation
 {
 	virtual ~Equation();
@@ -47,12 +51,11 @@ struct ComplexScalarEquation : public Equation
 	ComplexScalarEquation(Vector2f point);
 };
 
-
+//objects - geomtrical shapes on the screen
 class Object
 {
 public:
 	list<Object*> children;
-	list<Object*>::iterator it;
 protected:
 	Equation* equation;
 private:
@@ -73,6 +76,7 @@ class Parametr;
 class Scalar;
 class ComplexScalar;
 
+//Data - how object was created (By two points and so on)
 class ConstructionData
 {
 protected:
@@ -80,6 +84,8 @@ protected:
 public:
 	static list<VisibleObject*> allVisibleObjects;
 	static list<Parametr*> allParametrs;
+	//Return equation of the objects 
+	//The equation can be changed if parents were moved
 	virtual Equation* recreate();
 	virtual ~ConstructionData();
 };
@@ -88,7 +94,6 @@ class ConstructionPoint : public ConstructionData
 {
 public:
 	virtual Equation* recreate();
-
 };
 
 class ConstructionLine : public ConstructionData
@@ -244,11 +249,13 @@ public:
 	static Plane* getInstance();
 };
 
-
+//UnitCircle - is the only circle in the programme
+//To get object use UnitCircle::getInstance() method
 class UnitCircle : public VisibleObject
 {
 private:
 	const double outlineThickness = unitSeg / 100;
+	//Pattern singleton
 	UnitCircle();
 	static UnitCircle* unitCircle;
 	double getDistance(Vector2f point);
@@ -278,9 +285,6 @@ class Point : public VisibleObject
 {
 private:
 	const double pointSize = 5;
-	/*
-	class equation
-	*/
 	CircleShape shape = CircleShape(pointSize);
 	double distance(Vector2f Point);
 	void Init();

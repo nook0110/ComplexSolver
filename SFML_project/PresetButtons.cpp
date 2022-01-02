@@ -22,8 +22,8 @@ extern Plane* plane;//
 list<VisibleObject*> ConstructionData::allVisibleObjects;
 
 Button moveButton = Button(Vector2f(10, 10), Vector2f(100, 100), &window,
-	"C:\\Textures\\SFML_project\\Test.jpg", Vector2i(0, 0), maxTextureResolution,
-	MODE_NOTHING, []() {
+	"C:\\Textures\\SFML_project\\MoveButton.jpg", Vector2i(0, 0), maxTextureResolution,
+	MODE_MOVE, []() {
 		Waiter wait;
 		InterruptionChecker interruptionChecker;
 		wait.untilClick();
@@ -47,7 +47,7 @@ Button moveButton = Button(Vector2f(10, 10), Vector2f(100, 100), &window,
 	});
 
 Button pointButton = Button(Vector2f(120, 10), Vector2f(100, 100), &window,
-	"C:\\Textures\\SFML_project\\Test.jpg", Vector2i(0, 0), maxTextureResolution,
+	"C:\\Textures\\SFML_project\\PointButton.jpg", Vector2i(0, 0), maxTextureResolution,
 	MODE_POINT, []() {
 		Waiter wait;
 		Finder find;
@@ -69,8 +69,8 @@ Button pointButton = Button(Vector2f(120, 10), Vector2f(100, 100), &window,
 
 
 Button lineButton = Button(Vector2f(230, 10), Vector2f(100, 100), &window,
-	"C:\\Textures\\SFML_project\\Test.jpg", Vector2i(0, 0), maxTextureResolution,
-	MODE_NOTHING, []() {
+	"C:\\Textures\\SFML_project\\LineButton.jpg", Vector2i(0, 0), maxTextureResolution,
+	MODE_LINE, []() {
 		Waiter wait;
 		Finder find;
 		const int twotimes = 2;
@@ -132,7 +132,7 @@ Button lineButton = Button(Vector2f(230, 10), Vector2f(100, 100), &window,
 		return;
 	});
 Button perpendicularButton = Button(Vector2f(340, 10), Vector2f(100, 100), &window,
-	"C:\\Textures\\SFML_project\\Test.jpg", Vector2i(0, 0), maxTextureResolution,
+	"C:\\Textures\\SFML_project\\PerpendicularButton.jpg", Vector2i(0, 0), maxTextureResolution,
 	MODE_PERPENDICULAR, []() {
 		Waiter wait;
 		InterruptionChecker interruptionChecker;
@@ -169,7 +169,7 @@ Button midPointButton = Button(Vector2f(450, 10), Vector2f(100, 100), &window,
 		return nullptr;
 	});
 Button tangentButton = Button(Vector2f(450, 10), Vector2f(100, 100), &window,
-	"C:\\Textures\\SFML_project\\Test.jpg", Vector2i(0, 0), maxTextureResolution,
+	"C:\\Textures\\SFML_project\\TangentButton.jpg", Vector2i(0, 0), maxTextureResolution,
 	MODE_TANGENT, []() {
 		Waiter wait;
 		Finder find;
@@ -193,8 +193,8 @@ Button tangentButton = Button(Vector2f(450, 10), Vector2f(100, 100), &window,
 	});
 
 Button deleteButton = Button(Vector2f(560, 10), Vector2f(100, 100), &window,
-	"C:\\Textures\\SFML_project\\Test.jpg", Vector2i(0, 0), maxTextureResolution,
-	MODE_TANGENT, []() {
+	"C:\\Textures\\SFML_project\\DeleteButton.jpg", Vector2i(0, 0), maxTextureResolution,
+	MODE_DELETE, []() {
 		Waiter wait;
 		Finder find;
 		if (wait.untilClick())
@@ -273,6 +273,11 @@ Point* Finder::nearbyNewPoint(Vector2f mousePosition)
 	if (line)
 	{
 		return new Point(line, mousePosition);
+	}
+	UnitCircle* unitCircle = UnitCircle::getInstance();
+	if (unitCircle->isNearby(mousePosition))
+	{
+		return new Point(unitCircle, mousePosition);
 	}
 	return new Point(mousePosition);
 }
@@ -373,6 +378,12 @@ bool Waiter::mouseOnTheScreen()
 	rightDownCorner.y += size.y * (mainWindowRect.height - mainWindowRect.top) - size.y;
 	return mousePosition.x > leftUpCorner.x && mousePosition.y > leftUpCorner.y &&
 		mousePosition.x < rightDownCorner.x&& mousePosition.y < rightDownCorner.y;
+}
+
+void Waiter::sleep()
+{
+	std::this_thread::sleep_for(std::chrono::nanoseconds(100));
+
 }
 
 bool Waiter::untilClick()

@@ -7,7 +7,9 @@ using namespace sf;
 
 extern Vector2i maxTextureResolution;
 
-
+//Button is a clickable object on the screen.
+//It has it own mode and function.
+//Use getObjectCreationMethod() to get funtion. 
 class Button
 {
 private:
@@ -24,7 +26,7 @@ private:
 	Texture texture;
 	Sprite Sprite;
 
-
+	//Button mode
 	MODES mode = MODE_NOTHING;
 	function<void(void)> modeFunction = []() {};
 
@@ -62,6 +64,7 @@ public:
 	function<void(void)> getObjectCreationMethod();
 };
 
+//Menu is a list of buttons, you can push buttons in it.
 class Menu
 {
 private:

@@ -8,6 +8,7 @@
 using namespace std;
 using namespace sf;
 
+//Wrappper of SFML sf::Mouse
 class WrapMouse
 {
 public:

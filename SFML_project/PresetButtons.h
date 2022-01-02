@@ -2,6 +2,8 @@
 #include "Button.h"
 #include "Creation.h"
 
+//Preset of Buttons with functions
+
 extern Menu mainMenu;
 extern FloatRect mainWindowRect;
 class UnitCircle;
@@ -19,9 +21,11 @@ public:
 class Waiter
 {
 private:
+	const int sleepingTime = 1000;
 	InterruptionChecker interruptionChecker;
 	bool mouseOnTheScreen();
 public:
+	void sleep();
 	bool untilClick();
 };
 

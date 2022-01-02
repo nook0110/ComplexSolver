@@ -7,6 +7,7 @@
 using namespace std;
 
 class VisibleObject;
+//Checks if mode has been changed
 class Checker
 {
 private:
@@ -15,6 +16,8 @@ public:
 	bool checkMode();
 };
 
+//Changes the thread with thread that creates another object
+//Use operator () to run thread or check if thread is needed to be changed
 class Creation
 {
 private:
