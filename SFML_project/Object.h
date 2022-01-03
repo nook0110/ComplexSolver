@@ -89,14 +89,14 @@ public:
 	static list<Parametr*> allParametrs;
 	//Return equation of the objects 
 	//The equation can be changed if parents were moved
-	virtual Equation* recreate();
+	virtual void recreate(Equation* equation);
 	virtual ~ConstructionData();
 };
 
 class ConstructionPoint : public ConstructionData
 {
 public:
-	virtual Equation* recreate();
+	virtual void recreate(Equation* equation);
 	virtual void move(Vector2f delta);
 	virtual void moveTo(Vector2f coords);
 };
@@ -104,7 +104,7 @@ public:
 class ConstructionLine : public ConstructionData
 {
 public:
-	virtual Equation* recreate();
+	virtual void recreate(Equation* equation);
 	virtual ~ConstructionLine();
 };
 
@@ -113,7 +113,7 @@ class ByComplexScalar : public ConstructionPoint
 	ComplexScalar* parent;
 public:
 	ByComplexScalar(Object* object, ComplexScalar* ComplexScalar);
-	Equation* recreate() override;
+	void recreate(Equation* equation) override;
 	void move(Vector2f delta) override;
 	void moveTo(Vector2f coords) override;
 	~ByComplexScalar();
@@ -125,7 +125,7 @@ class IntersectionOfTwoLines : public ConstructionPoint // intersect 2 lines
 	Line* secondParent;
 public:
 	IntersectionOfTwoLines(Object* object, Line* firstParent, Line* secondParent);
-	Equation* recreate() override;
+	void recreate(Equation* equation) override;
 	void move(Vector2f delta) override;
 	void moveTo(Vector2f coords) override;
 	~IntersectionOfTwoLines() override;
@@ -138,7 +138,7 @@ class ByTwoPointsAndScalar : public ConstructionPoint
 	Scalar* thirdParent;
 public:
 	ByTwoPointsAndScalar(Object* object, Point* firstParent, Point* secondParent, Scalar* thirdParent);
-	Equation* recreate() override;
+	void recreate(Equation* equation) override;
 };
 
 class ByLineAndScalar : public ConstructionPoint
@@ -150,7 +150,7 @@ public:
 	void move(Vector2f delta) override;
 	void moveTo(Vector2f coords) override;
 	~ByLineAndScalar();
-	Equation* recreate() override;
+	void recreate(Equation* equation) override;
 };
 
 class ByCircleAndScalar : public ConstructionPoint
@@ -162,13 +162,13 @@ public:
 	void move(Vector2f delta) override;
 	void moveTo(Vector2f coords) override;
 	~ByCircleAndScalar();
-	Equation* recreate() override;
+	void recreate(Equation* equation) override;
 };
 
 class Pole : public ConstructionPoint
 {
 	Line* parent;
-	Equation* recreate() override;
+	void recreate(Equation* equation) override;
 };
 
 class ByTwoPoints : public ConstructionLine
@@ -178,14 +178,14 @@ class ByTwoPoints : public ConstructionLine
 public:
 	ByTwoPoints(Object* object, Point* firstParent, Point* secondParent);
 	~ByTwoPoints() override;
-	Equation* recreate() override;
+	void recreate(Equation* equation) override;
 };
 
 class PerpendicularBisector : public ConstructionLine
 {
 	Point* firstParent;
 	Point* secondParent;
-	Equation* recreate() override;
+	void recreate(Equation* equation) override;
 };
 
 class Perpendicular : public ConstructionLine
@@ -195,20 +195,20 @@ class Perpendicular : public ConstructionLine
 public:
 	Perpendicular(Object* object, Point* firstParent, Line* secondParent);
 	~Perpendicular();
-	Equation* recreate() override;
+	void recreate(Equation* equation) override;
 };
 
 class Polar : public ConstructionLine
 {
 	Point* parent;
-	Equation* recreate() override;
+	void recreate(Equation* equation) override;
 };
 
 class Parallel : public ConstructionLine
 {
 	Point* firstParent;
 	Line* secondParent;
-	Equation* recreate() override;
+	void recreate(Equation* equation) override;
 };
 
 class Tangent : public ConstructionLine
@@ -218,7 +218,7 @@ class Tangent : public ConstructionLine
 public:
 	Tangent(Object* object, UnitCircle* firstParent, Point* secondParent);
 	~Tangent();
-	Equation* recreate() override;
+	void recreate(Equation* equation) override;
 };
 
 
