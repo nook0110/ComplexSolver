@@ -59,6 +59,8 @@ class Object
 private:
 	list<Object*> children;
 protected:
+	virtual void reposition();
+	void reposeChildren();
 	Equation* equation;
 private:
 	void deleteChildren();
@@ -154,6 +156,7 @@ class ByCircleAndScalar : public ConstructionPoint
 	Scalar* secondParent;
 public:
 	ByCircleAndScalar(Object* object, UnitCircle* firstParent, Scalar* secondParent);
+	void move(Vector2f delta) override;
 	~ByCircleAndScalar();
 	Equation* recreate() override;
 };
@@ -220,7 +223,7 @@ class VisibleObject : public Object
 	void erase();
 protected:
 	ConstructionData* construction;
-
+	virtual void reposition();
 public:
 	virtual bool isNearby(Vector2f mousePosition) = 0;
 	virtual void draw() = 0;
@@ -280,6 +283,7 @@ class Line : public VisibleObject
 {
 private:
 	double distance(Vector2f point);
+	void reposition() override;
 public:
 	Line(Point* first, Point* second);
 	Line(Point* first, Line* second);
@@ -295,6 +299,7 @@ private:
 	const double pointSize = 5;
 	CircleShape shape = CircleShape(pointSize);
 	double distance(Vector2f Point);
+	void reposition() override;
 	void Init();
 public:
 	//static Vector2f intersectLines(Line::equationLine FirstEq, Line::equationLine SecondEq);

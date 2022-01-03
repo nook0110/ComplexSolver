@@ -26,21 +26,33 @@ Button moveButton = Button(Vector2f(10, 10), Vector2f(100, 100), &window,
 	MODE_MOVE, []() {
 		Waiter wait;
 		InterruptionChecker interruptionChecker;
-		wait.untilClick();
-		Vector2f MousePosition(Vector2f(Mouse::getPosition(window)));
+		Finder find;
+		if (wait.untilClick())
+		{
+			return;
+		}
+		Vector2f mousePosition(Vector2f(Mouse::getPosition(window)));
+		Point* point = find.nearbyConstructedPoint((window).mapPixelToCoords(Vector2i(mousePosition), view));
 		while (Mouse::isButtonPressed(Mouse::Button::Left))
 		{
 			if (!interruptionChecker.checkInterruption())
 				return;
-			Vector2f delta = MousePosition - Vector2f(Mouse::getPosition(window));
+			Vector2f delta = Vector2f(Mouse::getPosition(window)) - mousePosition;
 			Vector2f Scale;
 			Scale.x = view.getSize().x / window.getSize().x;
 			Scale.y = view.getSize().y / window.getSize().y;
 			delta.x *= Scale.x;
 			delta.y *= Scale.y;
-			view.move(delta);
-			MousePosition = Vector2f(Mouse::getPosition(window));
-			wait.sleep();
+			if (point)
+			{
+				point->move(delta);
+			}
+			else
+			{
+				view.move(-delta);
+			}
+			mousePosition = Vector2f(Mouse::getPosition(window));
+			std::this_thread::sleep_for(std::chrono::milliseconds(10));
 		}
 		Creation::Create();
 		return;

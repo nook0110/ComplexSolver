@@ -16,6 +16,19 @@ Object::~Object()
 	deleteChildren();
 }
 
+void Object::reposition()
+{
+}
+
+void Object::reposeChildren()
+{
+	reposition();
+	for (auto child : children)
+	{
+		child->reposeChildren();
+	}
+}
+
 void Object::deleteChildren()
 {
 	while (!children.empty())
@@ -37,6 +50,10 @@ void Object::addChild(Object* child)
 void Object::clearChildren()
 {
 	children.remove(nullptr);
+}
+
+void VisibleObject::reposition()
+{
 }
 
 void VisibleObject::erase()
@@ -186,12 +203,18 @@ void Line::drawDescription()
 {
 }
 
+void Line::reposition()
+{
+	equation = construction->recreate();
+}
+
+
 Line::Line(UnitCircle* first, Point* second)
 {
 	first->addChild(this);
 	second->addChild(this);
 	construction = new Tangent(this, first, second);
-	equation = construction->recreate();
+	reposition();
 }
 
 Line::Line(Point* first, Point* second)
@@ -199,7 +222,7 @@ Line::Line(Point* first, Point* second)
 	first->addChild(this);
 	second->addChild(this);
 	construction = new ByTwoPoints(this, first, second);
-	equation = construction->recreate();
+	reposition();
 }
 
 Line::Line(Point* first, Line* second)
@@ -207,7 +230,7 @@ Line::Line(Point* first, Line* second)
 	first->addChild(this);
 	second->addChild(this);
 	construction = new Perpendicular(this, first, second);
-	equation = construction->recreate();
+	reposition();
 }
 
 double Point::distance(Vector2f Point)
@@ -221,14 +244,19 @@ Vector2f Point::getCoordinate()
 	return shape.getPosition();
 }
 
-void Point::Init()
+void Point::reposition()
 {
 	equation = construction->recreate();
-	shape.setOrigin(pointSize, pointSize);
 	PointEquation* pointEquation = dynamic_cast<PointEquation*>(construction->recreate());
 	Vector2f position = (*pointEquation).point;
 	shape.setPosition(position);
+}
+
+void Point::Init()
+{
+	shape.setOrigin(pointSize, pointSize);
 	shape.setFillColor(Color::Black);
+	reposition();
 	ConstructionData::allVisibleObjects.push_back(this);
 }
 
@@ -296,8 +324,9 @@ void Point::drawDescription()
 void Point::move(Vector2f delta)
 {
 	dynamic_cast<ConstructionPoint*>(construction)->move(delta);
-	delete equation;
+	//delete equation;
 	equation = construction->recreate();
+	reposeChildren();
 }
 
 ByComplexScalar::ByComplexScalar(Object* object, ComplexScalar* ComplexScalar)
@@ -481,6 +510,8 @@ void ConstructionPoint::move(Vector2f delta)
 {
 }
 
+
+
 Equation* ConstructionData::recreate()
 {
 	return new Equation;
@@ -618,6 +649,17 @@ ByCircleAndScalar::~ByCircleAndScalar()
 	firstParent->eraseChild(object);
 	secondParent->eraseChild(object);
 	delete secondParent;
+}
+
+void ByCircleAndScalar::move(Vector2f delta)
+{
+	ScalarEquation* scalarEquation = dynamic_cast<ScalarEquation*>(secondParent->getEquation());
+	double angle = (*scalarEquation).value;
+	Vector2f position(cos(angle) * unitSeg, sin(angle) * unitSeg);
+	position += delta;
+	double angle2 = atan2(position.y, position.x);
+	double deltaAngle = angle2 - angle;
+	secondParent->operator+=(deltaAngle);
 }
 
 

@@ -21,7 +21,7 @@ public:
 class Waiter
 {
 private:
-	const int sleepingTime = 1000;
+	const int sleepingTime = 100;
 	InterruptionChecker interruptionChecker;
 	bool mouseOnTheScreen();
 public:
