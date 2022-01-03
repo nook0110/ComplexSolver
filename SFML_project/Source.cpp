@@ -21,12 +21,16 @@ extern Button perpendicularButton;
 extern Button tangentButton;
 extern Button deleteButton;
 
+
 Vector2f CamCenter = Vector2f(0, 0);
 Plane* plane = Plane::getInstance();
 UnitCircle* unitCircle = UnitCircle::getInstance();
 
 int main()
 {
+	
+
+
 	view.setViewport(sf::FloatRect(0.f, 0.2f, 1.0f, 1.0f));
 	window.setPosition(Vector2i(0, 0));
 	window.setVerticalSyncEnabled(true);

@@ -293,6 +293,13 @@ void Point::drawDescription()
 {
 }
 
+void Point::move(Vector2f delta)
+{
+	dynamic_cast<ConstructionPoint*>(construction)->move(delta);
+	delete equation;
+	equation = construction->recreate();
+}
+
 ByComplexScalar::ByComplexScalar(Object* object, ComplexScalar* ComplexScalar)
 	:parent(ComplexScalar)
 {
@@ -303,6 +310,11 @@ Equation* ByComplexScalar::recreate()
 {
 	ComplexScalarEquation* equation = dynamic_cast<ComplexScalarEquation*>(parent->getEquation());
 	return new PointEquation((*equation).point);
+}
+
+void ByComplexScalar::move(Vector2f delta)
+{
+	parent->operator+=(delta);
 }
 
 ByComplexScalar::~ByComplexScalar()
@@ -328,6 +340,10 @@ Equation* IntersectionOfTwoLines::recreate()
 		/ (firstEquation->A * (*secondEquation).B - firstEquation->B * (*secondEquation).A)
 	);
 	return new PointEquation(pointCoord);
+}
+
+void IntersectionOfTwoLines::move(Vector2f delta)
+{
 }
 
 IntersectionOfTwoLines::~IntersectionOfTwoLines()
@@ -461,7 +477,9 @@ Equation* ConstructionPoint::recreate()
 	return new Equation;
 }
 
-
+void ConstructionPoint::move(Vector2f delta)
+{
+}
 
 Equation* ConstructionData::recreate()
 {
@@ -503,15 +521,40 @@ ComplexScalar::ComplexScalar(Vector2f coord)
 	equation = new ComplexScalarEquation(coord);
 }
 
+ComplexScalar& ComplexScalar::operator+=(Vector2f delta)
+{
+	dynamic_cast<ComplexScalarEquation*>(equation)->operator+=(delta);
+	return *this;
+}
+
 ComplexScalarEquation::ComplexScalarEquation(Vector2f point)
 	:point(point)
 {
+}
+
+ComplexScalarEquation& ComplexScalarEquation::operator+=(Vector2f delta)
+{
+	point += delta;
+	return *this;
 }
 
 ByLineAndScalar::ByLineAndScalar(Object* object, Line* firstParent, Scalar* secondParent)
 	: firstParent(firstParent), secondParent(secondParent)
 {
 	ConstructionData::object = object;
+}
+
+void ByLineAndScalar::move(Vector2f delta)
+{
+	LineEquation* lineEquation = dynamic_cast<LineEquation*>(firstParent->getEquation());
+	Vector2f projectionOfDelta = Equation::Projection(*lineEquation, PointEquation(delta));
+	Vector2f projection = Equation::Projection(*lineEquation, PointEquation(Vector2f(0, 0)));
+	Vector2f deltaProjection = projectionOfDelta - projection;
+	double deltaValue = sqrt(deltaProjection.x * deltaProjection.x + deltaProjection.y * deltaProjection.y);
+	double phi = atan2(deltaProjection.y, deltaProjection.x);
+	int signPhi = (phi > 0) - (phi < 0);
+	deltaValue *= signPhi;
+	secondParent->operator+=(deltaValue);
 }
 
 ByLineAndScalar::~ByLineAndScalar()
@@ -547,9 +590,21 @@ Scalar::Scalar(double value)
 	equation = new ScalarEquation(value);
 }
 
+Scalar& Scalar::operator+=(double deltaValue)
+{
+	dynamic_cast<ScalarEquation*>(equation)->operator+=(deltaValue);
+	return *this;
+}
+
 ScalarEquation::ScalarEquation(double value)
 	: value(value)
 {
+}
+
+ScalarEquation& ScalarEquation::operator+=(double deltaValue)
+{
+	value += deltaValue;
+	return *this;
 }
 
 ByCircleAndScalar::ByCircleAndScalar(Object* object, UnitCircle* firstParent, Scalar* secondParent)
@@ -564,6 +619,7 @@ ByCircleAndScalar::~ByCircleAndScalar()
 	secondParent->eraseChild(object);
 	delete secondParent;
 }
+
 
 Equation* ByCircleAndScalar::recreate()
 {

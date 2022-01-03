@@ -40,7 +40,7 @@ Button moveButton = Button(Vector2f(10, 10), Vector2f(100, 100), &window,
 			delta.y *= Scale.y;
 			view.move(delta);
 			MousePosition = Vector2f(Mouse::getPosition(window));
-			std::this_thread::sleep_for(std::chrono::milliseconds(1));
+			wait.sleep();
 		}
 		Creation::Create();
 		return;
@@ -83,48 +83,27 @@ Button lineButton = Button(Vector2f(230, 10), Vector2f(100, 100), &window,
 			}
 			Vector2f mousePosition = (window).mapPixelToCoords(Mouse::getPosition(window), view);
 			Point* point = find.nearbyConstructedPoint(mousePosition);
-			if (point)
+			if (!point)
 			{
-				if (get<0>(points))
+				point = find.nearbyNewPoint(mousePosition);
+			}
+			if (get<0>(points))
+			{
+				if (point != get<0>(points))
 				{
-					if (point != get<0>(points))
-					{
-						points.second = point;
-						break;
-					}
-					else
-					{
-						i--;
-						continue;
-					}
+					points.second = point;
+					break;
 				}
 				else
 				{
-					points.first = point;
+					i--;
 					continue;
 				}
 			}
 			else
 			{
-				point = find.nearbyNewPoint(mousePosition);
-				if (get<0>(points))
-				{
-					if (point != get<0>(points))
-					{
-						points.second = point;
-						break;
-					}
-					else
-					{
-						i--;
-						continue;
-					}
-				}
-				else
-				{
-					points.first = point;
-					continue;
-				}
+				points.first = point;
+				continue;
 			}
 		}
 		ConstructionData::allVisibleObjects.push_back(new Line(points.first, points.second));
@@ -156,7 +135,7 @@ Button perpendicularButton = Button(Vector2f(340, 10), Vector2f(100, 100), &wind
 			}
 			mousePosition = (window).mapPixelToCoords(Mouse::getPosition(window), view);
 			line = find.nearbyLine(mousePosition);
-			std::this_thread::sleep_for(std::chrono::nanoseconds(1000));
+			wait.sleep();
 		}
 		Creation::Create();
 		ConstructionData::allVisibleObjects.push_back(new Line(point, line));
@@ -185,7 +164,6 @@ Button tangentButton = Button(Vector2f(450, 10), Vector2f(100, 100), &window,
 		}
 		if (point)
 		{
-			ConstructionData::allVisibleObjects.push_back(point);
 			ConstructionData::allVisibleObjects.push_back(new Line(unitCircle, point));
 		}
 		Creation::Create();
@@ -382,8 +360,7 @@ bool Waiter::mouseOnTheScreen()
 
 void Waiter::sleep()
 {
-	std::this_thread::sleep_for(std::chrono::nanoseconds(100));
-
+	std::this_thread::sleep_for(std::chrono::nanoseconds(sleepingTime));
 }
 
 bool Waiter::untilClick()
@@ -392,13 +369,13 @@ bool Waiter::untilClick()
 	{
 		if (!interruptionChecker.checkInterruption())
 			return true;
-		std::this_thread::sleep_for(std::chrono::nanoseconds(100));
+		sleep();
 	}
 	while (!Mouse::isButtonPressed(Mouse::Button::Left) || mainMenu.mouseOnMenu() || !mouseOnTheScreen())
 	{
 		if (!interruptionChecker.checkInterruption())
 			return true;
-		std::this_thread::sleep_for(std::chrono::nanoseconds(100));
+		sleep();
 	}
 	return false;
 }

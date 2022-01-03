@@ -43,18 +43,20 @@ struct ScalarEquation : public Equation
 {
 	double value;
 	ScalarEquation(double value);
+	ScalarEquation& operator+=(double deltaValue);
 };
 
 struct ComplexScalarEquation : public Equation
 {
 	Vector2f point;
 	ComplexScalarEquation(Vector2f point);
+	ComplexScalarEquation& operator+=(Vector2f delta);
 };
 
 //objects - geomtrical shapes on the screen
 class Object
 {
-public:
+private:
 	list<Object*> children;
 protected:
 	Equation* equation;
@@ -94,6 +96,7 @@ class ConstructionPoint : public ConstructionData
 {
 public:
 	virtual Equation* recreate();
+	virtual void move(Vector2f delta);
 };
 
 class ConstructionLine : public ConstructionData
@@ -109,6 +112,7 @@ class ByComplexScalar : public ConstructionPoint
 public:
 	ByComplexScalar(Object* object, ComplexScalar* ComplexScalar);
 	Equation* recreate() override;
+	void move(Vector2f delta) override;
 	~ByComplexScalar();
 };
 
@@ -119,6 +123,7 @@ class IntersectionOfTwoLines : public ConstructionPoint // intersect 2 lines
 public:
 	IntersectionOfTwoLines(Object* object, Line* firstParent, Line* secondParent);
 	Equation* recreate() override;
+	void move(Vector2f delta) override;
 	~IntersectionOfTwoLines() override;
 };
 
@@ -138,6 +143,7 @@ class ByLineAndScalar : public ConstructionPoint
 	Scalar* secondParent;
 public:
 	ByLineAndScalar(Object* object, Line* firstParent, Scalar* secondParent);
+	void move(Vector2f delta) override;
 	~ByLineAndScalar();
 	Equation* recreate() override;
 };
@@ -232,12 +238,14 @@ class Scalar : public Parametr
 {
 public:
 	Scalar(double value);
+	Scalar& operator+=(double deltaValue);
 };
 
 class ComplexScalar : public Parametr
 {
 public:
 	ComplexScalar(Vector2f coord);
+	ComplexScalar& operator += (Vector2f delta);
 };
 
 class Plane : public Parametr
@@ -291,6 +299,7 @@ private:
 public:
 	//static Vector2f intersectLines(Line::equationLine FirstEq, Line::equationLine SecondEq);
 	Vector2f getCoordinate();
+	void move(Vector2f delta);
 	Point(Vector2f mousePosition);
 	Point(Line* first, Line* second);
 	Point(Line* line, Vector2f mousePosition);
