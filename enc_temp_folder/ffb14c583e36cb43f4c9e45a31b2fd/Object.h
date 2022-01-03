@@ -23,6 +23,7 @@ class PointEquation;
 struct Equation
 {
 	virtual ~Equation();
+public:
 	static Vector2f Projection(LineEquation lineEquation, PointEquation pointEquation);
 };
 
