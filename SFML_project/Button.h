@@ -9,7 +9,7 @@ extern Vector2i maxTextureResolution;
 
 //Button is a clickable object on the screen.
 //It has it own mode and function.
-//Use getObjectCreationMethod() to get funtion. 
+//Use getObjectCreationMethod() to get funсtion. 
 class Button
 {
 private:
