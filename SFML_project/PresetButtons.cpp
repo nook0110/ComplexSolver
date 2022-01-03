@@ -45,7 +45,8 @@ Button moveButton = Button(Vector2f(10, 10), Vector2f(100, 100), &window,
 			delta.y *= Scale.y;
 			if (point)
 			{
-				point->move(delta);
+				point->moveTo((window).mapPixelToCoords(Vector2i(mousePosition), view));
+
 			}
 			else
 			{

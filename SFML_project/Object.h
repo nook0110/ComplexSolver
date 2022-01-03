@@ -99,6 +99,7 @@ class ConstructionPoint : public ConstructionData
 public:
 	virtual Equation* recreate();
 	virtual void move(Vector2f delta);
+	virtual void moveTo(Vector2f coords);
 };
 
 class ConstructionLine : public ConstructionData
@@ -115,6 +116,7 @@ public:
 	ByComplexScalar(Object* object, ComplexScalar* ComplexScalar);
 	Equation* recreate() override;
 	void move(Vector2f delta) override;
+	void moveTo(Vector2f coords) override;
 	~ByComplexScalar();
 };
 
@@ -126,6 +128,7 @@ public:
 	IntersectionOfTwoLines(Object* object, Line* firstParent, Line* secondParent);
 	Equation* recreate() override;
 	void move(Vector2f delta) override;
+	void moveTo(Vector2f coords) override;
 	~IntersectionOfTwoLines() override;
 };
 
@@ -146,6 +149,7 @@ class ByLineAndScalar : public ConstructionPoint
 public:
 	ByLineAndScalar(Object* object, Line* firstParent, Scalar* secondParent);
 	void move(Vector2f delta) override;
+	void moveTo(Vector2f coords) override;
 	~ByLineAndScalar();
 	Equation* recreate() override;
 };
@@ -157,6 +161,7 @@ class ByCircleAndScalar : public ConstructionPoint
 public:
 	ByCircleAndScalar(Object* object, UnitCircle* firstParent, Scalar* secondParent);
 	void move(Vector2f delta) override;
+	void moveTo(Vector2f coords) override;
 	~ByCircleAndScalar();
 	Equation* recreate() override;
 };
@@ -305,6 +310,7 @@ public:
 	//static Vector2f intersectLines(Line::equationLine FirstEq, Line::equationLine SecondEq);
 	Vector2f getCoordinate();
 	void move(Vector2f delta);
+	void moveTo(Vector2f coords);
 	Point(Vector2f mousePosition);
 	Point(Line* first, Line* second);
 	Point(Line* line, Vector2f mousePosition);

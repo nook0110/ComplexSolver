@@ -252,6 +252,14 @@ void Point::reposition()
 	shape.setPosition(position);
 }
 
+void Point::moveTo(Vector2f coords)
+{
+	dynamic_cast<ConstructionPoint*>(construction)->moveTo(coords);
+	delete equation;
+	equation = construction->recreate();
+	reposeChildren();
+}
+
 void Point::Init()
 {
 	shape.setOrigin(pointSize, pointSize);
@@ -346,6 +354,11 @@ void ByComplexScalar::move(Vector2f delta)
 	parent->operator+=(delta);
 }
 
+void ByComplexScalar::moveTo(Vector2f coords)
+{
+	parent->operator=(ComplexScalar(coords));
+}
+
 ByComplexScalar::~ByComplexScalar()
 {
 	parent->eraseChild(object);
@@ -372,6 +385,10 @@ Equation* IntersectionOfTwoLines::recreate()
 }
 
 void IntersectionOfTwoLines::move(Vector2f delta)
+{
+}
+
+void IntersectionOfTwoLines::moveTo(Vector2f coords)
 {
 }
 
@@ -510,6 +527,10 @@ void ConstructionPoint::move(Vector2f delta)
 {
 }
 
+void ConstructionPoint::moveTo(Vector2f coords)
+{
+}
+
 
 
 Equation* ConstructionData::recreate()
@@ -588,6 +609,18 @@ void ByLineAndScalar::move(Vector2f delta)
 	secondParent->operator+=(deltaValue);
 }
 
+void ByLineAndScalar::moveTo(Vector2f coord)
+{
+	LineEquation* lineEquation = dynamic_cast<LineEquation*>(firstParent->getEquation());
+	Vector2f firstProj = Equation::Projection(*lineEquation, PointEquation(coord));
+	Vector2f secondProj = Equation::Projection(*lineEquation, PointEquation(Vector2f(0, 0)));
+	Vector2f delta = firstProj - secondProj;
+	double distance = sqrt(delta.x * delta.x + delta.y * delta.y);
+	double phi = atan2(delta.y, delta.x);
+	int sign = (phi > 0) - (phi < 0);
+	secondParent->operator=(distance * sign);
+}
+
 ByLineAndScalar::~ByLineAndScalar()
 {
 	firstParent->eraseChild(object);
@@ -605,15 +638,16 @@ Equation* ByLineAndScalar::recreate()
 	Vector2f direction = Vector2f(-B, A);
 	direction /= (float)sqrt(A * A + B * B);
 	direction *= (float)(*scalarEquation).value;
-	double phi = atan2(direction.y, direction.x);
+	Vector2f projection = Equation::Projection(*lineEquation, PointEquation(Vector2f(0, 0)));
+	Vector2f position = projection + direction;
+	double phi = atan2(position.y, position.x);
 	int signPhi = (phi > 0) - (phi < 0);
 	int signScalar = ((*scalarEquation).value > 0) - ((*scalarEquation).value < 0);
 	if (signPhi != signScalar)
 	{
 		direction *= -1.f;
 	}
-	Vector2f projection = Equation::Projection(*lineEquation, PointEquation(Vector2f(0, 0)));
-	return new PointEquation(projection + direction);
+	return new PointEquation(position);
 }
 
 Scalar::Scalar(double value)
@@ -662,6 +696,11 @@ void ByCircleAndScalar::move(Vector2f delta)
 	secondParent->operator+=(deltaAngle);
 }
 
+void ByCircleAndScalar::moveTo(Vector2f coord)
+{
+	double angle = atan2(coord.y, coord.x);
+	secondParent->operator=(angle);
+}
 
 Equation* ByCircleAndScalar::recreate()
 {
