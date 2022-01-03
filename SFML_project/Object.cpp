@@ -291,9 +291,9 @@ Point::Point(Line* line, Vector2f mousePosition)
 	Vector2f secondProj = Equation::Projection(*lineEquation, PointEquation(Vector2f(0, 0)));
 	Vector2f delta = firstProj - secondProj;
 	double distance = sqrt(delta.x * delta.x + delta.y * delta.y);
-	double phi = atan2(delta.y, delta.x);
-	int sign = (phi > 0) - (phi < 0);
-	Scalar* scalar = new Scalar(distance * sign);
+	double crossProduct = secondProj.x* delta.y - secondProj.y * delta.x;
+	int sign = (crossProduct > 0) - (crossProduct < 0);
+	Scalar * scalar = new Scalar(distance * sign);
 	construction = new ByLineAndScalar(this, line, scalar);
 	line->addChild(this);
 	scalar->addChild(this);
@@ -640,10 +640,10 @@ Equation* ByLineAndScalar::recreate()
 	direction *= (float)(*scalarEquation).value;
 	Vector2f projection = Equation::Projection(*lineEquation, PointEquation(Vector2f(0, 0)));
 	Vector2f position = projection + direction;
-	double phi = atan2(position.y, position.x);
-	int signPhi = (phi > 0) - (phi < 0);
+	double crossProduct = projection.x * direction.y - projection.y * direction.x;
+	int sign = (crossProduct > 0) - (crossProduct < 0);
 	int signScalar = ((*scalarEquation).value > 0) - ((*scalarEquation).value < 0);
-	if (signPhi != signScalar)
+	if (sign != signScalar)
 	{
 		direction *= -1.f;
 	}
