@@ -20,15 +20,15 @@ extern Button lineButton;
 extern Button perpendicularButton;
 extern Button tangentButton;
 extern Button deleteButton;
-
+extern Button midPointButton;
+extern Button clearButton;
 
 Vector2f CamCenter = Vector2f(0, 0);
 Plane* plane = Plane::getInstance();
-UnitCircle* unitCircle = UnitCircle::getInstance();
 
 int main()
 {
-	
+	CenterPoint::getInstance();
 
 
 	view.setViewport(sf::FloatRect(0.f, 0.2f, 1.0f, 1.0f));
@@ -42,6 +42,9 @@ int main()
 	mainMenu.pushButton(perpendicularButton);
 	mainMenu.pushButton(tangentButton);
 	mainMenu.pushButton(deleteButton);
+	mainMenu.pushButton(midPointButton);
+	mainMenu.pushButton(clearButton);
+
 	view.move(-500, -500);
 	while (window.isOpen())
 	{
@@ -59,12 +62,26 @@ int main()
 				view = sf::View(visibleArea);
 				view.setViewport(mainWindowRect);
 			}
-			WrapMouse::checkPress(Mouse::Button::Left);
-			WrapMouse::checkPress(Mouse::Button::Right);
 			if (event.type == Event::Closed)
 			{
 				window.close();
 			}
+			if (event.type == Event::MouseWheelScrolled)
+			{
+				if (event.mouseWheelScroll.delta == 1)
+				{
+					view.zoom(1.2);
+				}
+				else
+				{
+					view.zoom(1 / 1.2);
+				}
+			}
+
+
+			WrapMouse::checkPress(Mouse::Button::Left);
+			WrapMouse::checkPress(Mouse::Button::Right);
+
 			window.setView(view);
 			Button* X = mainMenu.leftClickCheck();
 			if (X != nullptr)
@@ -86,10 +103,14 @@ int main()
 		}
 		Cr();
 		window.clear(Color::White);
-		unitCircle->draw();
-		for (auto X : ConstructionData::allVisibleObjects)
+		UnitCircle::getInstance()->draw();
+		CenterPoint::getInstance()->draw();
+		if (Cr.getCurrentMode() != MODE_CLEAR)
 		{
-			X->draw();
+			for (auto X : ConstructionData::allVisibleObjects)
+			{
+				X->draw();
+			}
 		}
 		window.setView(view);
 		mainMenu.draw();

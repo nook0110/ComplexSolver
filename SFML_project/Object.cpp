@@ -33,7 +33,9 @@ void Object::deleteChildren()
 {
 	while (!children.empty())
 	{
-		delete (*children.begin());
+		auto child = *children.begin();
+		delete (child);
+		child = nullptr;
 	}
 }
 
@@ -65,6 +67,7 @@ VisibleObject::~VisibleObject()
 {
 	erase();
 	delete construction;
+	construction = nullptr;
 }
 
 bool VisibleObject::isOnCircle()
@@ -247,12 +250,25 @@ Vector2f Point::getCoordinate()
 	return shape.getPosition();
 }
 
+Point::Point(Point* first, Point* second, Scalar* scalar)
+{
+	construction = new ByTwoPointsAndScalar(this, first, second, scalar);
+	first->addChild(this);
+	second->addChild(this);
+	scalar->addChild(this);
+	Init();
+}
+
 void Point::reposition()
 {
 	construction->recreate(equation);
 	PointEquation* pointEquation = dynamic_cast<PointEquation*>(equation);
 	Vector2f position = (*pointEquation).point;
 	shape.setPosition(position);
+}
+
+Point::Point()
+{
 }
 
 void Point::moveTo(Vector2f coords)
@@ -349,8 +365,7 @@ ByComplexScalar::ByComplexScalar(Object* object, ComplexScalar* ComplexScalar)
 void ByComplexScalar::recreate(Equation* equation)
 {
 	ComplexScalarEquation* complexScalarequation = dynamic_cast<ComplexScalarEquation*>(parent->getEquation());
-	*dynamic_cast<PointEquation*>(equation) = (PointEquation((*complexScalarequation).point));
-	return;
+	*dynamic_cast<PointEquation*>(equation) = PointEquation((*complexScalarequation).point);
 }
 
 void ByComplexScalar::move(Vector2f delta)
@@ -367,6 +382,7 @@ ByComplexScalar::~ByComplexScalar()
 {
 	parent->eraseChild(object);
 	delete parent;
+	parent = nullptr;
 }
 
 IntersectionOfTwoLines::IntersectionOfTwoLines(Object* object, Line* first, Line* second)
@@ -409,17 +425,26 @@ ByTwoPointsAndScalar::ByTwoPointsAndScalar(Object* object, Point* firstParent, P
 	ConstructionData::object = object;
 }
 
+ByTwoPointsAndScalar::~ByTwoPointsAndScalar()
+{
+	firstParent->eraseChild(object);
+	secondParent->eraseChild(object);
+	thirdParent->eraseChild(object);
+	delete thirdParent;
+	thirdParent = nullptr;
+}
+
 
 void ByTwoPointsAndScalar::recreate(Equation* equation)
 {
 	PointEquation* firstEquation = dynamic_cast<PointEquation*>(firstParent->getEquation());
 	PointEquation* secondEquation = dynamic_cast<PointEquation*>(secondParent->getEquation());
-	ScalarEquation* thirdEquation = dynamic_cast<ScalarEquation*>(firstParent->getEquation());
+	ScalarEquation* thirdEquation = dynamic_cast<ScalarEquation*>(thirdParent->getEquation());
 	Vector2f firstCoord = firstEquation->point;
 	Vector2f secondCoord = (*secondEquation).point;
 	float ratio = (*thirdEquation).value;
 	Vector2f pointCoord = (secondCoord * ratio + firstCoord * 1.f) / (ratio + 1.f);
-	*dynamic_cast<PointEquation*>(equation) = (PointEquation(pointCoord));
+	*dynamic_cast<PointEquation*>(equation) = PointEquation(pointCoord);
 }
 
 void Pole::recreate(Equation* equation)
@@ -446,7 +471,7 @@ void ByTwoPoints::recreate(Equation* equation)
 	double A = -firstCoord.y + secondCoord.y;
 	double B = -(-firstCoord.x + secondCoord.x);
 	double C = firstCoord.x * (firstCoord.y - secondCoord.y) - firstCoord.y * (firstCoord.x - secondCoord.x);
-	*dynamic_cast<LineEquation*>(equation) = (LineEquation(A, B, C));
+	*dynamic_cast<LineEquation*>(equation) = LineEquation(A, B, C);
 }
 
 ByTwoPoints::~ByTwoPoints()
@@ -480,7 +505,7 @@ void Perpendicular::recreate(Equation* equation)
 	double A = -(*secondEquation).B;
 	double B = (*secondEquation).A;
 	double C = (*secondEquation).B * coord.x - (*secondEquation).A * coord.y;
-	*dynamic_cast<LineEquation*>(equation) = (LineEquation(A, B, C));
+	*dynamic_cast<LineEquation*>(equation) = LineEquation(A, B, C);
 }
 
 void Polar::recreate(Equation* equation)
@@ -514,7 +539,7 @@ void Tangent::recreate(Equation* equation)
 	double A = coord.x;
 	double B = coord.y;
 	double C = -(coord.x * coord.x + coord.y * coord.y);
-	*dynamic_cast<LineEquation*>(equation) = (LineEquation(A, B, C));
+	*dynamic_cast<LineEquation*>(equation) = LineEquation(A, B, C);
 }
 
 
@@ -624,8 +649,8 @@ void ByLineAndScalar::moveTo(Vector2f coord)
 	Vector2f secondProj = Equation::Projection(*lineEquation, PointEquation(Vector2f(0, 0)));
 	Vector2f delta = firstProj - secondProj;
 	double distance = sqrt(delta.x * delta.x + delta.y * delta.y);
-	double phi = atan2(delta.y, delta.x);
-	int sign = (phi > 0) - (phi < 0);
+	double crossProduct = secondProj.x * delta.y - secondProj.y * delta.x;
+	int sign = (crossProduct > 0) - (crossProduct < 0);
 	*secondParent = (distance * sign);
 }
 
@@ -634,6 +659,7 @@ ByLineAndScalar::~ByLineAndScalar()
 	firstParent->eraseChild(object);
 	secondParent->eraseChild(object);
 	delete secondParent;
+	secondParent = nullptr;
 }
 
 void ByLineAndScalar::recreate(Equation* equation)
@@ -691,6 +717,7 @@ ByCircleAndScalar::~ByCircleAndScalar()
 	firstParent->eraseChild(object);
 	secondParent->eraseChild(object);
 	delete secondParent;
+	secondParent = nullptr;
 }
 
 void ByCircleAndScalar::move(Vector2f delta)
@@ -713,5 +740,43 @@ void ByCircleAndScalar::recreate(Equation* equation)
 {
 	ScalarEquation* scalarEquation = dynamic_cast<ScalarEquation*>(secondParent->getEquation());
 	double angle = (*scalarEquation).value;
-	*dynamic_cast<PointEquation*>(equation) = (PointEquation(Vector2f(cos(angle) * unitSeg, sin(angle) * unitSeg)));
+	*dynamic_cast<PointEquation*>(equation) = PointEquation(Vector2f(cos(angle) * unitSeg, sin(angle) * unitSeg));
+}
+
+CenterPoint::CenterPoint() : Point()
+{
+	auto parent = new ComplexScalar(Vector2f(0,0));
+	construction = new ByComplexScalar(this, parent);
+	parent->addChild(this);
+	equation = new PointEquation(Vector2f(0, 0));
+	shape.setOrigin(pointSize, pointSize);
+	shape.setFillColor(Color::Black);
+	ConstructionData::allVisibleObjects.push_front(this);
+}
+
+void CenterPoint::reposition()
+{
+	shape.setPosition(Vector2f(0, 0));
+}
+
+CenterPoint* CenterPoint::centerPoint;
+CenterPoint* CenterPoint::getInstance()
+{
+	if (centerPoint == nullptr) {
+		centerPoint = new CenterPoint();
+	}
+	return centerPoint;
+}
+
+CenterPoint::~CenterPoint()
+{
+	centerPoint = new CenterPoint();
+}
+
+void CenterPoint::move(Vector2f delta)
+{
+}
+
+void CenterPoint::moveTo(Vector2f coords)
+{
 }

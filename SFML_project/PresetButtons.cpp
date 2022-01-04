@@ -155,10 +155,47 @@ Button perpendicularButton = Button(Vector2f(340, 10), Vector2f(100, 100), &wind
 		return;
 
 	});
-Button midPointButton = Button(Vector2f(450, 10), Vector2f(100, 100), &window,
+Button midPointButton = Button(Vector2f(670, 10), Vector2f(100, 100), &window,
 	"C:\\Textures\\SFML_project\\Test.jpg", Vector2i(0, 0), maxTextureResolution,
-	MODE_NOTHING, []() {
-		return nullptr;
+	MODE_MIDPOINT, []() {
+		Waiter wait;
+		Finder find;
+		const int twotimes = 2;
+		pair<Point*, Point*> points(nullptr, nullptr);
+		for (int i = 0; i < twotimes; ++i)
+		{
+			if (wait.untilClick())
+			{
+				return;
+			}
+			Vector2f mousePosition = (window).mapPixelToCoords(Mouse::getPosition(window), view);
+			Point* point = find.nearbyConstructedPoint(mousePosition);
+			if (!point)
+			{
+				point = find.nearbyNewPoint(mousePosition);
+			}
+			if (get<0>(points))
+			{
+				if (point != get<0>(points))
+				{
+					points.second = point;
+					break;
+				}
+				else
+				{
+					i--;
+					continue;
+				}
+			}
+			else
+			{
+				points.first = point;
+				continue;
+			}
+		}
+		new Point(points.first, points.second, new Scalar(1));
+		Creation::Create();
+		return;
 	});
 Button tangentButton = Button(Vector2f(450, 10), Vector2f(100, 100), &window,
 	"C:\\Textures\\SFML_project\\TangentButton.jpg", Vector2i(0, 0), maxTextureResolution,
@@ -177,6 +214,7 @@ Button tangentButton = Button(Vector2f(450, 10), Vector2f(100, 100), &window,
 		}
 		if (point)
 		{
+			auto unitCircle = UnitCircle::getInstance();
 			ConstructionData::allVisibleObjects.push_back(new Line(unitCircle, point));
 		}
 		Creation::Create();
@@ -197,6 +235,20 @@ Button deleteButton = Button(Vector2f(560, 10), Vector2f(100, 100), &window,
 		if (object)
 		{
 			delete object;
+			object = nullptr;
+		}
+		Creation::Create();
+		return;
+	});
+Button clearButton = Button(Vector2f(890, 10), Vector2f(100, 100), &window,
+	"C:\\Textures\\SFML_project\\DeleteButton.jpg", Vector2i(0, 0), maxTextureResolution,
+	MODE_CLEAR, []() {
+
+		while (ConstructionData::allVisibleObjects.size() > 1)
+		{
+			auto object = *prev(ConstructionData::allVisibleObjects.end());
+			delete object;
+			object = nullptr;
 		}
 		Creation::Create();
 		return;
@@ -275,6 +327,7 @@ Point* Finder::nearbyNewPoint(Vector2f mousePosition)
 
 Point* Finder::nearbyNewPointOnCircle(Vector2f mousePosition)
 {
+	auto unitCircle = UnitCircle::getInstance();
 	if (unitCircle->isNearby(mousePosition))
 	{
 		return new Point(unitCircle, mousePosition);

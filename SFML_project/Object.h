@@ -138,6 +138,7 @@ class ByTwoPointsAndScalar : public ConstructionPoint
 	Scalar* thirdParent;
 public:
 	ByTwoPointsAndScalar(Object* object, Point* firstParent, Point* secondParent, Scalar* thirdParent);
+	~ByTwoPointsAndScalar();
 	void recreate(Equation* equation) override;
 };
 
@@ -299,7 +300,8 @@ public:
 
 class Point : public VisibleObject
 {
-private:
+protected:
+	Point();
 	const double pointSize = 5;
 	CircleShape shape = CircleShape(pointSize);
 	double distance(Vector2f Point);
@@ -308,14 +310,28 @@ private:
 public:
 	//static Vector2f intersectLines(Line::equationLine FirstEq, Line::equationLine SecondEq);
 	Vector2f getCoordinate();
-	void move(Vector2f delta);
-	void moveTo(Vector2f coords);
+	virtual void move(Vector2f delta);
+	virtual void moveTo(Vector2f coords);
 	Point(Vector2f mousePosition);
 	Point(Line* first, Line* second);
 	Point(Line* line, Vector2f mousePosition);
 	Point(Line* line, Point* point);
 	Point(UnitCircle* unitCircle, Vector2f mousePosition);
+	Point(Point* first, Point* second, Scalar* scalar);
 	bool isNearby(Vector2f mousePosition) override;
 	void draw() override;
 	void drawDescription() override;
+};
+
+
+class CenterPoint : public Point
+{
+	void reposition() override;
+	CenterPoint();
+	static CenterPoint* centerPoint;
+public:
+	void move(Vector2f delta) override;
+	void moveTo(Vector2f coords) override;
+	static CenterPoint* getInstance();
+	~CenterPoint();
 };

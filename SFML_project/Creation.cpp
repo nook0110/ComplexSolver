@@ -1,5 +1,10 @@
 #include "Creation.h"
 
+MODES Checker::getLast()
+{
+	return last;
+}
+
 bool Checker::checkMode()
 {
 	if (last != Mousemode)
@@ -31,6 +36,11 @@ void Creation::operator()()
 			running.detach();
 		}
 	}
+}
+
+MODES Creation::getCurrentMode()
+{
+	return checker.getLast();
 }
 
 void Creation::Create()

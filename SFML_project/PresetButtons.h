@@ -7,7 +7,6 @@
 extern Menu mainMenu;
 extern FloatRect mainWindowRect;
 class UnitCircle;
-extern UnitCircle* unitCircle;
 class InterruptionChecker
 {
 private:
@@ -21,7 +20,7 @@ public:
 class Waiter
 {
 private:
-	const int sleepingTime = 100;
+	const int sleepingTime = 10;
 	InterruptionChecker interruptionChecker;
 	bool mouseOnTheScreen();
 public:

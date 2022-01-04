@@ -13,6 +13,7 @@ class Checker
 private:
 	MODES last;
 public:
+	MODES getLast();
 	bool checkMode();
 };
 
@@ -34,14 +35,6 @@ private:
 	static bool created;
 public:
 	void operator()();
-	/*static bool checkMode()
-	{
-		if (last != Mousemode)
-		{
-			created = true;
-			last = Mousemode;
-		}
-		return last == Mousemode;
-	}*/
+	MODES getCurrentMode();
 	static void Create();
 };
