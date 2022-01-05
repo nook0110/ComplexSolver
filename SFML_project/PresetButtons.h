@@ -20,7 +20,7 @@ public:
 class Waiter
 {
 private:
-	const int sleepingTime = 10;
+	const int sleepingTime = 100;
 	InterruptionChecker interruptionChecker;
 	bool mouseOnTheScreen();
 public:
@@ -31,7 +31,8 @@ public:
 class Finder
 {
 public:
-	Object* nearbyObject(Vector2f mousePosition);
+	VisibleObject* nearbyVisibleObject(Vector2f mousePosition);
+	VisibleObject* nearbyObject(Vector2f mousePosition);
 	Point* nearbyConstructedPoint(Vector2f mousePosition);
 	Point* nearbyConstructedPointOnCircle(Vector2f mousePosition);
 	Point* nearbyNewPoint(Vector2f mousePosition);

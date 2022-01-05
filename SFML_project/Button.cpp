@@ -22,7 +22,7 @@ void Button::setTexture(string _textureLocation, Vector2i _textureStart, Vector2
 
 Button::Button(Vector2f _position, Vector2f _size, RenderWindow* _window,
 	string _textureLocation, Vector2i _textureStart, Vector2i _textureSize,
-	MODES _mode, function<void(void)> _modeFunction)
+	MODES _mode, function<void(std::stop_token)> _modeFunction)
 	:position(_position),
 	size(_size),
 	window(_window),
@@ -36,7 +36,7 @@ Button::Button(Vector2f _position, Vector2f _size, RenderWindow* _window,
 
 Button::Button(Vector2f _position, Vector2f _size, RenderWindow* _window,
 	string _textureLocation, string _texturePressedLocation,
-	MODES _mode, function<void(void)> _modeFunction)
+	MODES _mode, function<void(std::stop_token)> _modeFunction)
 	:position(_position),
 	size(_size),
 	window(_window),
@@ -51,7 +51,7 @@ Button::Button(Vector2f _position, Vector2f _size, RenderWindow* _window,
 Button::Button(Vector2f _position, Vector2f _size, RenderWindow* _window,
 	string _textureLocation, Vector2i _textureStart, Vector2i _textureSize,
 	string _texturePressedLocation, Vector2i _texturePressedStart, Vector2i _texturePressedSize,
-	MODES _mode, function<void(void)> _modeFunction)
+	MODES _mode, function<void(std::stop_token)> _modeFunction)
 	:position(_position),
 	size(_size),
 	window(_window),
@@ -159,7 +159,7 @@ bool Button::getPressed()
 	return pressed;
 }
 
-function<void(void)> Button::getObjectCreationMethod()
+function<void(std::stop_token)> Button::getObjectCreationMethod()
 {
 	return modeFunction;
 }

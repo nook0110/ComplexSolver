@@ -19,22 +19,36 @@ public:
 
 //Changes the thread with thread that creates another object
 //Use operator () to run thread or check if thread is needed to be changed
+
 class Creation
 {
-private:
+	Creation();
+	static Creation* creator;
 	//static MODES last;
-	Checker checker;
+	static Checker checker;
 public:
-	function<void (void)> CurrentMethod = [](){
+	function<void(std::stop_token)> CurrentMethod = [](std::stop_token) {
 		std::this_thread::sleep_for(std::chrono::nanoseconds(1000));
 		Create();
 		return;
 	};
 private:
-	thread running;
+	jthread running;
 	static bool created;
 public:
+	static Creation* getInstance();
 	void operator()();
-	MODES getCurrentMode();
+	static MODES getCurrentMode();
 	static void Create();
+};
+
+class VisibleObject;
+class Parametr;
+class Drawer
+{
+public:
+	Drawer() = delete;
+	static list<VisibleObject*> allVisibleObjects;
+	static list<Parametr*> allParametrs;
+	static void draw();
 };

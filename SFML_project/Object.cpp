@@ -58,9 +58,29 @@ void VisibleObject::reposition()
 {
 }
 
+Color VisibleObject::getColor()
+{
+	return visible ? visibleColor : unvisibleColor;
+}
+
+void VisibleObject::changeVisibility(bool visibility)
+{
+	visible = visibility;
+}
+
+void VisibleObject::changeVisibility()
+{
+	visible = !visible;
+}
+
+bool VisibleObject::getVisibility()
+{
+	return visible;
+}
+
 void VisibleObject::erase()
 {
-	ConstructionData::allVisibleObjects.remove(this);
+	Drawer::allVisibleObjects.remove(this);
 }
 
 VisibleObject::~VisibleObject()
@@ -92,12 +112,12 @@ Plane* Plane::getInstance()
 UnitCircle* UnitCircle::unitCircle = nullptr;
 UnitCircle::UnitCircle()
 {
-	Shape.setPointCount(100);
-	Shape.setPosition(Vector2f(0, 0));
-	Shape.setOrigin(unitSeg - outlineThickness / 2, unitSeg - outlineThickness / 2);
-	Shape.setOutlineThickness(outlineThickness);
-	Shape.setRadius(unitSeg - outlineThickness / 2);
-	Shape.setOutlineColor(Color::Black);
+	shape.setPointCount(100);
+	shape.setPosition(Vector2f(0, 0));
+	shape.setOrigin(unitSeg - outlineThickness / 2, unitSeg - outlineThickness / 2);
+	shape.setOutlineThickness(outlineThickness);
+	shape.setRadius(unitSeg - outlineThickness / 2);
+	shape.setOutlineColor(getColor());
 }
 
 UnitCircle* UnitCircle::getInstance()
@@ -110,8 +130,8 @@ UnitCircle* UnitCircle::getInstance()
 
 double UnitCircle::getDistance(Vector2f point)
 {
-	Vector2f center = Shape.getPosition();
-	double radius = Shape.getRadius();
+	Vector2f center = shape.getPosition();
+	double radius = shape.getRadius();
 	double distanceToCenter = sqrt(
 		pow(point.x - 0, 2) +
 		pow(point.y - 0, 2));
@@ -125,7 +145,8 @@ bool UnitCircle::isNearby(Vector2f mousePosition)
 
 void UnitCircle::draw()
 {
-	window.draw(Shape);
+	shape.setOutlineColor(getColor());
+	window.draw(shape);
 }
 
 double Line::distance(Vector2f point)
@@ -145,61 +166,45 @@ bool Line::isNearby(Vector2f mousePosition)
 void Line::draw()
 {
 	LineEquation lineEq = *(dynamic_cast<LineEquation*>(getEquation()));
+	double x1, x2, y1, y2;
 	if (lineEq.A == 0)
 	{
-		double x1 = view.getCenter().x - (view.getSize().x / 2);
-		double x2 = view.getCenter().x + (view.getSize().x / 2);
-		double y1 = -(x1 * lineEq.A + lineEq.C) / lineEq.B;
-		double y2 = -(x2 * lineEq.A + lineEq.C) / lineEq.B;
-		sf::Vertex line[] =
-		{
-			sf::Vertex(sf::Vector2f(x1, y1), Color::Black),
-			sf::Vertex(sf::Vector2f(x2, y2), Color::Black)
-		};
-		window.draw(line, 2, sf::Lines);
+		x1 = view.getCenter().x - (view.getSize().x / 2);
+		x2 = view.getCenter().x + (view.getSize().x / 2);
+		y1 = -(x1 * lineEq.A + lineEq.C) / lineEq.B;
+		y2 = -(x2 * lineEq.A + lineEq.C) / lineEq.B;
+
 	}
 	else if (lineEq.B == 0)
 	{
-		double y1 = view.getCenter().y - (view.getSize().y / 2);
-		double y2 = view.getCenter().y + (view.getSize().y / 2);
-		double x1 = -(y1 * lineEq.B + lineEq.C) / lineEq.A;
-		double x2 = -(y2 * lineEq.B + lineEq.C) / lineEq.A;
-		sf::Vertex line[] =
-		{
-			sf::Vertex(sf::Vector2f(x1, y1), Color::Black),
-			sf::Vertex(sf::Vector2f(x2, y2), Color::Black)
-		};
-		window.draw(line, 2, sf::Lines);
+		y1 = view.getCenter().y - (view.getSize().y / 2);
+		y2 = view.getCenter().y + (view.getSize().y / 2);
+		x1 = -(y1 * lineEq.B + lineEq.C) / lineEq.A;
+		x2 = -(y2 * lineEq.B + lineEq.C) / lineEq.A;
 	}
 	else
 	{
 		if (abs(lineEq.A / lineEq.B) > view.getSize().y / view.getSize().x)
 		{
-			double y1 = view.getCenter().y - (view.getSize().y / 2);
-			double y2 = view.getCenter().y + (view.getSize().y / 2);
-			double x1 = -(y1 * lineEq.B + lineEq.C) / lineEq.A;
-			double x2 = -(y2 * lineEq.B + lineEq.C) / lineEq.A;
-			sf::Vertex line[] =
-			{
-				sf::Vertex(sf::Vector2f(x1, y1), Color::Black),
-				sf::Vertex(sf::Vector2f(x2, y2), Color::Black)
-			};
-			window.draw(line, 2, sf::Lines);
+			y1 = view.getCenter().y - (view.getSize().y / 2);
+			y2 = view.getCenter().y + (view.getSize().y / 2);
+			x1 = -(y1 * lineEq.B + lineEq.C) / lineEq.A;
+			x2 = -(y2 * lineEq.B + lineEq.C) / lineEq.A;
 		}
 		else
 		{
-			double x1 = view.getCenter().x - (view.getSize().x / 2);
-			double x2 = view.getCenter().x + (view.getSize().x / 2);
-			double y1 = -(x1 * lineEq.A + lineEq.C) / lineEq.B;
-			double y2 = -(x2 * lineEq.A + lineEq.C) / lineEq.B;
-			sf::Vertex line[] =
-			{
-				sf::Vertex(sf::Vector2f(x1, y1), Color::Black),
-				sf::Vertex(sf::Vector2f(x2, y2), Color::Black)
-			};
-			window.draw(line, 2, sf::Lines);
+			x1 = view.getCenter().x - (view.getSize().x / 2);
+			x2 = view.getCenter().x + (view.getSize().x / 2);
+			y1 = -(x1 * lineEq.A + lineEq.C) / lineEq.B;
+			y2 = -(x2 * lineEq.A + lineEq.C) / lineEq.B;
 		}
 	}
+	sf::Vertex line[] =
+	{
+		sf::Vertex(sf::Vector2f(x1, y1), getColor()),
+		sf::Vertex(sf::Vector2f(x2, y2), getColor())
+	};
+	window.draw(line, 2, sf::Lines);
 }
 
 void Line::drawDescription()
@@ -284,7 +289,7 @@ void Point::Init()
 	shape.setOrigin(pointSize, pointSize);
 	shape.setFillColor(Color::Black);
 	reposition();
-	ConstructionData::allVisibleObjects.push_back(this);
+	Drawer::allVisibleObjects.push_back(this);
 }
 
 Point::Point(Vector2f mousePosition)
@@ -307,10 +312,11 @@ Point::Point(Line* line, Vector2f mousePosition)
 {
 	LineEquation* lineEquation = dynamic_cast<LineEquation*>(line->getEquation());
 	Vector2f firstProj = Equation::Projection(*lineEquation, PointEquation(mousePosition));
-	Vector2f secondProj = Equation::Projection(*lineEquation, PointEquation(Vector2f(0, 0)));
+	Vector2f secondProj = Equation::Projection(*lineEquation);
+	Vector2f altitude = secondProj - projPoint;
 	Vector2f delta = firstProj - secondProj;
 	double distance = sqrt(delta.x * delta.x + delta.y * delta.y);
-	double crossProduct = secondProj.x * delta.y - secondProj.y * delta.x;
+	double crossProduct = altitude.x * delta.y - altitude.y * delta.x;
 	int sign = (crossProduct > 0) - (crossProduct < 0);
 	Scalar* scalar = new Scalar(distance * sign);
 	construction = new ByLineAndScalar(this, line, scalar);
@@ -341,6 +347,7 @@ bool Point::isNearby(Vector2f mousePosition)
 
 void Point::draw()
 {
+	shape.setFillColor(getColor());
 	window.draw(shape);
 }
 
@@ -589,6 +596,10 @@ Equation::~Equation()
 {
 }
 
+Equation::Equation()
+{
+}
+
 Vector2f Equation::Projection(LineEquation lineEquation, PointEquation pointEquation)
 {
 	double A = lineEquation.A;
@@ -596,9 +607,23 @@ Vector2f Equation::Projection(LineEquation lineEquation, PointEquation pointEqua
 	double C = lineEquation.C;
 	double x = pointEquation.point.x;
 	double y = pointEquation.point.y;
-	return Vector2f(
+	Vector2f point(
 		(B * B * x - A * (B * y + C)) / (A * A + B * B),
 		(A * A * y - B * (A * x + C)) / (A * A + B * B));
+	return point;
+}
+
+Vector2f Equation::Projection(LineEquation lineEquation)
+{
+	double A = lineEquation.A;
+	double B = lineEquation.B;
+	double C = lineEquation.C;
+	double x = projPoint.x;
+	double y = projPoint.y;
+	Vector2f point(
+		(B * B * x - A * (B * y + C)) / (A * A + B * B),
+		(A * A * y - B * (A * x + C)) / (A * A + B * B));
+	return point;
 }
 
 ComplexScalar::ComplexScalar(Vector2f coord)
@@ -633,7 +658,7 @@ void ByLineAndScalar::move(Vector2f delta)
 {
 	LineEquation* lineEquation = dynamic_cast<LineEquation*>(firstParent->getEquation());
 	Vector2f projectionOfDelta = Equation::Projection(*lineEquation, PointEquation(delta));
-	Vector2f projection = Equation::Projection(*lineEquation, PointEquation(Vector2f(0, 0)));
+	Vector2f projection = Equation::Projection(*lineEquation);
 	Vector2f deltaProjection = projectionOfDelta - projection;
 	double deltaValue = sqrt(deltaProjection.x * deltaProjection.x + deltaProjection.y * deltaProjection.y);
 	double phi = atan2(deltaProjection.y, deltaProjection.x);
@@ -646,10 +671,11 @@ void ByLineAndScalar::moveTo(Vector2f coord)
 {
 	LineEquation* lineEquation = dynamic_cast<LineEquation*>(firstParent->getEquation());
 	Vector2f firstProj = Equation::Projection(*lineEquation, PointEquation(coord));
-	Vector2f secondProj = Equation::Projection(*lineEquation, PointEquation(Vector2f(0, 0)));
+	Vector2f secondProj = Equation::Projection(*lineEquation);
 	Vector2f delta = firstProj - secondProj;
+	Vector2f altitude = secondProj - projPoint;
 	double distance = sqrt(delta.x * delta.x + delta.y * delta.y);
-	double crossProduct = secondProj.x * delta.y - secondProj.y * delta.x;
+	double crossProduct = altitude.x * delta.y - altitude.y * delta.x;
 	int sign = (crossProduct > 0) - (crossProduct < 0);
 	*secondParent = (distance * sign);
 }
@@ -672,8 +698,9 @@ void ByLineAndScalar::recreate(Equation* equation)
 	Vector2f direction = Vector2f(-B, A);
 	direction /= (float)sqrt(A * A + B * B);
 	direction *= (float)(*scalarEquation).value;
-	Vector2f projection = Equation::Projection(*lineEquation, PointEquation(Vector2f(0, 0)));
-	double crossProduct = projection.x * direction.y - projection.y * direction.x;
+	Vector2f projection = Equation::Projection(*lineEquation);
+	Vector2f altitude = projection - projPoint;
+	double crossProduct = altitude.x * direction.y - altitude.y * direction.x;
 	int sign = (crossProduct > 0) - (crossProduct < 0);
 	int signScalar = ((*scalarEquation).value > 0) - ((*scalarEquation).value < 0);
 	if (sign != signScalar)
@@ -745,13 +772,13 @@ void ByCircleAndScalar::recreate(Equation* equation)
 
 CenterPoint::CenterPoint() : Point()
 {
-	auto parent = new ComplexScalar(Vector2f(0,0));
+	auto parent = new ComplexScalar(Vector2f(0, 0));
 	construction = new ByComplexScalar(this, parent);
 	parent->addChild(this);
 	equation = new PointEquation(Vector2f(0, 0));
 	shape.setOrigin(pointSize, pointSize);
 	shape.setFillColor(Color::Black);
-	ConstructionData::allVisibleObjects.push_front(this);
+	Drawer::allVisibleObjects.push_front(this);
 }
 
 void CenterPoint::reposition()

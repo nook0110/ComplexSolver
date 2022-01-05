@@ -19,11 +19,14 @@ extern MODES Mousemode;
 class LineEquation;
 class PointEquation;
 
+const Vector2f projPoint = Vector2f(100, 100);
 //equation for all objects
 struct Equation
 {
 	virtual ~Equation();
+	Equation();
 	static Vector2f Projection(LineEquation lineEquation, PointEquation pointEquation);
+	static Vector2f Projection(LineEquation lineEquation);
 };
 
 struct LineEquation : public Equation
@@ -85,8 +88,6 @@ class ConstructionData
 protected:
 	Object* object;
 public:
-	static list<VisibleObject*> allVisibleObjects;
-	static list<Parametr*> allParametrs;
 	//Return equation of the objects 
 	//The equation can be changed if parents were moved
 	virtual void recreate(Equation* equation);
@@ -225,14 +226,21 @@ public:
 
 class VisibleObject : public Object
 {
+	const Color visibleColor = Color::Black;
+	const Color unvisibleColor = Color::Blue;
 	void erase();
 protected:
 	ConstructionData* construction;
 	virtual void reposition();
+	bool visible = true;
+	Color getColor();
 public:
 	virtual bool isNearby(Vector2f mousePosition) = 0;
 	virtual void draw() = 0;
 	virtual void drawDescription() = 0;
+	void changeVisibility(bool newVisibility);
+	void changeVisibility();
+	bool getVisibility();
 	bool isOnCircle();
 	~VisibleObject();
 };
@@ -275,7 +283,7 @@ private:
 	UnitCircle();
 	static UnitCircle* unitCircle;
 	double getDistance(Vector2f point);
-	CircleShape Shape;
+	CircleShape shape;
 public:
 	static UnitCircle* getInstance();
 	bool isNearby(Vector2f mousePosition);

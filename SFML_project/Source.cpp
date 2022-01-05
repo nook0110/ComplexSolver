@@ -2,7 +2,6 @@
 #include "Creation.h"
 using namespace std;
 using namespace sf;
-Creation Cr;
 bool Creation::created;
 extern RenderWindow  window;
 extern View view;
@@ -21,6 +20,7 @@ extern Button perpendicularButton;
 extern Button tangentButton;
 extern Button deleteButton;
 extern Button midPointButton;
+extern Button hideButton;
 extern Button clearButton;
 
 Vector2f CamCenter = Vector2f(0, 0);
@@ -44,6 +44,7 @@ int main()
 	mainMenu.pushButton(deleteButton);
 	mainMenu.pushButton(midPointButton);
 	mainMenu.pushButton(clearButton);
+	mainMenu.pushButton(hideButton);
 
 	view.move(-500, -500);
 	while (window.isOpen())
@@ -68,7 +69,7 @@ int main()
 			}
 			if (event.type == Event::MouseWheelScrolled)
 			{
-				if (event.mouseWheelScroll.delta == 1)
+				if (event.mouseWheelScroll.delta == -1)
 				{
 					view.zoom(1.2);
 				}
@@ -91,7 +92,7 @@ int main()
 
 					mainMenu.unpress();
 					X->press();
-					Cr.CurrentMethod = X->getObjectCreationMethod();
+					Creation::getInstance()->CurrentMethod = X->getObjectCreationMethod();
 
 				}
 				else
@@ -101,15 +102,34 @@ int main()
 			}
 			window.setView(view);
 		}
-		Cr();
+		(*Creation::getInstance())();
 		window.clear(Color::White);
-		UnitCircle::getInstance()->draw();
-		CenterPoint::getInstance()->draw();
-		if (Cr.getCurrentMode() != MODE_CLEAR)
+		if (UnitCircle::getInstance()->getVisibility() || Creation::getInstance()->getCurrentMode() == MODE_HIDE)
 		{
-			for (auto X : ConstructionData::allVisibleObjects)
+			UnitCircle::getInstance()->draw();
+		}
+		if (CenterPoint::getInstance()->getVisibility() || Creation::getInstance()->getCurrentMode() == MODE_HIDE)
+		{
+			CenterPoint::getInstance()->draw();
+		}
+		if (Creation::getInstance()->getCurrentMode() != MODE_CLEAR)
+		{
+			if (Creation::getInstance()->getCurrentMode() != MODE_HIDE)
 			{
-				X->draw();
+				for (auto object : Drawer::allVisibleObjects)
+				{
+					if (object->getVisibility())
+					{
+						object->draw();
+					}
+				}
+			}
+			else
+			{
+				for (auto object : Drawer::allVisibleObjects)
+				{
+					object->draw();
+				}
 			}
 		}
 		window.setView(view);

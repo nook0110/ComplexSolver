@@ -28,7 +28,7 @@ private:
 
 	//Button mode
 	MODES mode = MODE_NOTHING;
-	function<void(void)> modeFunction = []() {};
+	function<void(std::stop_token)> modeFunction = [](std::stop_token) {};
 
 	bool pressed = false;
 	bool LeftPressed = false;
@@ -39,14 +39,14 @@ private:
 public:
 	Button(Vector2f _position, Vector2f _size, RenderWindow* _window,
 		string _textureLocation, Vector2i _textureStart = Vector2i(0, 0), Vector2i _textureSize = maxTextureResolution,
-		MODES _mode = MODE_NOTHING, function<void(void)> _modeFunction = []() {});
+		MODES _mode = MODE_NOTHING, function<void(std::stop_token)> _modeFunction = [](std::stop_token) {});
 	Button(Vector2f _position, Vector2f _size, RenderWindow* _window,
 		string _textureLocation, string _texturePressedLocation,
-		MODES _mode = MODE_NOTHING, function<void(void)> _modeFunction = []() {});
+		MODES _mode = MODE_NOTHING, function<void(std::stop_token)> _modeFunction = [](std::stop_token) {});
 	Button(Vector2f _position, Vector2f _size, RenderWindow* _window,
 		string _textureLocation, Vector2i _textureStart, Vector2i _textureSize,
 		string _texturePressedLocation, Vector2i _texturePressedStart, Vector2i _texturePressedSize,
-		MODES _mode = MODE_NOTHING, function<void(void)> _modeFunction = []() {});
+		MODES _mode = MODE_NOTHING, function<void(std::stop_token)> _modeFunction = [](std::stop_token) {});
 	void setPosition(Vector2f);
 	void draw();
 	bool mouseCheck(View);
@@ -61,7 +61,7 @@ public:
 	void press();
 	void unpress();
 	bool getPressed();
-	function<void(void)> getObjectCreationMethod();
+	function<void(std::stop_token)> getObjectCreationMethod();
 };
 
 //Menu is a list of buttons, you can push buttons in it.
