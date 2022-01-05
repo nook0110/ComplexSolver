@@ -75,7 +75,7 @@ Button pointButton = Button(Vector2f(120, 10), Vector2f(100, 100), &window,
 			Creation::Create();
 			return;
 		}
-		if (stoken.stop_requested()) 
+		if (stoken.stop_requested())
 		{
 			return;
 		}
@@ -168,7 +168,7 @@ Button perpendicularButton = Button(Vector2f(340, 10), Vector2f(100, 100), &wind
 
 	});
 Button midPointButton = Button(Vector2f(670, 10), Vector2f(100, 100), &window,
-	"C:\\Textures\\SFML_project\\Test.jpg", Vector2i(0, 0), maxTextureResolution,
+	"C:\\Textures\\SFML_project\\MidpointButton.jpg", Vector2i(0, 0), maxTextureResolution,
 	MODE_MIDPOINT, [](std::stop_token stoken) {
 		Waiter wait;
 		Finder find;
@@ -262,7 +262,7 @@ Button deleteButton = Button(Vector2f(560, 10), Vector2f(100, 100), &window,
 	});
 
 Button hideButton = Button(Vector2f(780, 10), Vector2f(100, 100), &window,
-	"C:\\Textures\\SFML_project\\Test.jpg", Vector2i(0, 0), maxTextureResolution,
+	"C:\\Textures\\SFML_project\\HideButton.jpg", Vector2i(0, 0), maxTextureResolution,
 	MODE_HIDE, [](std::stop_token stoken) {
 		Waiter wait;
 		Finder find;
@@ -282,7 +282,7 @@ Button hideButton = Button(Vector2f(780, 10), Vector2f(100, 100), &window,
 	});
 
 Button clearButton = Button(Vector2f(890, 10), Vector2f(100, 100), &window,
-	"C:\\Textures\\SFML_project\\DeleteButton.jpg", Vector2i(0, 0), maxTextureResolution,
+	"C:\\Textures\\SFML_project\\ClearButton.jpg", Vector2i(0, 0), maxTextureResolution,
 	MODE_CLEAR, [](std::stop_token stoken) {
 
 		while (Drawer::allVisibleObjects.size() > 1)
