@@ -1,5 +1,5 @@
 #include "Object.h"
-#include "Button.h"
+#include "gui.h"
 
 extern double const epsilon;
 extern RenderWindow  window;

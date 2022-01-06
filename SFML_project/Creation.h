@@ -11,7 +11,7 @@ class VisibleObject;
 class Checker
 {
 private:
-	MODES last;
+	MODES last = MODE_NOTHING;
 public:
 	MODES getLast();
 	bool checkMode();

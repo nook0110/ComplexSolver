@@ -1,4 +1,4 @@
-#include "Button.h"
+#include "gui.h"
 
 using namespace std;
 using namespace sf;

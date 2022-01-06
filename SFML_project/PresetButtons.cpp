@@ -5,7 +5,7 @@
 #include <thread>
 #include <functional>
 #include <future>
-#include "Button.h"
+#include "gui.h"
 #include "Object.h"
 #include "Creation.h"
 #include <ctime>
@@ -252,6 +252,10 @@ Button deleteButton = Button(Vector2f(560, 10), Vector2f(100, 100), &window,
 		}
 		Vector2f mousePosition = (window).mapPixelToCoords(Mouse::getPosition(window), view);
 		Object* object = find.nearbyVisibleObject(mousePosition);
+		if (stoken.stop_requested())
+		{
+			return;
+		}
 		if (object)
 		{
 			delete object;
@@ -272,6 +276,10 @@ Button hideButton = Button(Vector2f(780, 10), Vector2f(100, 100), &window,
 		}
 		Vector2f mousePosition = (window).mapPixelToCoords(Mouse::getPosition(window), view);
 		VisibleObject* object = find.nearbyObject(mousePosition);
+		if (stoken.stop_requested())
+		{
+			return;
+		}
 		if (object)
 		{
 			object->changeVisibility();
@@ -287,6 +295,10 @@ Button clearButton = Button(Vector2f(890, 10), Vector2f(100, 100), &window,
 
 		while (Drawer::allVisibleObjects.size() > 1)
 		{
+			if (stoken.stop_requested())
+			{
+				return;
+			}
 			auto object = *prev(Drawer::allVisibleObjects.end());
 			delete object;
 			object = nullptr;

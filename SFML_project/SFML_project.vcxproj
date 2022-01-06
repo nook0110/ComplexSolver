@@ -158,16 +158,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="gui.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="Source.cpp" />
-    <ClCompile Include="Button.cpp" />
     <ClCompile Include="PresetButtons.cpp" />
     <ClCompile Include="GlobalVariables.cpp" />
     <ClCompile Include="Creation.cpp" />
     <ClCompile Include="WrapMouse.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Button.h" />
     <ClInclude Include="gui.h" />
     <ClInclude Include="Creation.h" />
     <ClInclude Include="PresetButtons.h" />

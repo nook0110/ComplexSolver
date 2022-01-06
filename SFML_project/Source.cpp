@@ -1,4 +1,4 @@
-#include "Button.h"
+#include "gui.h"
 #include "Creation.h"
 using namespace std;
 using namespace sf;
@@ -53,7 +53,6 @@ int main()
 		Event event;
 		while (window.pollEvent(event))
 		{
-
 			if (event.type == sf::Event::Resized)
 			{
 				mainMenu.update(event);
@@ -69,7 +68,7 @@ int main()
 			}
 			if (event.type == Event::MouseWheelScrolled)
 			{
-				if (event.mouseWheelScroll.delta == -1)
+				if (event.mouseWheelScroll.delta < 0)
 				{
 					view.zoom(1.2);
 				}

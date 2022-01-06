@@ -1,5 +1,5 @@
 #pragma once
-#include "Button.h"
+#include "gui.h"
 #include "Creation.h"
 
 //Preset of Buttons with functions
@@ -20,7 +20,7 @@ public:
 class Waiter
 {
 private:
-	const int sleepingTime = 100;
+	const int sleepingTime = 1000;
 	InterruptionChecker interruptionChecker;
 	bool mouseOnTheScreen();
 public:

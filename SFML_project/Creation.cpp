@@ -36,7 +36,7 @@ void Creation::operator()()
 	{
 		created = true;
 	}
-	if (running.joinable())
+	if (running.joinable() && getCurrentMode() != MODE_NOTHING)
 	{
 		running.detach();
 	}
@@ -45,9 +45,9 @@ void Creation::operator()()
 		created = false;
 		jthread Creator(CurrentMethod);
 		swap(running, Creator);
-		Creator.request_stop();
-		if (running.joinable())
+		if (running.joinable() && getCurrentMode() != MODE_NOTHING)
 		{
+			Creator.request_stop();
 			running.detach();
 		}
 	}
