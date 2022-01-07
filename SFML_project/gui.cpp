@@ -22,7 +22,7 @@ void Button::setTexture(string _textureLocation, Vector2i _textureStart, Vector2
 
 Button::Button(Vector2f _position, Vector2f _size, RenderWindow* _window,
 	string _textureLocation, Vector2i _textureStart, Vector2i _textureSize,
-	MODES _mode, function<void(std::stop_token)> _modeFunction)
+	MODES _mode, function<void(void)> _modeFunction)
 	:position(_position),
 	size(_size),
 	window(_window),
@@ -36,7 +36,7 @@ Button::Button(Vector2f _position, Vector2f _size, RenderWindow* _window,
 
 Button::Button(Vector2f _position, Vector2f _size, RenderWindow* _window,
 	string _textureLocation, string _texturePressedLocation,
-	MODES _mode, function<void(std::stop_token)> _modeFunction)
+	MODES _mode, function<void(void)> _modeFunction)
 	:position(_position),
 	size(_size),
 	window(_window),
@@ -51,7 +51,7 @@ Button::Button(Vector2f _position, Vector2f _size, RenderWindow* _window,
 Button::Button(Vector2f _position, Vector2f _size, RenderWindow* _window,
 	string _textureLocation, Vector2i _textureStart, Vector2i _textureSize,
 	string _texturePressedLocation, Vector2i _texturePressedStart, Vector2i _texturePressedSize,
-	MODES _mode, function<void(std::stop_token)> _modeFunction)
+	MODES _mode, function<void(void)> _modeFunction)
 	:position(_position),
 	size(_size),
 	window(_window),
@@ -159,7 +159,7 @@ bool Button::getPressed()
 	return pressed;
 }
 
-function<void(std::stop_token)> Button::getObjectCreationMethod()
+function<void(void)> Button::getObjectCreationMethod()
 {
 	return modeFunction;
 }
@@ -226,6 +226,7 @@ void Menu::unpress()
 	{
 		Button.unpress();
 	}
+	Mousemode = MODE_NOTHING;
 }
 
 void Menu::draw()
@@ -240,4 +241,89 @@ void Menu::draw()
 		Button.setPosition(Button.getLocalPosition());
 		Button.draw();
 	}
+}
+
+DialogBox* Drawer::dialogBox;
+list<TextBox*> Drawer::allTextBoxes;
+DialogBox::DialogBox(RenderWindow* window)
+	:window(window)
+{
+	if (Drawer::dialogBox)
+	{
+		throw runtime_error("Second DialogBox is not supported");
+	}
+	Drawer::dialogBox = this;
+	font.loadFromFile("C:\\Textures\\SFML_project\\Fonts\\arial.ttf");
+	dialogBox.setFillColor(color);
+	shadow.setFillColor(shadowColor);
+}
+
+void DialogBox::update(Event event)
+{
+	sf::FloatRect visibleArea(dialogBoxView.getCenter().x - dialogBoxView.getSize().x / 2, dialogBoxView.getCenter().y - dialogBoxView.getSize().y / 2, event.size.width * viewport.width, event.size.height * viewport.height);
+	(*window).setView(sf::View(visibleArea));
+	dialogBoxView = sf::View(visibleArea);
+}
+
+void DialogBox::cin(Event event)
+{
+	switch (event.text.unicode)
+	{
+	case 8:
+		if (!textIn.empty())
+		{
+			textIn.pop_back();
+		}
+		break;
+	case 13:
+		finished = true;
+		break;
+	default:
+		Text text(textIn, font, textSize);
+		if (text.getLocalBounds().width < sizeTextBox.x - 2 * textOffset.x)
+		{
+			textIn += event.text.unicode;
+		}
+		std::cout << "ASCII:" << event.text.unicode << " character typed : " << static_cast<char>(event.text.unicode) << std::endl;
+	}
+}
+
+void DialogBox::draw()
+{
+	(*window).setView(dialogBoxView);
+	Vector2f position = dialogBoxView.getCenter() - sizeDialogBox / 2.f;
+	dialogBox.setPosition(position);
+	textBox.setPosition(position + textBoxOffset);
+	shadow.setPosition(position + shadowOffset);
+	window->draw(shadow);
+	window->draw(dialogBox);
+	window->draw(textBox);
+	Text text(textIn, font, textSize);
+	text.setPosition(position + textBoxOffset + textOffset);
+	text.setFillColor(Color::Black);
+	window->draw(text);
+}
+
+bool DialogBox::isFinished()
+{
+	return finished;
+}
+
+double DialogBox::getDouble()
+{
+	return stod(textIn);
+}
+
+DialogBox::~DialogBox()
+{
+	Drawer::dialogBox = nullptr;
+}
+
+void TextBox::setText(string text)
+{
+	TextBox::text = text;
+}
+
+void TextBox::draw()
+{
 }

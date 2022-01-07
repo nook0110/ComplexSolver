@@ -9,7 +9,6 @@ extern double const epsilon;
 
 extern Vector2i maxTextureResolution;
 extern FloatRect mainWindowRect;
-extern Menu mainMenu;
 
 extern MODES Mousemode;
 
@@ -20,6 +19,7 @@ extern Button perpendicularButton;
 extern Button tangentButton;
 extern Button deleteButton;
 extern Button midPointButton;
+extern Button scalarButton;
 extern Button hideButton;
 extern Button clearButton;
 
@@ -42,20 +42,23 @@ int main()
 	mainMenu.pushButton(perpendicularButton);
 	mainMenu.pushButton(tangentButton);
 	mainMenu.pushButton(deleteButton);
-	mainMenu.pushButton(midPointButton);
+	mainMenu.pushButton(scalarButton);
 	mainMenu.pushButton(clearButton);
 	mainMenu.pushButton(hideButton);
 
 	view.move(-500, -500);
+
+
+	Event event;
+	(*Creation::getInstance())();
 	while (window.isOpen())
 	{
 		window.setView(view);
-		Event event;
 		while (window.pollEvent(event))
 		{
+			Drawer::update(event);
 			if (event.type == sf::Event::Resized)
 			{
-				mainMenu.update(event);
 				// update the view to the new size of the window
 				sf::FloatRect visibleArea(view.getCenter().x - view.getSize().x / 2, view.getCenter().y - view.getSize().y / 2, event.size.width, event.size.height);
 				window.setView(sf::View(visibleArea));
@@ -96,43 +99,20 @@ int main()
 				}
 				else
 				{
+					mainMenu.unpress();
 					X->unpress();
 				}
 			}
 			window.setView(view);
+
 		}
-		(*Creation::getInstance())();
+		
 		window.clear(Color::White);
-		if (UnitCircle::getInstance()->getVisibility() || Creation::getInstance()->getCurrentMode() == MODE_HIDE)
-		{
-			UnitCircle::getInstance()->draw();
-		}
-		if (CenterPoint::getInstance()->getVisibility() || Creation::getInstance()->getCurrentMode() == MODE_HIDE)
-		{
-			CenterPoint::getInstance()->draw();
-		}
-		if (Creation::getInstance()->getCurrentMode() != MODE_CLEAR)
-		{
-			if (Creation::getInstance()->getCurrentMode() != MODE_HIDE)
-			{
-				for (auto object : Drawer::allVisibleObjects)
-				{
-					if (object->getVisibility())
-					{
-						object->draw();
-					}
-				}
-			}
-			else
-			{
-				for (auto object : Drawer::allVisibleObjects)
-				{
-					object->draw();
-				}
-			}
-		}
+		Drawer::draw();
 		window.setView(view);
 		mainMenu.draw();
+
+
 		window.setView(view);
 		window.display();
 	}

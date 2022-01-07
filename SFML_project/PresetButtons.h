@@ -4,7 +4,6 @@
 
 //Preset of Buttons with functions
 
-extern Menu mainMenu;
 extern FloatRect mainWindowRect;
 class UnitCircle;
 class InterruptionChecker

@@ -21,6 +21,7 @@ Creation::Creation()
 {
 }
 
+
 Creation* Creation::getInstance()
 {
 	if (creator == nullptr) {
@@ -30,26 +31,10 @@ Creation* Creation::getInstance()
 }
 
 void Creation::operator()()
-
 {
-	if (!checker.checkMode())
+	if (running->joinable())
 	{
-		created = true;
-	}
-	if (running.joinable() && getCurrentMode() != MODE_NOTHING)
-	{
-		running.detach();
-	}
-	if (created)
-	{
-		created = false;
-		jthread Creator(CurrentMethod);
-		swap(running, Creator);
-		if (running.joinable() && getCurrentMode() != MODE_NOTHING)
-		{
-			Creator.request_stop();
-			running.detach();
-		}
+		running->detach();
 	}
 }
 
@@ -64,7 +49,7 @@ void Creation::Create()
 	created = true;
 }
 
-void Drawer::draw()
+void Drawer::drawObjects()
 {
 	if (UnitCircle::getInstance()->getVisibility() || Creation::getInstance()->getCurrentMode() == MODE_HIDE)
 	{
@@ -94,4 +79,67 @@ void Drawer::draw()
 			}
 		}
 	}
+}
+
+void Drawer::drawMenu()
+{
+	mainMenu.draw();
+}
+
+void Drawer::drawTextBoxes()
+{
+	for (auto textBox : Drawer::allTextBoxes)
+	{
+		textBox->draw();
+	}
+}
+
+void Drawer::drawDialogBox()
+{
+	if (dialogBox)
+	{
+		dialogBox->draw();
+	}
+}
+
+void Drawer::updateMenu(Event event)
+{
+	mainMenu.update(event);
+}
+
+void Drawer::updateTextBoxes(Event event)
+{
+
+}
+
+void Drawer::updateDialogBox(Event event)
+{
+	if (dialogBox)
+	{
+		dialogBox->update(event);
+	}
+}
+
+void Drawer::update(Event event)
+{
+	switch (event.type)
+	{
+	case sf::Event::Resized:
+		updateMenu(event);
+		updateTextBoxes(event);
+		updateDialogBox(event);
+		break;
+	case sf::Event::TextEntered:
+		if (dialogBox)
+		{
+			dialogBox->cin(event);
+		}
+	}
+}
+
+void Drawer::draw()
+{
+	drawObjects();
+	drawTextBoxes();
+	drawDialogBox();
 }

@@ -17,13 +17,12 @@ extern RenderWindow window;//
 extern View view;//
 extern Vector2i maxTextureResolution;//
 extern MODES Mousemode;//
-extern Menu mainMenu;//
 extern Plane* plane;//
 list<VisibleObject*> Drawer::allVisibleObjects;
 
 Button moveButton = Button(Vector2f(10, 10), Vector2f(100, 100), &window,
 	"C:\\Textures\\SFML_project\\MoveButton.jpg", Vector2i(0, 0), maxTextureResolution,
-	MODE_MOVE, [](std::stop_token stoken) {
+	MODE_MOVE, []() {
 		Waiter wait;
 		InterruptionChecker interruptionChecker;
 		Finder find;
@@ -61,7 +60,7 @@ Button moveButton = Button(Vector2f(10, 10), Vector2f(100, 100), &window,
 
 Button pointButton = Button(Vector2f(120, 10), Vector2f(100, 100), &window,
 	"C:\\Textures\\SFML_project\\PointButton.jpg", Vector2i(0, 0), maxTextureResolution,
-	MODE_POINT, [](std::stop_token stoken) {
+	MODE_POINT, []() {
 		Waiter wait;
 		Finder find;
 		if (wait.untilClick())
@@ -75,10 +74,6 @@ Button pointButton = Button(Vector2f(120, 10), Vector2f(100, 100), &window,
 			Creation::Create();
 			return;
 		}
-		if (stoken.stop_requested())
-		{
-			return;
-		}
 		point = find.nearbyNewPoint(mousePosition);
 		Creation::Create();
 		return;
@@ -87,7 +82,7 @@ Button pointButton = Button(Vector2f(120, 10), Vector2f(100, 100), &window,
 
 Button lineButton = Button(Vector2f(230, 10), Vector2f(100, 100), &window,
 	"C:\\Textures\\SFML_project\\LineButton.jpg", Vector2i(0, 0), maxTextureResolution,
-	MODE_LINE, [](std::stop_token stoken) {
+	MODE_LINE, []() {
 		Waiter wait;
 		Finder find;
 		const int twotimes = 2;
@@ -100,10 +95,6 @@ Button lineButton = Button(Vector2f(230, 10), Vector2f(100, 100), &window,
 			}
 			Vector2f mousePosition = (window).mapPixelToCoords(Mouse::getPosition(window), view);
 			Point* point = find.nearbyConstructedPoint(mousePosition);
-			if (stoken.stop_requested())
-			{
-				return;
-			}
 			if (!point)
 			{
 				point = find.nearbyNewPoint(mousePosition);
@@ -133,7 +124,7 @@ Button lineButton = Button(Vector2f(230, 10), Vector2f(100, 100), &window,
 	});
 Button perpendicularButton = Button(Vector2f(340, 10), Vector2f(100, 100), &window,
 	"C:\\Textures\\SFML_project\\PerpendicularButton.jpg", Vector2i(0, 0), maxTextureResolution,
-	MODE_PERPENDICULAR, [](std::stop_token stoken) {
+	MODE_PERPENDICULAR, []() {
 		Waiter wait;
 		InterruptionChecker interruptionChecker;
 		Finder find;
@@ -143,10 +134,6 @@ Button perpendicularButton = Button(Vector2f(340, 10), Vector2f(100, 100), &wind
 		}
 		Vector2f mousePosition = (window).mapPixelToCoords(Mouse::getPosition(window), view);
 		Point* point = find.nearbyConstructedPoint(mousePosition);
-		if (stoken.stop_requested())
-		{
-			return;
-		}
 		if (!point)
 		{
 			point = find.nearbyNewPoint(mousePosition);
@@ -169,7 +156,7 @@ Button perpendicularButton = Button(Vector2f(340, 10), Vector2f(100, 100), &wind
 	});
 Button midPointButton = Button(Vector2f(670, 10), Vector2f(100, 100), &window,
 	"C:\\Textures\\SFML_project\\MidpointButton.jpg", Vector2i(0, 0), maxTextureResolution,
-	MODE_MIDPOINT, [](std::stop_token stoken) {
+	MODE_MIDPOINT, []() {
 		Waiter wait;
 		Finder find;
 		const int twotimes = 2;
@@ -182,10 +169,6 @@ Button midPointButton = Button(Vector2f(670, 10), Vector2f(100, 100), &window,
 			}
 			Vector2f mousePosition = (window).mapPixelToCoords(Mouse::getPosition(window), view);
 			Point* point = find.nearbyConstructedPoint(mousePosition);
-			if (stoken.stop_requested())
-			{
-				return;
-			}
 			if (!point)
 			{
 				point = find.nearbyNewPoint(mousePosition);
@@ -213,9 +196,58 @@ Button midPointButton = Button(Vector2f(670, 10), Vector2f(100, 100), &window,
 		Creation::Create();
 		return;
 	});
+
+Button scalarButton = Button(Vector2f(670, 10), Vector2f(100, 100), &window,
+	"C:\\Textures\\SFML_project\\MidpointButton.jpg", Vector2i(0, 0), maxTextureResolution,
+	MODE_MIDPOINT, []() {
+		Waiter wait;
+		Finder find;
+		const int twotimes = 2;
+		pair<Point*, Point*> points(nullptr, nullptr);
+		for (int i = 0; i < twotimes; ++i)
+		{
+			if (wait.untilClick())
+			{
+				return;
+			}
+			Vector2f mousePosition = (window).mapPixelToCoords(Mouse::getPosition(window), view);
+			Point* point = find.nearbyConstructedPoint(mousePosition);
+			if (!point)
+			{
+				point = find.nearbyNewPoint(mousePosition);
+			}
+			if (get<0>(points))
+			{
+				if (point != get<0>(points))
+				{
+					points.second = point;
+					break;
+				}
+				else
+				{
+					i--;
+					continue;
+				}
+			}
+			else
+			{
+				points.first = point;
+				continue;
+			}
+		}
+		DialogBox dialogBox(&window);
+		while (!dialogBox.isFinished())
+		{
+			wait.sleep();
+		}
+		new Point(points.first, points.second, new Scalar(dialogBox.getDouble()));
+		Creation::Create();
+		return;
+	});
+
 Button tangentButton = Button(Vector2f(450, 10), Vector2f(100, 100), &window,
 	"C:\\Textures\\SFML_project\\TangentButton.jpg", Vector2i(0, 0), maxTextureResolution,
-	MODE_TANGENT, [](std::stop_token stoken) {
+	MODE_TANGENT, []() {
 		Waiter wait;
 		Finder find;
 		if (wait.untilClick())
@@ -224,10 +256,6 @@ Button tangentButton = Button(Vector2f(450, 10), Vector2f(100, 100), &window,
 		}
 		Vector2f mousePosition = (window).mapPixelToCoords(Mouse::getPosition(window), view);
 		Point* point = find.nearbyConstructedPointOnCircle(mousePosition);
-		if (stoken.stop_requested())
-		{
-			return;
-		}
 		if (!point)
 		{
 			point = find.nearbyNewPointOnCircle(mousePosition);
@@ -243,7 +271,7 @@ Button tangentButton = Button(Vector2f(450, 10), Vector2f(100, 100), &window,
 
 Button deleteButton = Button(Vector2f(560, 10), Vector2f(100, 100), &window,
 	"C:\\Textures\\SFML_project\\DeleteButton.jpg", Vector2i(0, 0), maxTextureResolution,
-	MODE_DELETE, [](std::stop_token stoken) {
+	MODE_DELETE, []() {
 		Waiter wait;
 		Finder find;
 		if (wait.untilClick())
@@ -252,10 +280,6 @@ Button deleteButton = Button(Vector2f(560, 10), Vector2f(100, 100), &window,
 		}
 		Vector2f mousePosition = (window).mapPixelToCoords(Mouse::getPosition(window), view);
 		Object* object = find.nearbyVisibleObject(mousePosition);
-		if (stoken.stop_requested())
-		{
-			return;
-		}
 		if (object)
 		{
 			delete object;
@@ -267,7 +291,7 @@ Button deleteButton = Button(Vector2f(560, 10), Vector2f(100, 100), &window,
 
 Button hideButton = Button(Vector2f(780, 10), Vector2f(100, 100), &window,
 	"C:\\Textures\\SFML_project\\HideButton.jpg", Vector2i(0, 0), maxTextureResolution,
-	MODE_HIDE, [](std::stop_token stoken) {
+	MODE_HIDE, []() {
 		Waiter wait;
 		Finder find;
 		if (wait.untilClick())
@@ -276,33 +300,25 @@ Button hideButton = Button(Vector2f(780, 10), Vector2f(100, 100), &window,
 		}
 		Vector2f mousePosition = (window).mapPixelToCoords(Mouse::getPosition(window), view);
 		VisibleObject* object = find.nearbyObject(mousePosition);
-		if (stoken.stop_requested())
-		{
-			return;
-		}
 		if (object)
 		{
 			object->changeVisibility();
 		}
 		Creation::Create();
 		return;
-
 	});
 
 Button clearButton = Button(Vector2f(890, 10), Vector2f(100, 100), &window,
 	"C:\\Textures\\SFML_project\\ClearButton.jpg", Vector2i(0, 0), maxTextureResolution,
-	MODE_CLEAR, [](std::stop_token stoken) {
-
+	MODE_CLEAR, []() {
+		Waiter wait;
 		while (Drawer::allVisibleObjects.size() > 1)
 		{
-			if (stoken.stop_requested())
-			{
-				return;
-			}
 			auto object = *prev(Drawer::allVisibleObjects.end());
 			delete object;
 			object = nullptr;
 		}
+		wait.sleep();
 		Creation::Create();
 		return;
 	});

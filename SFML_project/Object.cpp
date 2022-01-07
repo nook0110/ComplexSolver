@@ -1,10 +1,9 @@
 #include "Object.h"
-#include "gui.h"
+
 
 extern double const epsilon;
 extern RenderWindow  window;
 extern View view;
-extern Menu mainMenu;
 
 Equation* Object::getEquation()
 {

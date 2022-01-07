@@ -8,12 +8,11 @@ set(PROJECT_NAME SFML_project)
 # Target
 ################################################################################
 target_sources(sfml PRIVATE 
-                Button.cpp
-                Button.h
+                gui.cpp
+                gui.h
                 Creation.cpp
                 Creation.h
                 GlobalVariables.cpp
-                gui.h
                 Object.cpp
                 Object.h
                 PresetButtons.cpp
