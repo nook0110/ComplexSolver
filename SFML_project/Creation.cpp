@@ -102,17 +102,36 @@ void Drawer::drawDialogBox()
 	}
 }
 
-void Drawer::updateMenu(Event event)
+void Drawer::resizeMenu(Event event)
 {
 	mainMenu.update(event);
 }
 
-void Drawer::updateTextBoxes(Event event)
+void Drawer::updateMenu()
+{
+	Button* button = mainMenu.leftClickCheck();
+	if (button)
+	{
+		if (!button->getPressed())
+		{
+			mainMenu.unpress();
+			button->press();
+			Creation::getInstance()->CurrentMethod = button->getObjectCreationMethod();
+		}
+		else
+		{
+			mainMenu.unpress();
+			button->unpress();
+		}
+	}
+}
+
+void Drawer::resizeTextBoxes(Event event)
 {
 
 }
 
-void Drawer::updateDialogBox(Event event)
+void Drawer::resizeDialogBox(Event event)
 {
 	if (dialogBox)
 	{
@@ -122,18 +141,20 @@ void Drawer::updateDialogBox(Event event)
 
 void Drawer::update(Event event)
 {
+	updateMenu();
 	switch (event.type)
 	{
 	case sf::Event::Resized:
-		updateMenu(event);
-		updateTextBoxes(event);
-		updateDialogBox(event);
+		resizeMenu(event);
+		resizeTextBoxes(event);
+		resizeDialogBox(event);
 		break;
 	case sf::Event::TextEntered:
 		if (dialogBox)
 		{
 			dialogBox->cin(event);
 		}
+		break;
 	}
 }
 

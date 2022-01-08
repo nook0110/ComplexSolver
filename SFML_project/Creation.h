@@ -32,7 +32,7 @@ class Creation
 	//static MODES last;
 	static Checker checker;
 public:
-	function<void(void)> CurrentMethod = [](void) {
+	function<void(void)> CurrentMethod = [&](void) {
 		std::this_thread::sleep_for(std::chrono::nanoseconds(1000));
 		Create();
 		return;
@@ -42,15 +42,12 @@ private:
 
 	thread* running = new thread([&]() {
 		while (true)
-		{		
+		{
+			std::this_thread::sleep_for(std::chrono::nanoseconds(1000));
 			if (created && getCurrentMode() != MODE_NOTHING)
 			{
 				created = false;
 				CurrentMethod();
-			}
-			else
-			{
-				std::this_thread::sleep_for(std::chrono::nanoseconds(1000));
 			}
 			if (!checker.checkMode())
 			{
@@ -75,9 +72,10 @@ class Drawer
 	static void drawMenu();
 	static void drawTextBoxes();
 	static void drawDialogBox();
-	static void updateMenu(Event event);
-	static void updateTextBoxes(Event event);
-	static void updateDialogBox(Event event);
+	static void resizeMenu(Event event);
+	static void updateMenu();
+	static void resizeTextBoxes(Event event);
+	static void resizeDialogBox(Event event);
 public:
 	Drawer() = delete;
 	static list<VisibleObject*> allVisibleObjects;

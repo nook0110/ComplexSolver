@@ -86,23 +86,7 @@ int main()
 			WrapMouse::checkPress(Mouse::Button::Right);
 
 			window.setView(view);
-			Button* X = mainMenu.leftClickCheck();
-			if (X != nullptr)
-			{
-				if (!X->getPressed())
-				{
-
-					mainMenu.unpress();
-					X->press();
-					Creation::getInstance()->CurrentMethod = X->getObjectCreationMethod();
-
-				}
-				else
-				{
-					mainMenu.unpress();
-					X->unpress();
-				}
-			}
+			
 			window.setView(view);
 
 		}

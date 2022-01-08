@@ -284,7 +284,6 @@ void DialogBox::cin(Event event)
 		{
 			textIn += event.text.unicode;
 		}
-		std::cout << "ASCII:" << event.text.unicode << " character typed : " << static_cast<char>(event.text.unicode) << std::endl;
 	}
 }
 
@@ -311,7 +310,17 @@ bool DialogBox::isFinished()
 
 double DialogBox::getDouble()
 {
-	return stod(textIn);
+	auto position = textIn.find(":");
+	try
+	{
+		double firstNumber = stod(textIn.substr(0, position));
+		double secondNumber = stod(textIn.substr(position + 1));
+		return firstNumber / secondNumber;
+	}
+	catch (invalid_argument)
+	{
+		return 1;
+	}
 }
 
 DialogBox::~DialogBox()
