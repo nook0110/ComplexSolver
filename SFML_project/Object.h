@@ -147,6 +147,8 @@ class ByLineAndScalar : public ConstructionPoint
 {
 	Line* firstParent;
 	Scalar* secondParent;
+	double lastSignDeltaY;
+	float directionSign=1;
 public:
 	ByLineAndScalar(Object* object, Line* firstParent, Scalar* secondParent);
 	void move(Vector2f delta) override;

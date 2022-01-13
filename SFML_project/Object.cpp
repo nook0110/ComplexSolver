@@ -650,6 +650,13 @@ ComplexScalarEquation& ComplexScalarEquation::operator+=(Vector2f delta)
 ByLineAndScalar::ByLineAndScalar(Object* object, Line* firstParent, Scalar* secondParent)
 	: firstParent(firstParent), secondParent(secondParent)
 {
+	LineEquation* lineEquation = dynamic_cast<LineEquation*>(firstParent->getEquation());
+	double A = (*lineEquation).A;
+	double B = (*lineEquation).B;
+	double C = (*lineEquation).C;
+	double yProjPoint = (-C - A * projPoint.x) / B;
+	lastSignDeltaY = -(yProjPoint - projPoint.y);
+	lastSignDeltaY = (lastSignDeltaY > 0) - (lastSignDeltaY < 0);
 	ConstructionData::object = object;
 }
 
@@ -676,7 +683,7 @@ void ByLineAndScalar::moveTo(Vector2f coord)
 	double distance = sqrt(delta.x * delta.x + delta.y * delta.y);
 	double crossProduct = altitude.x * delta.y - altitude.y * delta.x;
 	int sign = (crossProduct > 0) - (crossProduct < 0);
-	*secondParent = (distance * sign);
+	*secondParent = (distance * sign * directionSign);
 }
 
 ByLineAndScalar::~ByLineAndScalar()
@@ -700,13 +707,24 @@ void ByLineAndScalar::recreate(Equation* equation)
 	Vector2f projection = Equation::Projection(*lineEquation);
 	Vector2f altitude = projection - projPoint;
 	double crossProduct = altitude.x * direction.y - altitude.y * direction.x;
-	int sign = (crossProduct > 0) - (crossProduct < 0);
+	int signCross = (crossProduct > 0) - (crossProduct < 0);
 	int signScalar = ((*scalarEquation).value > 0) - ((*scalarEquation).value < 0);
-	if (sign != signScalar)
+	if (signCross != signScalar)
 	{
 		direction *= -1.f;
 	}
-	Vector2f position = projection + direction;
+	double yProjPoint = (-C - A * projPoint.x) / B;
+	double deltaY = -(yProjPoint - projPoint.y);
+	int signDeltaY = (deltaY > 0) - (deltaY < 0);
+	if (signDeltaY != lastSignDeltaY )
+	{
+		if (abs(deltaY) < 100)
+		{
+			directionSign *= -1.f;
+		}
+			lastSignDeltaY = signDeltaY;
+	}
+	Vector2f position = projection + direction * directionSign;
 	*dynamic_cast<PointEquation*>(equation) = (PointEquation(position));
 }
 
