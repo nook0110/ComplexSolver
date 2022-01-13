@@ -253,7 +253,7 @@ DialogBox::DialogBox(RenderWindow* window)
 		throw runtime_error("Second DialogBox is not supported");
 	}
 	Drawer::dialogBox = this;
-	font.loadFromFile("C:\\Textures\\SFML_project\\Fonts\\arial.ttf");
+	font.loadFromFile("Textures\\SFML_project\\Fonts\\arial.ttf");
 	dialogBox.setFillColor(color);
 	shadow.setFillColor(shadowColor);
 }

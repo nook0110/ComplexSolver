@@ -21,7 +21,7 @@ extern Plane* plane;//
 list<VisibleObject*> Drawer::allVisibleObjects;
 
 Button moveButton = Button(Vector2f(10, 10), Vector2f(100, 100), &window,
-	"C:\\Textures\\SFML_project\\MoveButton.jpg", Vector2i(0, 0), maxTextureResolution,
+	"Textures\\SFML_project\\MoveButton.jpg", Vector2i(0, 0), maxTextureResolution,
 	MODE_MOVE, [&]() {
 		Waiter wait;
 		InterruptionChecker interruptionChecker;
@@ -59,7 +59,7 @@ Button moveButton = Button(Vector2f(10, 10), Vector2f(100, 100), &window,
 	});
 
 Button pointButton = Button(Vector2f(120, 10), Vector2f(100, 100), &window,
-	"C:\\Textures\\SFML_project\\PointButton.jpg", Vector2i(0, 0), maxTextureResolution,
+	"Textures\\SFML_project\\PointButton.jpg", Vector2i(0, 0), maxTextureResolution,
 	MODE_POINT, [&]() {
 		Waiter wait;
 		Finder find;
@@ -81,7 +81,7 @@ Button pointButton = Button(Vector2f(120, 10), Vector2f(100, 100), &window,
 
 
 Button lineButton = Button(Vector2f(230, 10), Vector2f(100, 100), &window,
-	"C:\\Textures\\SFML_project\\LineButton.jpg", Vector2i(0, 0), maxTextureResolution,
+	"Textures\\SFML_project\\LineButton.jpg", Vector2i(0, 0), maxTextureResolution,
 	MODE_LINE, [&]() {
 		Waiter wait;
 		Finder find;
@@ -123,7 +123,7 @@ Button lineButton = Button(Vector2f(230, 10), Vector2f(100, 100), &window,
 		return;
 	});
 Button perpendicularButton = Button(Vector2f(340, 10), Vector2f(100, 100), &window,
-	"C:\\Textures\\SFML_project\\PerpendicularButton.jpg", Vector2i(0, 0), maxTextureResolution,
+	"Textures\\SFML_project\\PerpendicularButton.jpg", Vector2i(0, 0), maxTextureResolution,
 	MODE_PERPENDICULAR, [&]() {
 		Waiter wait;
 		InterruptionChecker interruptionChecker;
@@ -155,7 +155,7 @@ Button perpendicularButton = Button(Vector2f(340, 10), Vector2f(100, 100), &wind
 
 	});
 Button midPointButton = Button(Vector2f(670, 10), Vector2f(100, 100), &window,
-	"C:\\Textures\\SFML_project\\MidpointButton.jpg", Vector2i(0, 0), maxTextureResolution,
+	"Textures\\SFML_project\\MidpointButton.jpg", Vector2i(0, 0), maxTextureResolution,
 	MODE_MIDPOINT, [&]() {
 		Waiter wait;
 		Finder find;
@@ -198,7 +198,7 @@ Button midPointButton = Button(Vector2f(670, 10), Vector2f(100, 100), &window,
 	});
 
 Button scalarButton = Button(Vector2f(670, 10), Vector2f(100, 100), &window,
-	"C:\\Textures\\SFML_project\\MidpointButton.jpg", Vector2i(0, 0), maxTextureResolution,
+	"Textures\\SFML_project\\MidpointButton.jpg", Vector2i(0, 0), maxTextureResolution,
 	MODE_MIDPOINT, [&]() {
 		Waiter wait;
 		Finder find;
@@ -246,7 +246,7 @@ Button scalarButton = Button(Vector2f(670, 10), Vector2f(100, 100), &window,
 	});
 
 Button tangentButton = Button(Vector2f(450, 10), Vector2f(100, 100), &window,
-	"C:\\Textures\\SFML_project\\TangentButton.jpg", Vector2i(0, 0), maxTextureResolution,
+	"Textures\\SFML_project\\TangentButton.jpg", Vector2i(0, 0), maxTextureResolution,
 	MODE_TANGENT, [&]() {
 		Waiter wait;
 		Finder find;
@@ -270,7 +270,7 @@ Button tangentButton = Button(Vector2f(450, 10), Vector2f(100, 100), &window,
 	});
 
 Button deleteButton = Button(Vector2f(560, 10), Vector2f(100, 100), &window,
-	"C:\\Textures\\SFML_project\\DeleteButton.jpg", Vector2i(0, 0), maxTextureResolution,
+	"Textures\\SFML_project\\DeleteButton.jpg", Vector2i(0, 0), maxTextureResolution,
 	MODE_DELETE, [&]() {
 		Waiter wait;
 		Finder find;
@@ -290,7 +290,7 @@ Button deleteButton = Button(Vector2f(560, 10), Vector2f(100, 100), &window,
 	});
 
 Button hideButton = Button(Vector2f(780, 10), Vector2f(100, 100), &window,
-	"C:\\Textures\\SFML_project\\HideButton.jpg", Vector2i(0, 0), maxTextureResolution,
+	"Textures\\SFML_project\\HideButton.jpg", Vector2i(0, 0), maxTextureResolution,
 	MODE_HIDE, [&]() {
 		Waiter wait;
 		Finder find;
@@ -309,7 +309,7 @@ Button hideButton = Button(Vector2f(780, 10), Vector2f(100, 100), &window,
 	});
 
 Button clearButton = Button(Vector2f(890, 10), Vector2f(100, 100), &window,
-	"C:\\Textures\\SFML_project\\ClearButton.jpg", Vector2i(0, 0), maxTextureResolution,
+	"Textures\\SFML_project\\ClearButton.jpg", Vector2i(0, 0), maxTextureResolution,
 	MODE_CLEAR, [&]() {
 		Waiter wait;
 		while (Drawer::allVisibleObjects.size() > 1)
