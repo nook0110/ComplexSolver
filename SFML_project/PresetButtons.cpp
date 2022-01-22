@@ -415,7 +415,7 @@ Point* Finder::nearbyNewPointOnCircle(Vector2f mousePosition)
 	auto unitCircle = UnitCircle::getInstance();
 	if (unitCircle->isNearby(mousePosition))
 	{
-		return new Point(unitCircle, mousePosition);
+		return new UnitPoint(unitCircle, mousePosition);
 	}
 }
 

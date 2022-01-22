@@ -486,6 +486,10 @@ ByTwoPoints::~ByTwoPoints()
 	secondParent->eraseChild(object);
 }
 
+ByTwoUnitPoints::ByTwoUnitPoints(Object* object, UnitPoint* firstParent, UnitPoint* secondParent) : ByTwoPoints(object, firstParent, secondParent)
+{
+}
+
 void PerpendicularBisector::recreate(Equation* equation)
 {
 	return;
@@ -647,6 +651,21 @@ ComplexScalarEquation& ComplexScalarEquation::operator+=(Vector2f delta)
 	return *this;
 }
 
+void ByLineAndScalar::checkDirectionSign(float A, float B, float C)
+{
+	double yProjPoint = (-C - A * projPoint.x) / B;
+	double deltaY = -(yProjPoint - projPoint.y);
+	int signDeltaY = (deltaY > 0) - (deltaY < 0);
+	if (signDeltaY != lastSignDeltaY)
+	{
+		if (abs(deltaY) < 100)
+		{
+			directionSign *= -1.f;
+		}
+		lastSignDeltaY = signDeltaY;
+	}
+}
+
 ByLineAndScalar::ByLineAndScalar(Object* object, Line* firstParent, Scalar* secondParent)
 	: firstParent(firstParent), secondParent(secondParent)
 {
@@ -713,17 +732,7 @@ void ByLineAndScalar::recreate(Equation* equation)
 	{
 		direction *= -1.f;
 	}
-	double yProjPoint = (-C - A * projPoint.x) / B;
-	double deltaY = -(yProjPoint - projPoint.y);
-	int signDeltaY = (deltaY > 0) - (deltaY < 0);
-	if (signDeltaY != lastSignDeltaY )
-	{
-		if (abs(deltaY) < 100)
-		{
-			directionSign *= -1.f;
-		}
-			lastSignDeltaY = signDeltaY;
-	}
+	checkDirectionSign(A, B, C);
 	Vector2f position = projection + direction * directionSign;
 	*dynamic_cast<PointEquation*>(equation) = (PointEquation(position));
 }
@@ -822,5 +831,18 @@ void CenterPoint::move(Vector2f delta)
 }
 
 void CenterPoint::moveTo(Vector2f coords)
+{
+}
+
+UnitPoint::UnitPoint(UnitCircle* unitCircle, Vector2f mousePosition)
+{
+	auto scalar = new Scalar(atan2(mousePosition.y, mousePosition.x));
+	construction = new ByCircleAndScalar(this, unitCircle, scalar);
+	unitCircle->addChild(this);
+	scalar->addChild(this);
+	Init();
+}
+
+Chord::Chord(UnitPoint* first, UnitPoint* second) : Line(first, second)
 {
 }

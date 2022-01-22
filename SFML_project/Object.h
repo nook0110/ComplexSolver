@@ -19,7 +19,7 @@ extern MODES Mousemode;
 class LineEquation;
 class PointEquation;
 
-const Vector2f projPoint = Vector2f(100, 100);
+const Vector2f projPoint = Vector2f(unitSeg * 10, unitSeg * 10);
 //equation for all objects
 struct Equation
 {
@@ -148,7 +148,8 @@ class ByLineAndScalar : public ConstructionPoint
 	Line* firstParent;
 	Scalar* secondParent;
 	double lastSignDeltaY;
-	float directionSign=1;
+	float directionSign = 1;
+	void checkDirectionSign(float A, float B, float C);
 public:
 	ByLineAndScalar(Object* object, Line* firstParent, Scalar* secondParent);
 	void move(Vector2f delta) override;
@@ -183,6 +184,12 @@ public:
 	ByTwoPoints(Object* object, Point* firstParent, Point* secondParent);
 	~ByTwoPoints() override;
 	void recreate(Equation* equation) override;
+};
+
+class UnitPoint;
+class ByTwoUnitPoints : public ByTwoPoints
+{
+	ByTwoUnitPoints(Object* object, UnitPoint* firstParent, UnitPoint* secondParent);
 };
 
 class PerpendicularBisector : public ConstructionLine
@@ -296,7 +303,7 @@ public:
 class Point;
 class Line : public VisibleObject
 {
-private:
+protected:
 	double distance(Vector2f point);
 	void reposition() override;
 public:
@@ -306,6 +313,12 @@ public:
 	bool isNearby(Vector2f mousePosition);
 	void draw() override;
 	void drawDescription();
+};
+
+class UnitPoint;
+class Chord : public Line
+{
+	Chord(UnitPoint* first, UnitPoint* second);
 };
 
 class Point : public VisibleObject
@@ -344,4 +357,10 @@ public:
 	void moveTo(Vector2f coords) override;
 	static CenterPoint* getInstance();
 	~CenterPoint();
+};
+
+class UnitPoint : public Point
+{
+public:
+	UnitPoint(UnitCircle* unitCircle, Vector2f mousePosition);
 };
