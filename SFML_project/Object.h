@@ -19,7 +19,7 @@ extern MODES Mousemode;
 class LineEquation;
 class PointEquation;
 
-const Vector2f projPoint = Vector2f(unitSeg * 10, unitSeg * 10);
+const Vector2f projPoint = Vector2f(unitSeg * 1, unitSeg * 1);
 //equation for all objects
 struct Equation
 {
@@ -98,7 +98,6 @@ class ConstructionPoint : public ConstructionData
 {
 public:
 	virtual void recreate(Equation* equation);
-	virtual void move(Vector2f delta);
 	virtual void moveTo(Vector2f coords);
 };
 
@@ -115,7 +114,6 @@ class ByComplexScalar : public ConstructionPoint
 public:
 	ByComplexScalar(Object* object, ComplexScalar* ComplexScalar);
 	void recreate(Equation* equation) override;
-	void move(Vector2f delta) override;
 	void moveTo(Vector2f coords) override;
 	~ByComplexScalar();
 };
@@ -127,9 +125,21 @@ class IntersectionOfTwoLines : public ConstructionPoint // intersect 2 lines
 public:
 	IntersectionOfTwoLines(Object* object, Line* firstParent, Line* secondParent);
 	void recreate(Equation* equation) override;
-	void move(Vector2f delta) override;
 	void moveTo(Vector2f coords) override;
 	~IntersectionOfTwoLines() override;
+};
+
+class UnitPoint;
+class CentralProjection : public ConstructionPoint
+{
+	UnitCircle* firstParent;
+	Point* secondParent;
+	UnitPoint* thirdParent;
+public:
+	CentralProjection(Object* object, UnitCircle* first, Point* second, UnitPoint* third);
+	void recreate(Equation* equation) override;
+	void moveTo(Vector2f coords) override;
+	~CentralProjection() override;
 };
 
 class ByTwoPointsAndScalar : public ConstructionPoint
@@ -152,7 +162,6 @@ class ByLineAndScalar : public ConstructionPoint
 	void checkDirectionSign(float A, float B, float C);
 public:
 	ByLineAndScalar(Object* object, Line* firstParent, Scalar* secondParent);
-	void move(Vector2f delta) override;
 	void moveTo(Vector2f coords) override;
 	~ByLineAndScalar();
 	void recreate(Equation* equation) override;
@@ -164,7 +173,6 @@ class ByCircleAndScalar : public ConstructionPoint
 	Scalar* secondParent;
 public:
 	ByCircleAndScalar(Object* object, UnitCircle* firstParent, Scalar* secondParent);
-	void move(Vector2f delta) override;
 	void moveTo(Vector2f coords) override;
 	~ByCircleAndScalar();
 	void recreate(Equation* equation) override;
@@ -189,6 +197,7 @@ public:
 class UnitPoint;
 class ByTwoUnitPoints : public ByTwoPoints
 {
+public:
 	ByTwoUnitPoints(Object* object, UnitPoint* firstParent, UnitPoint* secondParent);
 };
 
@@ -306,7 +315,9 @@ class Line : public VisibleObject
 protected:
 	double distance(Vector2f point);
 	void reposition() override;
+	void Init();
 public:
+	Line();
 	Line(Point* first, Point* second);
 	Line(Point* first, Line* second);
 	Line(UnitCircle* first, Point* second);
@@ -318,6 +329,7 @@ public:
 class UnitPoint;
 class Chord : public Line
 {
+public:
 	Chord(UnitPoint* first, UnitPoint* second);
 };
 
@@ -333,13 +345,11 @@ protected:
 public:
 	//static Vector2f intersectLines(Line::equationLine FirstEq, Line::equationLine SecondEq);
 	Vector2f getCoordinate();
-	virtual void move(Vector2f delta);
 	virtual void moveTo(Vector2f coords);
 	Point(Vector2f mousePosition);
 	Point(Line* first, Line* second);
 	Point(Line* line, Vector2f mousePosition);
 	Point(Line* line, Point* point);
-	Point(UnitCircle* unitCircle, Vector2f mousePosition);
 	Point(Point* first, Point* second, Scalar* scalar);
 	bool isNearby(Vector2f mousePosition) override;
 	void draw() override;
@@ -353,7 +363,6 @@ class CenterPoint : public Point
 	CenterPoint();
 	static CenterPoint* centerPoint;
 public:
-	void move(Vector2f delta) override;
 	void moveTo(Vector2f coords) override;
 	static CenterPoint* getInstance();
 	~CenterPoint();
@@ -363,4 +372,5 @@ class UnitPoint : public Point
 {
 public:
 	UnitPoint(UnitCircle* unitCircle, Vector2f mousePosition);
+	UnitPoint(UnitCircle* unitCircle, Point* first, UnitPoint* second);
 };

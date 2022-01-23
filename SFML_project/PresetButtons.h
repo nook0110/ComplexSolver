@@ -3,7 +3,6 @@
 #include "Creation.h"
 
 //Preset of Buttons with functions
-
 extern FloatRect mainWindowRect;
 class UnitCircle;
 class InterruptionChecker
@@ -33,9 +32,9 @@ public:
 	VisibleObject* nearbyVisibleObject(Vector2f mousePosition);
 	VisibleObject* nearbyObject(Vector2f mousePosition);
 	Point* nearbyConstructedPoint(Vector2f mousePosition);
-	Point* nearbyConstructedPointOnCircle(Vector2f mousePosition);
+	UnitPoint* nearbyConstructedPointOnCircle(Vector2f mousePosition);
 	Point* nearbyNewPoint(Vector2f mousePosition);
-	Point* nearbyNewPointOnCircle(Vector2f mousePosition);
+	UnitPoint* nearbyNewPointOnCircle(Vector2f mousePosition);
 	Line* nearbyLine(Vector2f mousePosition);
 	pair<Line*, Line*> nearbyLines(Vector2f mousePosition);
 	Point* nearbyIntersection(Vector2f mousePosition);

@@ -188,9 +188,11 @@ bool Menu::mouseOnMenu()
 }
 
 
-void Menu::pushButton(Button newButton)
+void Menu::pushButton(Button button)
 {
-	buttons.push_back(newButton);
+	(*window).setView(menuView);
+	button.setPosition(button.getLocalPosition());
+	buttons.push_back(button);
 }
 
 bool Menu::checkMouse()
@@ -236,10 +238,9 @@ void Menu::draw()
 	background.setSize(menuView.getSize());
 	background.setPosition(position);
 	(*window).draw(background);
-	for (auto& Button : buttons)
+	for (auto& button : buttons)
 	{
-		Button.setPosition(Button.getLocalPosition());
-		Button.draw();
+		button.draw();
 	}
 }
 
@@ -279,10 +280,15 @@ void DialogBox::cin(Event event)
 		finished = true;
 		break;
 	default:
-		Text text(textIn, font, textSize);
-		if (text.getLocalBounds().width < sizeTextBox.x - 2 * textOffset.x)
+		if ((event.text.unicode >= '0' && event.text.unicode <= '9')
+			|| event.text.unicode == '.' || event.text.unicode == ',' || event.text.unicode == ':'
+			)
 		{
-			textIn += event.text.unicode;
+			Text text(textIn, font, textSize);
+			if (text.getLocalBounds().width < sizeTextBox.x - 2 * textOffset.x)
+			{
+				textIn += event.text.unicode;
+			}
 		}
 	}
 }
@@ -297,10 +303,20 @@ void DialogBox::draw()
 	window->draw(shadow);
 	window->draw(dialogBox);
 	window->draw(textBox);
-	Text text(textIn, font, textSize);
+	Text text;
+	if (textIn.empty())
+	{
+		text = Text(formatIn, font, textSize);
+		text.setFillColor(color);
+	}
+	else
+	{
+		text = Text(textIn, font, textSize);
+		text.setFillColor(Color::Black);
+	}
 	text.setPosition(position + textBoxOffset + textOffset);
-	text.setFillColor(Color::Black);
 	window->draw(text);
+
 }
 
 bool DialogBox::isFinished()

@@ -23,7 +23,7 @@ public:
 
 //Changes the thread with thread that creates another object
 //Use operator () to run thread or check if thread is needed to be changed
-void tes();
+
 
 class Creation
 {

@@ -96,9 +96,9 @@ class DialogBox
 	Color color = Color(128, 128, 128);
 	Color shadowColor = Color(32, 32, 32);
 	const FloatRect viewport = FloatRect(0.f, 0.f, 1.0f, 1.0f);
-	const Vector2f sizeDialogBox = Vector2f(300, 50);
-	const Vector2f sizeTextBox = Vector2f(295, 45);
-	const unsigned int textSize = 20;
+	const Vector2f sizeDialogBox = Vector2f(300, 60);
+	const Vector2f sizeTextBox = Vector2f(295, 55);
+	const unsigned int textSize = 35;
 	const Vector2f textOffset = Vector2f((sizeTextBox.y - textSize) / 2, (sizeTextBox.y - textSize) / 2);
 	const Vector2f textBoxOffset = (sizeDialogBox - sizeTextBox) / 2.f;
 	const Vector2f shadowOffset = Vector2f(1.f, 1.f);
@@ -107,6 +107,7 @@ class DialogBox
 	RectangleShape textBox = RectangleShape(sizeTextBox);
 	Font font;
 	string textIn;
+	const string formatIn = "Input: p:q";
 	bool finished = false;
 public:
 	DialogBox(RenderWindow* window);

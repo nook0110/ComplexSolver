@@ -215,6 +215,13 @@ void Line::reposition()
 	construction->recreate(equation);
 }
 
+void Line::Init()
+{
+	Drawer::allVisibleObjects.push_back(this);
+}
+
+Line::Line()
+{}
 
 Line::Line(UnitCircle* first, Point* second)
 {
@@ -223,6 +230,7 @@ Line::Line(UnitCircle* first, Point* second)
 	construction = new Tangent(this, first, second);
 	equation = new LineEquation(0, 0, 0);
 	reposition();
+	Init();
 }
 
 Line::Line(Point* first, Point* second)
@@ -232,6 +240,7 @@ Line::Line(Point* first, Point* second)
 	construction = new ByTwoPoints(this, first, second);
 	equation = new LineEquation(0, 0, 0);
 	reposition();
+	Init();
 }
 
 Line::Line(Point* first, Line* second)
@@ -241,7 +250,19 @@ Line::Line(Point* first, Line* second)
 	construction = new Perpendicular(this, first, second);
 	equation = new LineEquation(0, 0, 0);
 	reposition();
+	Init();
 }
+
+Chord::Chord(UnitPoint* first, UnitPoint* second)
+{
+	first->addChild(this);
+	second->addChild(this);
+	construction = new ByTwoPoints(this, first, second);
+	equation = new LineEquation(0, 0, 0);
+	reposition();
+	Init();
+}
+
 
 double Point::distance(Vector2f Point)
 {
@@ -330,15 +351,6 @@ Point::Point(Line* line, Point* point)
 	throw std::runtime_error("Constructor uncompleted");
 }
 
-Point::Point(UnitCircle* unitCircle, Vector2f mousePosition)
-{
-	auto scalar = new Scalar(atan2(mousePosition.y, mousePosition.x));
-	construction = new ByCircleAndScalar(this, unitCircle, scalar);
-	unitCircle->addChild(this);
-	scalar->addChild(this);
-	Init();
-}
-
 bool Point::isNearby(Vector2f mousePosition)
 {
 	return distance(mousePosition) < epsilon;
@@ -354,13 +366,6 @@ void Point::drawDescription()
 {
 }
 
-void Point::move(Vector2f delta)
-{
-	dynamic_cast<ConstructionPoint*>(construction)->move(delta);
-	construction->recreate(equation);
-	reposeChildren();
-}
-
 ByComplexScalar::ByComplexScalar(Object* object, ComplexScalar* ComplexScalar)
 	:parent(ComplexScalar)
 {
@@ -372,11 +377,6 @@ void ByComplexScalar::recreate(Equation* equation)
 {
 	ComplexScalarEquation* complexScalarequation = dynamic_cast<ComplexScalarEquation*>(parent->getEquation());
 	*dynamic_cast<PointEquation*>(equation) = PointEquation((*complexScalarequation).point);
-}
-
-void ByComplexScalar::move(Vector2f delta)
-{
-	parent->operator+=(delta);
 }
 
 void ByComplexScalar::moveTo(Vector2f coords)
@@ -411,10 +411,6 @@ void IntersectionOfTwoLines::recreate(Equation* equation)
 	*dynamic_cast<PointEquation*>(equation) = (PointEquation(pointCoord));
 }
 
-void IntersectionOfTwoLines::move(Vector2f delta)
-{
-}
-
 void IntersectionOfTwoLines::moveTo(Vector2f coords)
 {
 }
@@ -424,6 +420,41 @@ IntersectionOfTwoLines::~IntersectionOfTwoLines()
 	firstParent->eraseChild(object);
 	secondParent->eraseChild(object);
 }
+
+
+
+CentralProjection::CentralProjection(Object* object, UnitCircle* first, Point* second, UnitPoint* third)
+	:firstParent(first), secondParent(second), thirdParent(third)
+{
+	ConstructionData::object = object;
+}
+
+void CentralProjection::recreate(Equation* equation)
+{
+	PointEquation* firstEquation = dynamic_cast<PointEquation*>(secondParent->getEquation());
+	PointEquation* secondEquation = dynamic_cast<PointEquation*>(thirdParent->getEquation());
+	Vector2f firstCoord = firstEquation->point;
+	Vector2f secondCoord = (*secondEquation).point;
+	double A = -firstCoord.y + secondCoord.y;
+	double B = -(-firstCoord.x + secondCoord.x);
+	double C = firstCoord.x * (firstCoord.y - secondCoord.y) - firstCoord.y * (firstCoord.x - secondCoord.x);
+	LineEquation lineEquation(A, B, C);
+	Vector2f projection = Equation::Projection(lineEquation, PointEquation(Vector2f(0, 0)));
+	Vector2f delta = projection - thirdParent->getCoordinate();
+	*dynamic_cast<PointEquation*>(equation) = PointEquation(projection + delta);
+}
+
+void CentralProjection::moveTo(Vector2f coords)
+{
+}
+
+CentralProjection::~CentralProjection()
+{
+	firstParent->eraseChild(object);
+	secondParent->eraseChild(object);
+	thirdParent->eraseChild(object);
+}
+
 
 ByTwoPointsAndScalar::ByTwoPointsAndScalar(Object* object, Point* firstParent, Point* secondParent, Scalar* thirdParent)
 	:firstParent(firstParent), secondParent(secondParent), thirdParent(thirdParent)
@@ -567,10 +598,6 @@ void ConstructionPoint::recreate(Equation*)
 {
 }
 
-void ConstructionPoint::move(Vector2f delta)
-{
-}
-
 void ConstructionPoint::moveTo(Vector2f coords)
 {
 }
@@ -679,19 +706,6 @@ ByLineAndScalar::ByLineAndScalar(Object* object, Line* firstParent, Scalar* seco
 	ConstructionData::object = object;
 }
 
-void ByLineAndScalar::move(Vector2f delta)
-{
-	LineEquation* lineEquation = dynamic_cast<LineEquation*>(firstParent->getEquation());
-	Vector2f projectionOfDelta = Equation::Projection(*lineEquation, PointEquation(delta));
-	Vector2f projection = Equation::Projection(*lineEquation);
-	Vector2f deltaProjection = projectionOfDelta - projection;
-	double deltaValue = sqrt(deltaProjection.x * deltaProjection.x + deltaProjection.y * deltaProjection.y);
-	double phi = atan2(deltaProjection.y, deltaProjection.x);
-	int signPhi = (phi > 0) - (phi < 0);
-	deltaValue *= signPhi;
-	secondParent->operator+=(deltaValue);
-}
-
 void ByLineAndScalar::moveTo(Vector2f coord)
 {
 	LineEquation* lineEquation = dynamic_cast<LineEquation*>(firstParent->getEquation());
@@ -773,17 +787,6 @@ ByCircleAndScalar::~ByCircleAndScalar()
 	secondParent = nullptr;
 }
 
-void ByCircleAndScalar::move(Vector2f delta)
-{
-	ScalarEquation* scalarEquation = dynamic_cast<ScalarEquation*>(secondParent->getEquation());
-	double angle = (*scalarEquation).value;
-	Vector2f position(cos(angle) * unitSeg, sin(angle) * unitSeg);
-	position += delta;
-	double angle2 = atan2(position.y, position.x);
-	double deltaAngle = angle2 - angle;
-	secondParent->operator+=(deltaAngle);
-}
-
 void ByCircleAndScalar::moveTo(Vector2f coord)
 {
 	double angle = atan2(coord.y, coord.x);
@@ -826,10 +829,6 @@ CenterPoint::~CenterPoint()
 	centerPoint = new CenterPoint();
 }
 
-void CenterPoint::move(Vector2f delta)
-{
-}
-
 void CenterPoint::moveTo(Vector2f coords)
 {
 }
@@ -843,6 +842,11 @@ UnitPoint::UnitPoint(UnitCircle* unitCircle, Vector2f mousePosition)
 	Init();
 }
 
-Chord::Chord(UnitPoint* first, UnitPoint* second) : Line(first, second)
+UnitPoint::UnitPoint(UnitCircle* unitCircle, Point* first, UnitPoint* second)
 {
+	construction = new CentralProjection(this, unitCircle, first, second);
+	unitCircle->addChild(this);
+	first->addChild(this);
+	second->addChild(this);
+	Init();
 }

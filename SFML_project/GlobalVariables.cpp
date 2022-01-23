@@ -6,7 +6,7 @@
 double const unitSeg = 200;
 thread Creator;
 ContextSettings settings(0, 0, 8);
-RenderWindow  window(VideoMode(1000, 1000), "Version 0.4", Style::Default, settings);
+RenderWindow  window(VideoMode(1000,1000), "Version 0.4", Style::Default, settings);
 
 View view = window.getDefaultView();
 double const epsilon = unitSeg / 10;

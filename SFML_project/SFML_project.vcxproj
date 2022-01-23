@@ -127,13 +127,13 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>SFML_DYNAMIC;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>H:\C++ project\SFML-2.5.1\include</AdditionalIncludeDirectories>
-      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <AdditionalIncludeDirectories>C:\SFML-2.5.1-windows-vc15-64-bit\SFML-2.5.1\include</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp14</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>H:\C++ project\SFML-2.5.1\lib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\SFML-2.5.1-windows-vc15-64-bit\SFML-2.5.1\lib</AdditionalLibraryDirectories>
       <AdditionalDependencies>sfml-graphics-d.lib;sfml-window-d.lib;sfml-audio-d.lib;sfml-system-d.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
