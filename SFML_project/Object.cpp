@@ -157,6 +157,16 @@ double Line::distance(Vector2f point)
 	return abs((A * point.x + B * point.y + C) / sqrt(A * A + B * B));
 }
 
+Line::Line(Line* first, Point* second)
+{
+	first->addChild(this);
+	second->addChild(this);
+	construction = new Parallel(this, first, second);
+	equation = new LineEquation(0, 0, 0);
+	reposition();
+	Init();
+}
+
 bool Line::isNearby(Vector2f mousePosition)
 {
 	return distance(mousePosition) < epsilon;
@@ -557,9 +567,21 @@ void Polar::recreate(Equation* equation)
 	return;
 }
 
+Parallel::Parallel(Object* object, Line* first, Point* second)
+	:firstParent(first), secondParent(second)
+{
+	ConstructionData::object = object;
+}
+
 void Parallel::recreate(Equation* equation)
 {
-	return;
+	LineEquation* lineEquation = dynamic_cast<LineEquation*>(firstParent->getEquation());
+	PointEquation* pointEquation = dynamic_cast<PointEquation*>(secondParent->getEquation());
+	Vector2f coord = pointEquation->point;
+	double A = (*lineEquation).A;
+	double B = (*lineEquation).B;
+	double C = -(*lineEquation).A * coord.x - (*lineEquation).B * coord.y;
+	*dynamic_cast<LineEquation*>(equation) = LineEquation(A, B, C);
 }
 
 Tangent::Tangent(Object* object, UnitCircle* firstParent, Point* secondParent)

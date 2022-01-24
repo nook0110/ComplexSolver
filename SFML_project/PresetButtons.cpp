@@ -316,6 +316,37 @@ Button projectionButton = Button(Vector2f(450, 10), Vector2f(100, 100), &window,
 		return;
 	});
 
+Button parallelButton = Button(Vector2f(560, 10), Vector2f(120, 120), &window,
+	"Textures\\SFML_project\\Test.jpg", Vector2i(0, 0), maxTextureResolution,
+	MODE_PARALLEL, []() {
+		Waiter wait;
+		InterruptionChecker interruptionChecker;
+		Finder find;
+		Line* line = nullptr;
+		while (!line)
+		{
+			if (wait.untilClick())
+			{
+				return;
+			}
+			Vector2f mousePosition = (window).mapPixelToCoords(Mouse::getPosition(window), view);
+			line = find.nearbyLine(mousePosition);
+		}
+		if (wait.untilClick())
+		{
+			return;
+		}
+		Vector2f mousePosition = (window).mapPixelToCoords(Mouse::getPosition(window), view);
+		Point* point = find.nearbyConstructedPoint(mousePosition);
+		if (!point)
+		{
+			point = find.nearbyNewPoint(mousePosition);
+		}
+		new Line(line, point);
+		Creation::Create();
+		return;
+	});
+
 Button scalarButton = Button(Vector2f(670, 10), Vector2f(100, 100), &window,
 	"Textures\\SFML_project\\MidpointButton.jpg", Vector2i(0, 0), maxTextureResolution,
 	MODE_MIDPOINT, []() {

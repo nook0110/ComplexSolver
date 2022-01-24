@@ -237,8 +237,10 @@ class Polar : public ConstructionLine
 
 class Parallel : public ConstructionLine
 {
-	Point* firstParent;
-	Line* secondParent;
+	Line* firstParent;
+	Point* secondParent;
+public:
+	Parallel(Object* object, Line* first, Point* second);
 	void recreate(Equation* equation) override;
 };
 
@@ -329,9 +331,14 @@ protected:
 	void Init();
 public:
 	Line();
+	//By two points
 	Line(Point* first, Point* second);
+	//Perpendicular
 	Line(Point* first, Line* second);
+	//Tangent
 	Line(UnitCircle* first, Point* second);
+	//Parallel
+	Line(Line* first, Point* second);
 	bool isNearby(Vector2f mousePosition);
 	void draw() override;
 	void drawDescription();
