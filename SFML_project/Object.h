@@ -142,6 +142,17 @@ public:
 	~CentralProjection() override;
 };
 
+class Projection : public ConstructionPoint
+{
+	Point* firstParent;
+	Line* secondParent;
+public:
+	Projection(Object* object, Point* first, Line* second);
+	void recreate(Equation* equation) override;
+	void moveTo(Vector2f coords) override;
+	~Projection() override;
+};
+
 class ByTwoPointsAndScalar : public ConstructionPoint
 {
 	Point* firstParent;
@@ -346,10 +357,15 @@ public:
 	//static Vector2f intersectLines(Line::equationLine FirstEq, Line::equationLine SecondEq);
 	Vector2f getCoordinate();
 	virtual void moveTo(Vector2f coords);
+	// By complex scalar (Point on the plain)
 	Point(Vector2f mousePosition);
+	// Intersection of two lines
 	Point(Line* first, Line* second);
+	// Point on a line (By line and scalar)
 	Point(Line* line, Vector2f mousePosition);
-	Point(Line* line, Point* point);
+	// Projection on a line
+	Point(Point* point, Line* line);
+	// Point by two points and scalar
 	Point(Point* first, Point* second, Scalar* scalar);
 	bool isNearby(Vector2f mousePosition) override;
 	void draw() override;

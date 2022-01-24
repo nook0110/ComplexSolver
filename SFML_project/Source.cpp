@@ -19,9 +19,11 @@ extern Button perpendicularButton;
 extern Button tangentButton;
 extern Button deleteButton;
 extern Button midPointButton;
+extern Button symmetryButton;
 extern Button scalarButton;
 extern Button hideButton;
 extern Button clearButton;
+extern Button projectionButton;
 
 Vector2f CamCenter = Vector2f(0, 0);
 Plane* plane = Plane::getInstance();
@@ -41,9 +43,11 @@ int main()
 	mainMenu.pushButton(pointButton);
 	mainMenu.pushButton(centralProjectionButton);
 	//mainMenu.pushButton(perpendicularButton);
-	mainMenu.pushButton(tangentButton);
+	//mainMenu.pushButton(tangentButton);
+	mainMenu.pushButton(projectionButton);
 	mainMenu.pushButton(deleteButton);
-	mainMenu.pushButton(scalarButton);
+	//mainMenu.pushButton(scalarButton);
+	mainMenu.pushButton(symmetryButton);
 	mainMenu.pushButton(clearButton);
 	mainMenu.pushButton(hideButton);
 

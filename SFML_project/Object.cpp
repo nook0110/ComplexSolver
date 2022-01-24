@@ -346,9 +346,12 @@ Point::Point(Line* line, Vector2f mousePosition)
 	//complex coord*/
 }
 
-Point::Point(Line* line, Point* point)
+Point::Point(Point* point, Line* line)
 {
-	throw std::runtime_error("Constructor uncompleted");
+	construction = new Projection(this, point, line);
+	point->addChild(this);
+	line->addChild(this);
+	Init();
 }
 
 bool Point::isNearby(Vector2f mousePosition)
@@ -849,4 +852,28 @@ UnitPoint::UnitPoint(UnitCircle* unitCircle, Point* first, UnitPoint* second)
 	first->addChild(this);
 	second->addChild(this);
 	Init();
+}
+
+Projection::Projection(Object* object, Point* first, Line* second)
+	:firstParent(first), secondParent(second)
+{
+	ConstructionData::object = object;
+}
+
+void Projection::recreate(Equation* equation)
+{
+	LineEquation* lineEquation = dynamic_cast<LineEquation*>(secondParent->getEquation());
+	PointEquation* pointEquation = dynamic_cast<PointEquation*>(firstParent->getEquation());
+	Vector2f position = Equation::Projection(*lineEquation, *pointEquation);
+	*dynamic_cast<PointEquation*>(equation) = PointEquation(position);
+}
+
+void Projection::moveTo(Vector2f coords)
+{
+}
+
+Projection::~Projection()
+{
+	firstParent->eraseChild(object);
+	secondParent->eraseChild(object);
 }

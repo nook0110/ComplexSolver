@@ -241,6 +241,81 @@ Button midPointButton = Button(Vector2f(670, 10), Vector2f(100, 100), &window,
 		return;
 	});
 
+Button symmetryButton = Button(Vector2f(670, 10), Vector2f(100, 100), &window,
+	"Textures\\SFML_project\\Test.jpg", Vector2i(0, 0), maxTextureResolution,
+	MODE_SYMMETRY, []() {
+		Waiter wait;
+		Finder find;
+		const int twotimes = 2;
+		pair<Point*, Point*> points(nullptr, nullptr);
+		for (int i = 0; i < twotimes; ++i)
+		{
+			if (wait.untilClick())
+			{
+				return;
+			}
+			Vector2f mousePosition = (window).mapPixelToCoords(Mouse::getPosition(window), view);
+			Point* point = find.nearbyConstructedPoint(mousePosition);
+			if (!point)
+			{
+				point = find.nearbyNewPoint(mousePosition);
+			}
+			if (get<0>(points))
+			{
+				if (point != get<0>(points))
+				{
+					points.second = point;
+					break;
+				}
+				else
+				{
+					i--;
+					continue;
+				}
+			}
+			else
+			{
+				points.first = point;
+				continue;
+			}
+		}
+		new Point(points.first, points.second, new Scalar(-2));
+		Creation::Create();
+		return;
+	});
+
+Button projectionButton = Button(Vector2f(450, 10), Vector2f(100, 100), &window,
+	"Textures\\SFML_project\\Test.jpg", Vector2i(0, 0), maxTextureResolution,
+	MODE_PROJECTION, []() {
+		Waiter wait;
+		InterruptionChecker interruptionChecker;
+		Finder find;
+		if (wait.untilClick())
+		{
+			return;
+		}
+		Vector2f mousePosition = (window).mapPixelToCoords(Mouse::getPosition(window), view);
+		Point* point = find.nearbyConstructedPoint(mousePosition);
+		if (!point)
+		{
+			point = find.nearbyNewPoint(mousePosition);
+		}
+		Line* line = nullptr;
+		while (!line)
+		{
+			if (wait.untilClick())
+			{
+				return;
+			}
+			mousePosition = (window).mapPixelToCoords(Mouse::getPosition(window), view);
+			line = find.nearbyLine(mousePosition);
+			wait.sleep();
+		}
+		Creation::Create();
+		new Point(point, line);
+		return;
+	});
+
 Button scalarButton = Button(Vector2f(670, 10), Vector2f(100, 100), &window,
 	"Textures\\SFML_project\\MidpointButton.jpg", Vector2i(0, 0), maxTextureResolution,
 	MODE_MIDPOINT, []() {
@@ -309,10 +384,11 @@ Button tangentButton = Button(Vector2f(450, 10), Vector2f(100, 100), &window,
 		{
 			point = find.nearbyNewPointOnCircle(mousePosition);
 		}
-
-		auto unitCircle = UnitCircle::getInstance();
-		new Line(unitCircle, point);
-
+		if (point)
+		{
+			auto unitCircle = UnitCircle::getInstance();
+			new Line(unitCircle, point);
+		}
 		Creation::Create();
 		return;
 	});
@@ -388,7 +464,7 @@ VisibleObject* Finder::nearbyVisibleObject(Vector2f mousePosition)
 		if (object && object->isNearby(mousePosition))
 		{
 			return object;
-		}
+		} 
 	}
 	return nullptr;
 }
@@ -427,7 +503,7 @@ UnitPoint* Finder::nearbyConstructedPointOnCircle(Vector2f mousePosition)
 	for (VisibleObject* object : Drawer::allVisibleObjects)
 	{
 		UnitPoint* point = dynamic_cast<UnitPoint*>(object);
-		if (point && point->isNearby(mousePosition))
+		if (point && point->isNearby(mousePosition) && point->getVisibility())
 		{
 			return point;
 		}
