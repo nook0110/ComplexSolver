@@ -309,11 +309,10 @@ Button tangentButton = Button(Vector2f(450, 10), Vector2f(100, 100), &window,
 		{
 			point = find.nearbyNewPointOnCircle(mousePosition);
 		}
-		if (point)
-		{
-			auto unitCircle = UnitCircle::getInstance();
-			new Line(unitCircle, point);
-		}
+
+		auto unitCircle = UnitCircle::getInstance();
+		new Line(unitCircle, point);
+
 		Creation::Create();
 		return;
 	});
@@ -428,9 +427,9 @@ UnitPoint* Finder::nearbyConstructedPointOnCircle(Vector2f mousePosition)
 	for (VisibleObject* object : Drawer::allVisibleObjects)
 	{
 		UnitPoint* point = dynamic_cast<UnitPoint*>(object);
-		if (point)
-		{	
-				return point;
+		if (point && point->isNearby(mousePosition))
+		{
+			return point;
 		}
 	}
 	return nullptr;
