@@ -756,7 +756,7 @@ bool InterruptionChecker::checkInterruption(VisibleObject* object)
 
 bool Waiter::mouseOnTheScreen()
 {
-	Vector2f mousePosition = (window).mapPixelToCoords(Mouse::getPosition(window));
+	Vector2f mousePosition = (window).mapPixelToCoords(Mouse::getPosition(window),view);
 	Vector2f center = view.getCenter();
 	Vector2f size = view.getSize();
 	Vector2f leftUpCorner = center - size / 2.f;
