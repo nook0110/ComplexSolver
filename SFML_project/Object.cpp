@@ -117,6 +117,7 @@ UnitCircle::UnitCircle()
 	shape.setOutlineThickness(outlineThickness);
 	shape.setRadius(unitSeg - outlineThickness / 2);
 	shape.setOutlineColor(getColor());
+	shape.setFillColor(Color(0, 0, 0, 0));
 }
 
 UnitCircle* UnitCircle::getInstance()
@@ -571,6 +572,12 @@ Parallel::Parallel(Object* object, Line* first, Point* second)
 	:firstParent(first), secondParent(second)
 {
 	ConstructionData::object = object;
+}
+
+Parallel::~Parallel()
+{
+	firstParent->eraseChild(object);
+	secondParent->eraseChild(object);
 }
 
 void Parallel::recreate(Equation* equation)

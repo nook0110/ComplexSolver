@@ -8,7 +8,7 @@
 using namespace std;
 class Menu;
 extern Menu mainMenu;
-
+extern RenderWindow window;
 
 class VisibleObject;
 //Checks if mode has been changed
@@ -72,6 +72,7 @@ class Drawer
 	static void drawMenu();
 	static void drawTextBoxes();
 	static void drawDialogBox();
+	static void drawProveObject();
 	static void resizeMenu(Event event);
 	static void updateMenu();
 	static void resizeTextBoxes(Event event);

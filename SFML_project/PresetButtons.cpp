@@ -386,7 +386,7 @@ Button scalarButton = Button(Vector2f(670, 10), Vector2f(100, 100), &window,
 				continue;
 			}
 		}
-		DialogBox dialogBox(&window);
+		ScalarBox dialogBox(&window);
 		while (!dialogBox.isFinished())
 		{
 			if (!checker.checkInterruption())
@@ -478,6 +478,105 @@ Button clearButton = Button(Vector2f(890, 10), Vector2f(100, 100), &window,
 		return;
 	});
 
+
+Button fourPointsOnACircle = Button(Vector2f(890, 10), Vector2f(100, 100), &window,
+	"Textures\\SFML_project\\ClearButton.jpg", Vector2i(0, 0), maxTextureResolution,
+	MODE_HIDE, []() {
+		Waiter wait;
+		Finder find;
+		const int fourTimes = 4;
+		vector<Point*> points;
+		for (int i = 0; i < fourTimes; ++i)
+		{
+			Point* point = nullptr;
+			while (!point)
+			{
+				if (wait.untilClick())
+				{
+					return;
+				}
+				Vector2f mousePosition = (window).mapPixelToCoords(Mouse::getPosition(window), view);
+				point = find.nearbyConstructedPoint(mousePosition);
+			}
+			points.push_back(point);
+		}
+		/*
+		PointEquation* first = dynamic_cast<PointEquation*>(points[0]->getEquation());
+		PointEquation* second = dynamic_cast<PointEquation*>(points[1]->getEquation());
+		PointEquation* third = dynamic_cast<PointEquation*>(points[2]->getEquation());
+		Vector2f deltaOneTwo = first->point - second->point;
+		Vector2f deltaTwoThree = second->point - third->point;
+		Vector2f deltaThreeOne = third->point - first->point;
+		double zFirst = (first->point.x) * (first->point.x) + (first->point.y) * (first->point.y);
+		double zSecond = (second->point.x) * (second->point.x) + (second->point.y) * (second->point.y);
+		double zThird = (third->point.x) * (third->point.x) + (third->point.y) * (third->point.y);
+		double zX = deltaOneTwo.y * zThird + deltaTwoThree.y * zFirst + deltaThreeOne.y * zSecond;
+		double zY = deltaOneTwo.x * zThird + deltaTwoThree.x * zFirst + deltaThreeOne.x * zSecond;
+		double z = deltaOneTwo.x * deltaThreeOne.y - deltaOneTwo.y * deltaThreeOne.x;
+		Vector2f center(-zX / (2 * z), zY / (2 * z));
+		double r = sqrt((first->point - center).x * (first->point - center).x + (first->point - center).y * (first->point - center).y);
+		Drawer::proveShape = new CircleShape(r, 100);
+		Drawer::proveShape->setOrigin(Vector2f(r, r));
+		Drawer::proveShape->setPosition(center);
+		Drawer::proveShape->setFillColor(Color(0, 0, 0, 0));
+		Drawer::proveShape->setOutlineColor(Color::Red);
+		Drawer::proveShape->setOutlineThickness(5);
+		*/
+		Creation::Create();
+		return;
+	});
+
+Button ñollinearityOfLines = Button(Vector2f(890, 10), Vector2f(100, 100), &window,
+	"Textures\\SFML_project\\ClearButton.jpg", Vector2i(0, 0), maxTextureResolution,
+	MODE_HIDE, []() {
+		Waiter wait;
+		Finder find;
+		const int threeTimes = 3;
+		vector<Line*> lines;
+		for (int i = 0; i < threeTimes; ++i)
+		{
+			Line* line = nullptr;
+			while (!line)
+			{
+				if (wait.untilClick())
+				{
+					return;
+				}
+				Vector2f mousePosition = (window).mapPixelToCoords(Mouse::getPosition(window), view);
+				line = find.nearbyLine(mousePosition);
+			}
+			lines.push_back(line);
+		}
+		Creation::Create();
+		return;
+	});
+
+Button ñollinearityOfPoints = Button(Vector2f(890, 10), Vector2f(100, 100), &window,
+	"Textures\\SFML_project\\ClearButton.jpg", Vector2i(0, 0), maxTextureResolution,
+	MODE_HIDE, []() {
+		Waiter wait;
+		Finder find;
+		const int threeTimes = 4;
+		vector<Point*> points;
+		for (int i = 0; i < threeTimes; ++i)
+		{
+			Point* point = nullptr;
+			while (!point)
+			{
+				if (wait.untilClick())
+				{
+					return;
+				}
+				Vector2f mousePosition = (window).mapPixelToCoords(Mouse::getPosition(window), view);
+				point = find.nearbyConstructedPoint(mousePosition);
+			}
+			points.push_back(point);
+		}
+
+		Creation::Create();
+		return;
+	});
+
 VisibleObject* Finder::nearbyVisibleObject(Vector2f mousePosition)
 {
 	Point* point = nearbyConstructedPoint(mousePosition);
@@ -495,7 +594,7 @@ VisibleObject* Finder::nearbyVisibleObject(Vector2f mousePosition)
 		if (object && object->isNearby(mousePosition))
 		{
 			return object;
-		} 
+		}
 	}
 	return nullptr;
 }

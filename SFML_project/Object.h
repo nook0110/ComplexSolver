@@ -241,6 +241,7 @@ class Parallel : public ConstructionLine
 	Point* secondParent;
 public:
 	Parallel(Object* object, Line* first, Point* second);
+	~Parallel();
 	void recreate(Equation* equation) override;
 };
 

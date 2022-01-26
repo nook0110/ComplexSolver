@@ -102,6 +102,10 @@ void Drawer::drawDialogBox()
 	}
 }
 
+void Drawer::drawProveObject()
+{
+}
+
 void Drawer::resizeMenu(Event event)
 {
 	mainMenu.update(event);

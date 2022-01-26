@@ -36,6 +36,7 @@ private:
 	bool RightPressed = false;
 	bool texturePressed = false;
 
+	void updateSprite();
 	void setTexture(string _textureLocation, Vector2i _textureStart, Vector2i _textureSize);
 public:
 	Button(Vector2f _position, Vector2f _size, RenderWindow* _window,
@@ -49,6 +50,7 @@ public:
 		string _texturePressedLocation, Vector2i _texturePressedStart, Vector2i _texturePressedSize,
 		MODES _mode = MODE_NOTHING, function<void(void)> _modeFunction = [&](void) {});
 	void setPosition(Vector2f);
+	void setSize(Vector2f size);
 	void draw();
 	bool mouseCheck(View);
 	bool leftClickCheck(View);
@@ -65,19 +67,21 @@ public:
 	function<void(void)> getObjectCreationMethod();
 };
 
-class DialogBox;
-class TextBox;
+
 //Menu is a list of buttons, you can push buttons in it.
 class Menu
 {
 private:
 	View menuView;
 	RenderWindow* window;
+	const double shiftRatio = 0.1;
+	Vector2i buttonTable = Vector2i(10, 2);
 	const FloatRect viewport = FloatRect(0.f, 0.f, 1.0f, 0.2f);
 	const Color color = Color(128, 128, 128, 255);
 	const Vector2f position = Vector2f(0, 0);
 	vector<Button> buttons;
 	RectangleShape background;
+	void updateButtons();
 public:
 	Menu(RenderWindow* _window);
 	void update(Event);
@@ -91,6 +95,7 @@ public:
 
 class DialogBox
 {
+protected:
 	RenderWindow* window;
 	View dialogBoxView;
 	Color color = Color(128, 128, 128);
@@ -107,18 +112,30 @@ class DialogBox
 	RectangleShape textBox = RectangleShape(sizeTextBox);
 	Font font;
 	string textIn;
-	const string formatIn = "Input: p:q";
+	string formatIn;
 	bool finished = false;
 public:
 	DialogBox(RenderWindow* window);
 	~DialogBox();
 	void update(Event event);
-	void cin(Event event);
+	virtual void cin(Event event);
 	void draw();
 	bool isFinished();
-	double getDouble();
+
 };
 
+class ScalarBox : public DialogBox
+{
+public:
+	ScalarBox(RenderWindow* window);
+	double getDouble();
+	void cin(Event event) override;
+};
+
+class NameBox :DialogBox
+{
+
+};
 class TextBox
 {
 	RenderWindow* window;

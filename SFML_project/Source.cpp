@@ -22,6 +22,7 @@ extern Button midPointButton;
 extern Button symmetryButton;
 extern Button scalarButton;
 extern Button hideButton;
+extern Button fourPointsOnACircle;
 extern Button clearButton;
 extern Button projectionButton;
 extern Button parallelButton;
@@ -31,6 +32,7 @@ Plane* plane = Plane::getInstance();
 
 int main()
 {
+
 
 	CenterPoint::getInstance();
 
@@ -43,19 +45,19 @@ int main()
 	mainMenu.pushButton(lineButton);
 	mainMenu.pushButton(pointButton);
 	mainMenu.pushButton(centralProjectionButton);
-	//mainMenu.pushButton(perpendicularButton);
-	//mainMenu.pushButton(tangentButton);
+	mainMenu.pushButton(perpendicularButton);
+	mainMenu.pushButton(tangentButton);
 	mainMenu.pushButton(projectionButton);
-	//mainMenu.pushButton(deleteButton);
+	mainMenu.pushButton(deleteButton);
 	mainMenu.pushButton(parallelButton);
-	//mainMenu.pushButton(scalarButton);
+	mainMenu.pushButton(scalarButton);
 	mainMenu.pushButton(symmetryButton);
 	mainMenu.pushButton(clearButton);
+	//mainMenu.pushButton(fourPointsOnACircle);
 	mainMenu.pushButton(hideButton);
 
 
 
-	
 	(*Creation::getInstance())();
 	while (window.isOpen())
 	{	
@@ -92,6 +94,8 @@ int main()
 		window.setView(view);
 		Drawer::draw();
 		mainMenu.draw();
+
+
 		window.display();
 	}
 	return 0;

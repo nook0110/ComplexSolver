@@ -9,15 +9,19 @@ extern Vector2i maxTextureResolution;
 
 extern MODES Mousemode;
 
-void Button::setTexture(string _textureLocation, Vector2i _textureStart, Vector2i _textureSize)
+void Button::updateSprite()
 {
-	texture.loadFromFile(_textureLocation, IntRect(_textureStart, _textureSize));
 	Sprite.setScale(1 / Sprite.getScale().x, 1 / Sprite.getScale().y); // Scaling Sprite to 1*1;
 	Sprite.setTexture(texture);
 	Sprite.setScale(
 		size.x / Sprite.getLocalBounds().width,
 		size.y / Sprite.getLocalBounds().height); // Scaling Sprite to required size;
+}
 
+void Button::setTexture(string _textureLocation, Vector2i _textureStart, Vector2i _textureSize)
+{
+	texture.loadFromFile(_textureLocation, IntRect(_textureStart, _textureSize));
+	updateSprite();
 }
 
 Button::Button(Vector2f _position, Vector2f _size, RenderWindow* _window,
@@ -68,6 +72,12 @@ void Button::setPosition(Vector2f _position)
 {
 	position = _position;
 	Sprite.setPosition(position);
+}
+
+void Button::setSize(Vector2f size)
+{
+	Button::size = size;
+	updateSprite();
 }
 
 void Button::draw() {
@@ -164,6 +174,29 @@ function<void(void)> Button::getObjectCreationMethod()
 	return modeFunction;
 }
 
+void Menu::updateButtons()
+{
+	Vector2f menuSize = menuView.getSize();
+	//c-buttons.size(), s-size, x-menuSize.x, y-menuSize.y
+	//(c-1)s^2+(x+y)*s-xy=0
+	double a = buttons.size() - 1;
+	double b = menuSize.x + menuSize.y;
+	double c = -menuSize.x * menuSize.y;
+	double size = ((-b + sqrt(b * b - 4 * a * c)) / (2 * a)) / (1 + shiftRatio);
+	buttonTable.x = (menuSize.x - size * shiftRatio) / (size * (1 + shiftRatio));
+	buttonTable.y = (menuSize.y - size * shiftRatio) / (size * (1 + shiftRatio));
+	double shiftSize = size * shiftRatio;
+	for (int i = 0; i < buttons.size(); i++)
+	{
+		int row = i / buttonTable.x;
+		buttons[i].setPosition(Vector2f(
+			(i - row * buttonTable.x) * (size + shiftSize) + shiftSize,
+			row * (size + shiftSize) + shiftSize
+		));
+		buttons[i].setSize(Vector2f(size, size));
+	}
+}
+
 Menu::Menu(RenderWindow* _window)
 {
 	window = _window;
@@ -179,6 +212,7 @@ void Menu::update(Event event)
 	sf::FloatRect visibleArea(menuView.getCenter().x - menuView.getSize().x / 2, menuView.getCenter().y - menuView.getSize().y / 2, event.size.width * viewport.width, event.size.height * viewport.height);
 	(*window).setView(sf::View(visibleArea));
 	menuView = sf::View(visibleArea);
+	updateButtons();
 }
 
 bool Menu::mouseOnMenu()
@@ -193,6 +227,7 @@ void Menu::pushButton(Button button)
 	(*window).setView(menuView);
 	button.setPosition(button.getLocalPosition());
 	buttons.push_back(button);
+	updateButtons();
 }
 
 bool Menu::checkMouse()
@@ -268,29 +303,7 @@ void DialogBox::update(Event event)
 
 void DialogBox::cin(Event event)
 {
-	switch (event.text.unicode)
-	{
-	case 8:
-		if (!textIn.empty())
-		{
-			textIn.pop_back();
-		}
-		break;
-	case 13:
-		finished = true;
-		break;
-	default:
-		if ((event.text.unicode >= '0' && event.text.unicode <= '9')
-			|| event.text.unicode == '.' || event.text.unicode == ',' || event.text.unicode == ':'
-			)
-		{
-			Text text(textIn, font, textSize);
-			if (text.getLocalBounds().width < sizeTextBox.x - 2 * textOffset.x)
-			{
-				textIn += event.text.unicode;
-			}
-		}
-	}
+
 }
 
 void DialogBox::draw()
@@ -324,7 +337,17 @@ bool DialogBox::isFinished()
 	return finished;
 }
 
-double DialogBox::getDouble()
+DialogBox::~DialogBox()
+{
+	Drawer::dialogBox = nullptr;
+}
+
+ScalarBox::ScalarBox(RenderWindow* window) :DialogBox(window)
+{
+	formatIn = "Input: p:q"s;
+}
+
+double ScalarBox::getDouble()
 {
 	auto position = textIn.find(":");
 	try
@@ -339,9 +362,31 @@ double DialogBox::getDouble()
 	}
 }
 
-DialogBox::~DialogBox()
+void ScalarBox::cin(Event event)
 {
-	Drawer::dialogBox = nullptr;
+	switch (event.text.unicode)
+	{
+	case 8:
+		if (!textIn.empty())
+		{
+			textIn.pop_back();
+		}
+		break;
+	case 13:
+		finished = true;
+		break;
+	default:
+		if ((event.text.unicode >= '0' && event.text.unicode <= '9')
+			|| event.text.unicode == '.' || event.text.unicode == ',' || event.text.unicode == ':'
+			)
+		{
+			Text text(textIn, font, textSize);
+			if (text.getLocalBounds().width < sizeTextBox.x - 2 * textOffset.x)
+			{
+				textIn += event.text.unicode;
+			}
+		}
+	}
 }
 
 void TextBox::setText(string text)
@@ -352,3 +397,4 @@ void TextBox::setText(string text)
 void TextBox::draw()
 {
 }
+
