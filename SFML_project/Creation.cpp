@@ -21,6 +21,11 @@ Creation::Creation()
 {
 }
 
+Creation::~Creation()
+{
+	delete running;
+}
+
 
 Creation* Creation::getInstance()
 {
@@ -28,14 +33,6 @@ Creation* Creation::getInstance()
 		creator = new Creation();
 	}
 	return creator;
-}
-
-void Creation::operator()()
-{
-	if (running->joinable())
-	{
-		running->detach();
-	}
 }
 
 Checker Creation::checker;

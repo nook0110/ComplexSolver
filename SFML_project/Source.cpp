@@ -26,7 +26,7 @@ extern Button fourPointsOnACircle;
 extern Button clearButton;
 extern Button projectionButton;
 extern Button parallelButton;
-
+extern Button pointBetweenPoints;
 Vector2f CamCenter = Vector2f(0, 0);
 Plane* plane = Plane::getInstance();
 
@@ -41,24 +41,25 @@ int main()
 	window.setVerticalSyncEnabled(true);
 
 	//Menu initialization
-	mainMenu.pushButton(moveButton);
-	mainMenu.pushButton(lineButton);
-	mainMenu.pushButton(pointButton);
-	mainMenu.pushButton(centralProjectionButton);
-	mainMenu.pushButton(perpendicularButton);
-	mainMenu.pushButton(tangentButton);
-	mainMenu.pushButton(projectionButton);
-	mainMenu.pushButton(deleteButton);
-	mainMenu.pushButton(parallelButton);
-	mainMenu.pushButton(scalarButton);
-	mainMenu.pushButton(symmetryButton);
-	mainMenu.pushButton(clearButton);
+	mainMenu.pushButton(&moveButton);
+	mainMenu.pushButton(&lineButton);
+	mainMenu.pushButton(&pointButton);
+	mainMenu.pushButton(&pointBetweenPoints);
+	mainMenu.pushButton(&centralProjectionButton);
+	mainMenu.pushButton(&perpendicularButton);
+	mainMenu.pushButton(&tangentButton);
+	mainMenu.pushButton(&projectionButton);
+	mainMenu.pushButton(&deleteButton);
+	mainMenu.pushButton(&parallelButton);
+	mainMenu.pushButton(&scalarButton);
+	mainMenu.pushButton(&symmetryButton);
+	mainMenu.pushButton(&clearButton);
 	//mainMenu.pushButton(fourPointsOnACircle);
-	mainMenu.pushButton(hideButton);
+	mainMenu.pushButton(&hideButton);
 
 
 
-	(*Creation::getInstance())();
+	//(*Creation::getInstance())();
 	while (window.isOpen())
 	{	
 		Event event;

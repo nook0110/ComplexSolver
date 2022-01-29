@@ -79,14 +79,14 @@ private:
 	const FloatRect viewport = FloatRect(0.f, 0.f, 1.0f, 0.2f);
 	const Color color = Color(128, 128, 128, 255);
 	const Vector2f position = Vector2f(0, 0);
-	vector<Button> buttons;
+	vector<Button*> buttons;
 	RectangleShape background;
 	void updateButtons();
 public:
 	Menu(RenderWindow* _window);
 	void update(Event);
 	bool mouseOnMenu();
-	void pushButton(Button newButton);
+	void pushButton(Button* newButton);
 	bool checkMouse();
 	Button* leftClickCheck();
 	void unpress();

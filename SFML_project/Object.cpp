@@ -339,22 +339,14 @@ Point::Point(Line* first, Line* second)
 	Init();
 }
 
-Point::Point(Line* line, Vector2f mousePosition)
+Point::Point(Line* line, Point* first, Point* second, Vector2f mousePosition)
 {
-	LineEquation* lineEquation = dynamic_cast<LineEquation*>(line->getEquation());
-	Vector2f firstProj = Equation::Projection(*lineEquation, PointEquation(mousePosition));
-	Vector2f secondProj = Equation::Projection(*lineEquation);
-	Vector2f altitude = secondProj - projPoint;
-	Vector2f delta = firstProj - secondProj;
-	double distance = sqrt(delta.x * delta.x + delta.y * delta.y);
-	double crossProduct = altitude.x * delta.y - altitude.y * delta.x;
-	int sign = (crossProduct > 0) - (crossProduct < 0);
-	Scalar* scalar = new Scalar(distance * sign);
-	construction = new ByLineAndScalar(this, line, scalar);
+	construction = new ByLineAndScalar(this, first, second, new Scalar(0), line);
+	first->addChild(this);
+	second->addChild(this);
 	line->addChild(this);
-	scalar->addChild(this);
 	Init();
-	//complex coord*/
+	moveTo(mousePosition);
 }
 
 Point::Point(Point* point, Line* line)
@@ -710,77 +702,29 @@ ComplexScalarEquation& ComplexScalarEquation::operator+=(Vector2f delta)
 	return *this;
 }
 
-void ByLineAndScalar::checkDirectionSign(float A, float B, float C)
-{
-	double yProjPoint = (-C - A * projPoint.x) / B;
-	double deltaY = -(yProjPoint - projPoint.y);
-	int signDeltaY = (deltaY > 0) - (deltaY < 0);
-	if (signDeltaY != lastSignDeltaY)
-	{
-		if (abs(deltaY) < 100)
-		{
-			directionSign *= -1.f;
-		}
-		lastSignDeltaY = signDeltaY;
-	}
-}
 
-ByLineAndScalar::ByLineAndScalar(Object* object, Line* firstParent, Scalar* secondParent)
-	: firstParent(firstParent), secondParent(secondParent)
+
+ByLineAndScalar::ByLineAndScalar(Object* object, Point* firstParent, Point* secondParent, Scalar* thirdParent, Line* fourthParent) : ByTwoPointsAndScalar(object,firstParent,secondParent,thirdParent)
+	,fourthParent(fourthParent)
 {
-	LineEquation* lineEquation = dynamic_cast<LineEquation*>(firstParent->getEquation());
-	double A = (*lineEquation).A;
-	double B = (*lineEquation).B;
-	double C = (*lineEquation).C;
-	double yProjPoint = (-C - A * projPoint.x) / B;
-	lastSignDeltaY = -(yProjPoint - projPoint.y);
-	lastSignDeltaY = (lastSignDeltaY > 0) - (lastSignDeltaY < 0);
-	ConstructionData::object = object;
+	
 }
 
 void ByLineAndScalar::moveTo(Vector2f coord)
 {
-	LineEquation* lineEquation = dynamic_cast<LineEquation*>(firstParent->getEquation());
-	Vector2f firstProj = Equation::Projection(*lineEquation, PointEquation(coord));
-	Vector2f secondProj = Equation::Projection(*lineEquation);
-	Vector2f delta = firstProj - secondProj;
-	Vector2f altitude = secondProj - projPoint;
-	double distance = sqrt(delta.x * delta.x + delta.y * delta.y);
-	double crossProduct = altitude.x * delta.y - altitude.y * delta.x;
-	int sign = (crossProduct > 0) - (crossProduct < 0);
-	*secondParent = (distance * sign * directionSign);
+	Vector2f proj = Equation::Projection(*dynamic_cast<LineEquation*>(fourthParent->getEquation()), coord);
+	PointEquation* firstEquation = dynamic_cast<PointEquation*>(firstParent->getEquation());
+	PointEquation* secondEquation = dynamic_cast<PointEquation*>(secondParent->getEquation());
+	ScalarEquation* thirdEquation = dynamic_cast<ScalarEquation*>(thirdParent->getEquation());
+	Vector2f firstCoord = firstEquation->point;
+	Vector2f secondCoord = (*secondEquation).point;
+	float ratio = -(proj - firstCoord).x / (proj - secondCoord).x;
+	thirdEquation->value = ratio;
 }
 
 ByLineAndScalar::~ByLineAndScalar()
 {
-	firstParent->eraseChild(object);
-	secondParent->eraseChild(object);
-	delete secondParent;
-	secondParent = nullptr;
-}
-
-void ByLineAndScalar::recreate(Equation* equation)
-{
-	LineEquation* lineEquation = dynamic_cast<LineEquation*>(firstParent->getEquation());
-	ScalarEquation* scalarEquation = dynamic_cast<ScalarEquation*>(secondParent->getEquation());
-	double A = (*lineEquation).A;
-	double B = (*lineEquation).B;
-	double C = (*lineEquation).C;
-	Vector2f direction = Vector2f(-B, A);
-	direction /= (float)sqrt(A * A + B * B);
-	direction *= (float)(*scalarEquation).value;
-	Vector2f projection = Equation::Projection(*lineEquation);
-	Vector2f altitude = projection - projPoint;
-	double crossProduct = altitude.x * direction.y - altitude.y * direction.x;
-	int signCross = (crossProduct > 0) - (crossProduct < 0);
-	int signScalar = ((*scalarEquation).value > 0) - ((*scalarEquation).value < 0);
-	if (signCross != signScalar)
-	{
-		direction *= -1.f;
-	}
-	checkDirectionSign(A, B, C);
-	Vector2f position = projection + direction * directionSign;
-	*dynamic_cast<PointEquation*>(equation) = (PointEquation(position));
+	fourthParent->eraseChild(object);
 }
 
 Scalar::Scalar(double value)

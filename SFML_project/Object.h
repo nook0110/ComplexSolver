@@ -155,6 +155,7 @@ public:
 
 class ByTwoPointsAndScalar : public ConstructionPoint
 {
+protected:
 	Point* firstParent;
 	Point* secondParent;
 	Scalar* thirdParent;
@@ -164,18 +165,13 @@ public:
 	void recreate(Equation* equation) override;
 };
 
-class ByLineAndScalar : public ConstructionPoint
+class ByLineAndScalar : public ByTwoPointsAndScalar
 {
-	Line* firstParent;
-	Scalar* secondParent;
-	double lastSignDeltaY;
-	float directionSign = 1;
-	void checkDirectionSign(float A, float B, float C);
+	Line* fourthParent;
 public:
-	ByLineAndScalar(Object* object, Line* firstParent, Scalar* secondParent);
+	ByLineAndScalar(Object* object,Point* firstParent, Point* secondParent, Scalar* thirdParent, Line* fourthParent);
 	void moveTo(Vector2f coords) override;
 	~ByLineAndScalar();
-	void recreate(Equation* equation) override;
 };
 
 class ByCircleAndScalar : public ConstructionPoint
@@ -370,7 +366,7 @@ public:
 	// Intersection of two lines
 	Point(Line* first, Line* second);
 	// Point on a line (By line and scalar)
-	Point(Line* line, Vector2f mousePosition);
+	Point(Line* line, Point* first, Point* second, Vector2f mousePosition);
 	// Projection on a line
 	Point(Point* point, Line* line);
 	// Point by two points and scalar

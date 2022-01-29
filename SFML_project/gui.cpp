@@ -189,11 +189,11 @@ void Menu::updateButtons()
 	for (int i = 0; i < buttons.size(); i++)
 	{
 		int row = i / buttonTable.x;
-		buttons[i].setPosition(Vector2f(
+		buttons[i]->setPosition(Vector2f(
 			(i - row * buttonTable.x) * (size + shiftSize) + shiftSize,
 			row * (size + shiftSize) + shiftSize
 		));
-		buttons[i].setSize(Vector2f(size, size));
+		buttons[i]->setSize(Vector2f(size, size));
 	}
 }
 
@@ -222,10 +222,9 @@ bool Menu::mouseOnMenu()
 }
 
 
-void Menu::pushButton(Button button)
+void Menu::pushButton(Button* button)
 {
 	(*window).setView(menuView);
-	button.setPosition(button.getLocalPosition());
 	buttons.push_back(button);
 	updateButtons();
 }
@@ -235,7 +234,7 @@ bool Menu::checkMouse()
 	(*window).setView(menuView);
 	for (auto& Button : buttons)
 	{
-		if (Button.mouseCheck(menuView))
+		if (Button->mouseCheck(menuView))
 		{
 			return true;
 		}
@@ -248,9 +247,9 @@ Button* Menu::leftClickCheck()
 	(*window).setView(menuView);
 	for (auto& Button : buttons)
 	{
-		if (Button.leftClickCheck(menuView))
+		if (Button->leftClickCheck(menuView))
 		{
-			return &Button;
+			return Button;
 		}
 	}
 	return nullptr;
@@ -261,7 +260,7 @@ void Menu::unpress()
 	(*window).setView(menuView);
 	for (auto& Button : buttons)
 	{
-		Button.unpress();
+		Button->unpress();
 	}
 	Mousemode = MODE_NOTHING;
 }
@@ -275,7 +274,7 @@ void Menu::draw()
 	(*window).draw(background);
 	for (auto& button : buttons)
 	{
-		button.draw();
+		button->draw();
 	}
 }
 

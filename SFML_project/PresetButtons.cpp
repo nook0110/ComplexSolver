@@ -132,6 +132,64 @@ Button lineButton = Button(Vector2f(230, 10), Vector2f(100, 100), &window,
 		return;
 	});
 
+Button pointBetweenPoints = Button(Vector2f(230, 10), Vector2f(100, 100), &window,
+	"Textures\\SFML_project\\LineButton.jpg", Vector2i(0, 0), maxTextureResolution,
+	MODE_POINT_BETWEEN_POINTS, []() {
+		Waiter wait;
+		Finder find;
+		const int twotimes = 2;
+		pair<Point*, Point*> points(nullptr, nullptr);
+		for (int i = 0; i < twotimes; ++i)
+		{
+			if (wait.untilClick())
+			{
+				return;
+			}
+			Vector2f mousePosition = (window).mapPixelToCoords(Mouse::getPosition(window), view);
+			Point* point = find.nearbyConstructedPoint(mousePosition);
+			if (!point)
+			{
+				point = find.nearbyNewPoint(mousePosition);
+			}
+			if (get<0>(points))
+			{
+				if (point != get<0>(points))
+				{
+					points.second = point;
+					break;
+				}
+				else
+				{
+					i--;
+					continue;
+				}
+			}
+			else
+			{
+				points.first = point;
+				continue;
+			}
+		}
+		Line* line;
+		if (points.first->isOnCircle() && points.second->isOnCircle())
+		{
+			line = new Chord(dynamic_cast<UnitPoint*>(points.first), dynamic_cast<UnitPoint*>(points.second));
+		}
+		else
+		{
+			line = new Line(points.first, points.second);
+		}
+		if (wait.untilClick())
+		{
+			return;
+		}
+		Vector2f mousePosition = (window).mapPixelToCoords(Mouse::getPosition(window), view);
+
+		new Point(line, points.first, points.second, mousePosition);
+		Creation::Create();
+		return;
+	});
+
 Button centralProjectionButton = Button(Vector2f(340, 10), Vector2f(100, 100), &window,
 	"Textures\\SFML_project\\Test.jpg", Vector2i(0, 0), maxTextureResolution,
 	MODE_CENTRAL_PROJECTION, []() {
@@ -651,7 +709,7 @@ Point* Finder::nearbyNewPoint(Vector2f mousePosition)
 	Line* line = nearbyLine(mousePosition);
 	if (line)
 	{
-		return new Point(line, mousePosition);
+		//return new Point(line, mousePosition);
 	}
 	UnitCircle* unitCircle = UnitCircle::getInstance();
 	if (unitCircle->isNearby(mousePosition))

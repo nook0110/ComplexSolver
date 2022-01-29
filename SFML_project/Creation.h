@@ -4,7 +4,6 @@
 #include <thread>
 #include "Object.h"
 #include "gui.h" 
-
 using namespace std;
 class Menu;
 extern Menu mainMenu;
@@ -28,11 +27,12 @@ public:
 class Creation
 {
 	Creation();
+	~Creation();
 	static Creation* creator;
 	//static MODES last;
 	static Checker checker;
 public:
-	function<void(void)> CurrentMethod = [&](void) {
+	function<void(void)> CurrentMethod = [](void)  {
 		std::this_thread::sleep_for(std::chrono::nanoseconds(1000));
 		Create();
 		return;
@@ -47,7 +47,14 @@ private:
 			if (created && getCurrentMode() != MODE_NOTHING)
 			{
 				created = false;
-				CurrentMethod();
+				try
+				{
+					CurrentMethod();
+				}
+				catch (const std::exception& ex)
+				{
+					created = true;
+				}
 			}
 			if (!checker.checkMode())
 			{
@@ -57,7 +64,6 @@ private:
 		});
 public:
 	static Creation* getInstance();
-	void operator()();
 	static MODES getCurrentMode();
 	static void Create();
 };
