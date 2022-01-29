@@ -5,7 +5,6 @@
 #include <future>
 #include <functional>
 
-using namespace std;
 using namespace sf;
 
 //All modes of button
@@ -32,7 +31,7 @@ enum MODES
 	MODE_INTERSECT
 };
 
-//Wrappper of SFML sf::Mouse
+//Wrappper of SFML Mouse
 class WrapMouse
 {
 public:

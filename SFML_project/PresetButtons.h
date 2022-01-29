@@ -36,7 +36,7 @@ public:
 	Point* nearbyNewPoint(Vector2f mousePosition);
 	UnitPoint* nearbyNewPointOnCircle(Vector2f mousePosition);
 	Line* nearbyLine(Vector2f mousePosition);
-	pair<Line*, Line*> nearbyLines(Vector2f mousePosition);
+	std::pair<Line*, Line*> nearbyLines(Vector2f mousePosition);
 	Point* nearbyIntersection(Vector2f mousePosition);
 	UnitCircle* nearbyUnitCircle(Vector2f mousePosition);
 };

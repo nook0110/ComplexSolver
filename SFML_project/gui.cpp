@@ -1,9 +1,7 @@
 #include "gui.h"
 
-using namespace std;
-using namespace sf;
 
-extern RenderWindow window;
+extern RenderWindow mainWindow;
 extern View view;
 extern Vector2i maxTextureResolution;
 
@@ -18,59 +16,59 @@ void Button::updateSprite()
 		size.y / Sprite.getLocalBounds().height); // Scaling Sprite to required size;
 }
 
-void Button::setTexture(string _textureLocation, Vector2i _textureStart, Vector2i _textureSize)
+void Button::setTexture(std::string textureLocation, Vector2i textureStart, Vector2i textureSize)
 {
-	texture.loadFromFile(_textureLocation, IntRect(_textureStart, _textureSize));
+	texture.loadFromFile(textureLocation, IntRect(textureStart, textureSize));
 	updateSprite();
 }
 
-Button::Button(Vector2f _position, Vector2f _size, RenderWindow* _window,
-	string _textureLocation, Vector2i _textureStart, Vector2i _textureSize,
-	MODES _mode, function<void(void)> _modeFunction)
-	:position(_position),
-	size(_size),
-	window(_window),
-	textureSize(_textureSize),
-	textureStart(_textureStart),
-	textureLocation(_textureLocation),
-	mode(_mode), modeFunction(_modeFunction)
+Button::Button(Vector2f position, Vector2f size, RenderWindow* window,
+	std::string textureLocation, Vector2i textureStart, Vector2i textureSize,
+	MODES mode, std::function<void(void)> modeFunction)
+	:position(position),
+	size(size),
+	window(window),
+	textureSize(textureSize),
+	textureStart(textureStart),
+	textureLocation(textureLocation),
+	mode(mode), modeFunction(modeFunction)
 {
 	setTexture(textureLocation, textureStart, textureSize);
 }
 
-Button::Button(Vector2f _position, Vector2f _size, RenderWindow* _window,
-	string _textureLocation, string _texturePressedLocation,
-	MODES _mode, function<void(void)> _modeFunction)
-	:position(_position),
-	size(_size),
-	window(_window),
-	textureLocation(_textureLocation),
-	texturePressedLocation(_texturePressedLocation),
+Button::Button(Vector2f position, Vector2f size, RenderWindow* window,
+	std::string textureLocation, std::string texturePressedLocation,
+	MODES mode, std::function<void(void)> modeFunction)
+	:position(position),
+	size(size),
+	window(window),
+	textureLocation(textureLocation),
+	texturePressedLocation(texturePressedLocation),
 	texturePressed(true),
-	mode(_mode), modeFunction(_modeFunction)
+	mode(mode), modeFunction(modeFunction)
 {
 	setTexture(textureLocation, textureStart, textureSize);
 }
 
-Button::Button(Vector2f _position, Vector2f _size, RenderWindow* _window,
-	string _textureLocation, Vector2i _textureStart, Vector2i _textureSize,
-	string _texturePressedLocation, Vector2i _texturePressedStart, Vector2i _texturePressedSize,
-	MODES _mode, function<void(void)> _modeFunction)
-	:position(_position),
-	size(_size),
-	window(_window),
-	textureSize(_textureSize), texturePressedSize(_texturePressedSize),
-	textureStart(_textureStart), texturePressedStart(_texturePressedStart),
-	textureLocation(_textureLocation), texturePressedLocation(_texturePressedLocation),
+Button::Button(Vector2f position, Vector2f size, RenderWindow* window,
+	std::string textureLocation, Vector2i textureStart, Vector2i textureSize,
+	std::string texturePressedLocation, Vector2i texturePressedStart, Vector2i texturePressedSize,
+	MODES mode, std::function<void(void)> modeFunction)
+	:position(position),
+	size(size),
+	window(window),
+	textureSize(textureSize), texturePressedSize(texturePressedSize),
+	textureStart(textureStart), texturePressedStart(texturePressedStart),
+	textureLocation(textureLocation), texturePressedLocation(texturePressedLocation),
 	texturePressed(true),
-	mode(_mode), modeFunction(_modeFunction)
+	mode(mode), modeFunction(modeFunction)
 {
 	setTexture(textureLocation, textureStart, textureSize);
 }
 
-void Button::setPosition(Vector2f _position)
+void Button::setPosition(Vector2f position)
 {
-	position = _position;
+	position = position;
 	Sprite.setPosition(position);
 }
 
@@ -169,7 +167,7 @@ bool Button::getPressed()
 	return pressed;
 }
 
-function<void(void)> Button::getObjectCreationMethod()
+std::function<void(void)> Button::getObjectCreationMethod()
 {
 	return modeFunction;
 }
@@ -197,9 +195,9 @@ void Menu::updateButtons()
 	}
 }
 
-Menu::Menu(RenderWindow* _window)
+Menu::Menu(RenderWindow* window)
+	:window(window)
 {
-	window = _window;
 	menuView = (*window).getDefaultView();
 	menuView.setSize(menuView.getSize().x * viewport.width, menuView.getSize().y * viewport.height);
 	menuView.setCenter(menuView.getCenter().x * viewport.width, menuView.getCenter().x * viewport.height);
@@ -209,9 +207,9 @@ Menu::Menu(RenderWindow* _window)
 }
 void Menu::update(Event event)
 {
-	sf::FloatRect visibleArea(menuView.getCenter().x - menuView.getSize().x / 2, menuView.getCenter().y - menuView.getSize().y / 2, event.size.width * viewport.width, event.size.height * viewport.height);
-	(*window).setView(sf::View(visibleArea));
-	menuView = sf::View(visibleArea);
+	FloatRect visibleArea(menuView.getCenter().x - menuView.getSize().x / 2, menuView.getCenter().y - menuView.getSize().y / 2, event.size.width * viewport.width, event.size.height * viewport.height);
+	(*window).setView(View(visibleArea));
+	menuView = View(visibleArea);
 	updateButtons();
 }
 
@@ -268,7 +266,7 @@ void Menu::unpress()
 void Menu::draw()
 {
 	(*window).setView(menuView);
-	menuView.setViewport(sf::FloatRect(0.f, 0.f, 1.f, 0.2f));
+	menuView.setViewport(FloatRect(0.f, 0.f, 1.f, 0.2f));
 	background.setSize(menuView.getSize());
 	background.setPosition(position);
 	(*window).draw(background);
@@ -279,13 +277,13 @@ void Menu::draw()
 }
 
 DialogBox* Drawer::dialogBox;
-list<TextBox*> Drawer::allTextBoxes;
+std::list<TextBox*> Drawer::allTextBoxes;
 DialogBox::DialogBox(RenderWindow* window)
 	:window(window)
 {
 	if (Drawer::dialogBox)
 	{
-		throw runtime_error("Second DialogBox is not supported");
+		throw std::runtime_error("Second DialogBox is not supported");
 	}
 	Drawer::dialogBox = this;
 	font.loadFromFile("Textures\\SFML_project\\Fonts\\arial.ttf");
@@ -295,9 +293,9 @@ DialogBox::DialogBox(RenderWindow* window)
 
 void DialogBox::update(Event event)
 {
-	sf::FloatRect visibleArea(dialogBoxView.getCenter().x - dialogBoxView.getSize().x / 2, dialogBoxView.getCenter().y - dialogBoxView.getSize().y / 2, event.size.width * viewport.width, event.size.height * viewport.height);
-	(*window).setView(sf::View(visibleArea));
-	dialogBoxView = sf::View(visibleArea);
+	FloatRect visibleArea(dialogBoxView.getCenter().x - dialogBoxView.getSize().x / 2, dialogBoxView.getCenter().y - dialogBoxView.getSize().y / 2, event.size.width * viewport.width, event.size.height * viewport.height);
+	(*window).setView(View(visibleArea));
+	dialogBoxView = View(visibleArea);
 }
 
 void DialogBox::cin(Event event)
@@ -343,7 +341,7 @@ DialogBox::~DialogBox()
 
 ScalarBox::ScalarBox(RenderWindow* window) :DialogBox(window)
 {
-	formatIn = "Input: p:q"s;
+	formatIn = "Input: p:q";
 }
 
 double ScalarBox::getDouble()
@@ -355,7 +353,7 @@ double ScalarBox::getDouble()
 		double secondNumber = stod(textIn.substr(position + 1));
 		return firstNumber / secondNumber;
 	}
-	catch (invalid_argument)
+	catch (std::invalid_argument)
 	{
 		return 1;
 	}
@@ -388,7 +386,7 @@ void ScalarBox::cin(Event event)
 	}
 }
 
-void TextBox::setText(string text)
+void TextBox::setText(std::string text)
 {
 	TextBox::text = text;
 }

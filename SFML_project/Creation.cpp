@@ -145,12 +145,12 @@ void Drawer::update(Event event)
 	updateMenu();
 	switch (event.type)
 	{
-	case sf::Event::Resized:
+	case Event::Resized:
 		resizeMenu(event);
 		resizeTextBoxes(event);
 		resizeDialogBox(event);
 		break;
-	case sf::Event::TextEntered:
+	case Event::TextEntered:
 		if (dialogBox)
 		{
 			dialogBox->cin(event);
