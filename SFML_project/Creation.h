@@ -4,10 +4,9 @@
 #include <thread>
 #include "Object.h"
 #include "gui.h" 
-using namespace std;
 class Menu;
 extern Menu mainMenu;
-extern RenderWindow window;
+extern RenderWindow mainWindow;
 
 class VisibleObject;
 //Checks if mode has been changed
@@ -32,7 +31,7 @@ class Creation
 	//static MODES last;
 	static Checker checker;
 public:
-	function<void(void)> CurrentMethod = [](void)  {
+	std::function<void(void)> CurrentMethod = [](void) {
 		std::this_thread::sleep_for(std::chrono::nanoseconds(1000));
 		Create();
 		return;
@@ -40,7 +39,7 @@ public:
 private:
 	static bool created;
 
-	thread* running = new thread([&]() {
+	std::thread* running = new std::thread([&]() {
 		while (true)
 		{
 			std::this_thread::sleep_for(std::chrono::nanoseconds(1000));
@@ -85,9 +84,9 @@ class Drawer
 	static void resizeDialogBox(Event event);
 public:
 	Drawer() = delete;
-	static list<VisibleObject*> allVisibleObjects;
-	static list<Parametr*> allParametrs;
-	static list<TextBox*> allTextBoxes;
+	static std::list<VisibleObject*> allVisibleObjects;
+	static std::list<Parametr*> allParametrs;
+	static std::list<TextBox*> allTextBoxes;
 	static DialogBox* dialogBox;
 	static void update(Event event);
 	static void draw();

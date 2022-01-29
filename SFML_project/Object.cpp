@@ -2,7 +2,7 @@
 
 
 extern double const epsilon;
-extern RenderWindow  window;
+extern RenderWindow mainWindow;
 extern View view;
 
 Equation* Object::getEquation()
@@ -146,7 +146,7 @@ bool UnitCircle::isNearby(Vector2f mousePosition)
 void UnitCircle::draw()
 {
 	shape.setOutlineColor(getColor());
-	window.draw(shape);
+	mainWindow.draw(shape);
 }
 
 double Line::distance(Vector2f point)
@@ -209,12 +209,12 @@ void Line::draw()
 			y2 = -(x2 * lineEq.A + lineEq.C) / lineEq.B;
 		}
 	}
-	sf::Vertex line[] =
+	Vertex line[] =
 	{
-		sf::Vertex(sf::Vector2f(x1, y1), getColor()),
-		sf::Vertex(sf::Vector2f(x2, y2), getColor())
+		Vertex(Vector2f(x1, y1), getColor()),
+		Vertex(Vector2f(x2, y2), getColor())
 	};
-	window.draw(line, 2, sf::Lines);
+	mainWindow.draw(line, 2, Lines);
 }
 
 void Line::drawDescription()
@@ -365,7 +365,7 @@ bool Point::isNearby(Vector2f mousePosition)
 void Point::draw()
 {
 	shape.setFillColor(getColor());
-	window.draw(shape);
+	mainWindow.draw(shape);
 }
 
 void Point::drawDescription()
@@ -587,7 +587,7 @@ Tangent::Tangent(Object* object, UnitCircle* firstParent, Point* secondParent)
 	:firstParent(firstParent), secondParent(secondParent)
 {
 	if (!secondParent->isOnCircle())
-		throw invalid_argument("Point isnt on circle?!");
+		throw std::invalid_argument("Point isnt on circle?!");
 	ConstructionData::object = object;
 }
 
@@ -661,19 +661,6 @@ Vector2f Equation::Projection(LineEquation lineEquation, PointEquation pointEqua
 	double C = lineEquation.C;
 	double x = pointEquation.point.x;
 	double y = pointEquation.point.y;
-	Vector2f point(
-		(B * B * x - A * (B * y + C)) / (A * A + B * B),
-		(A * A * y - B * (A * x + C)) / (A * A + B * B));
-	return point;
-}
-
-Vector2f Equation::Projection(LineEquation lineEquation)
-{
-	double A = lineEquation.A;
-	double B = lineEquation.B;
-	double C = lineEquation.C;
-	double x = projPoint.x;
-	double y = projPoint.y;
 	Vector2f point(
 		(B * B * x - A * (B * y + C)) / (A * A + B * B),
 		(A * A * y - B * (A * x + C)) / (A * A + B * B));

@@ -8,25 +8,22 @@
 
 //The "heart" of the programme. This is file is about objects.
 
-using namespace std;
 using namespace sf;
 
 extern double const epsilon;
 extern double const unitSeg;
-extern thread Creator;
+extern std::thread Creator;
 extern MODES Mousemode;
 
 class LineEquation;
 class PointEquation;
 
-const Vector2f projPoint = Vector2f(unitSeg * 1, unitSeg * 1);
 //equation for all objects
 struct Equation
 {
 	virtual ~Equation();
 	Equation();
 	static Vector2f Projection(LineEquation lineEquation, PointEquation pointEquation);
-	static Vector2f Projection(LineEquation lineEquation);
 };
 
 struct LineEquation : public Equation
@@ -59,7 +56,7 @@ struct ComplexScalarEquation : public Equation
 class Object
 {
 private:
-	list<Object*> children;
+	std::list<Object*> children;
 protected:
 	virtual void reposition();
 	void reposeChildren();

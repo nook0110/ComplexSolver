@@ -2,7 +2,7 @@
 #include "Creation.h"
 using namespace sf;
 bool Creation::created;
-extern RenderWindow  window;
+extern RenderWindow mainWindow;
 extern View view;
 extern double const epsilon;
 
@@ -36,9 +36,9 @@ int main()
 
 	CenterPoint::getInstance();
 
-	view.setViewport(sf::FloatRect(0.f, 0.2f, 1.0f, 1.0f));
+	view.setViewport(FloatRect(0.f, 0.2f, 1.0f, 1.0f));
 	view.move(-500, -500);
-	window.setVerticalSyncEnabled(true);
+	mainWindow.setVerticalSyncEnabled(true);
 
 	//Menu initialization
 	mainMenu.pushButton(&moveButton);
@@ -60,23 +60,23 @@ int main()
 
 
 	//(*Creation::getInstance())();
-	while (window.isOpen())
+	while (mainWindow.isOpen())
 	{	
 		Event event;
-		while (window.pollEvent(event))
+		while (mainWindow.pollEvent(event))
 		{
 			Drawer::update(event);
-			if (event.type == sf::Event::Resized)
+			if (event.type == Event::Resized)
 			{
-				// update the view to the new size of the window
-				sf::FloatRect visibleArea(view.getCenter().x - view.getSize().x / 2, view.getCenter().y - view.getSize().y / 2, event.size.width, event.size.height);
-				window.setView(sf::View(visibleArea));
-				view = sf::View(visibleArea);
+				// update the view to the new size of the mainWindow
+				FloatRect visibleArea(view.getCenter().x - view.getSize().x / 2, view.getCenter().y - view.getSize().y / 2, event.size.width, event.size.height);
+				mainWindow.setView(View(visibleArea));
+				view = View(visibleArea);
 				view.setViewport(mainWindowRect);
 			}
-			if (event.type == sf::Event::Closed || (event.type == sf::Event::KeyPressed) && (event.key.code == sf::Keyboard::Escape))
+			if (event.type == Event::Closed || (event.type == Event::KeyPressed) && (event.key.code == Keyboard::Escape))
 			{
-				window.close();
+				mainWindow.close();
 			}
 			if (event.type == Event::MouseWheelScrolled)
 			{
@@ -89,15 +89,15 @@ int main()
 					view.zoom(1 / 1.2);
 				}
 			}
-			window.setView(view);
+			mainWindow.setView(view);
 		}
-		window.clear(Color::White);
-		window.setView(view);
+		mainWindow.clear(Color::White);
+		mainWindow.setView(view);
 		Drawer::draw();
 		mainMenu.draw();
 
 
-		window.display();
+		mainWindow.display();
 	}
 	return 0;
 }

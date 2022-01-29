@@ -3,13 +3,12 @@
 #include "WrapMouse.h"
 #include "Creation.h"
 #include<iostream>
-using namespace std;
 using namespace sf;
 
 extern Vector2i maxTextureResolution;
 extern Event event;
 //Button is a clickable object on the screen.
-//It has it own mode and function.
+//It has it own mode and std::function.
 //Use getObjectCreationMethod() to get funñtion. 
 class Button
 {
@@ -22,14 +21,14 @@ private:
 	Vector2f size;
 	Vector2i textureSize = maxTextureResolution, texturePressedSize = maxTextureResolution;
 	Vector2i textureStart = Vector2i(0, 0), texturePressedStart = Vector2i(0, 0);
-	string textureLocation, texturePressedLocation;
+	std::string textureLocation, texturePressedLocation;
 	RenderWindow* window;
 	Texture texture;
 	Sprite Sprite;
 
 	//Button mode
 	MODES mode = MODE_NOTHING;
-	function<void(void)> modeFunction = [&](void) {};
+	std::function<void(void)> modeFunction = [&](void) {};
 
 	bool pressed = false;
 	bool LeftPressed = false;
@@ -37,18 +36,18 @@ private:
 	bool texturePressed = false;
 
 	void updateSprite();
-	void setTexture(string _textureLocation, Vector2i _textureStart, Vector2i _textureSize);
+	void setTexture(std::string textureLocation, Vector2i textureStart, Vector2i textureSize);
 public:
-	Button(Vector2f _position, Vector2f _size, RenderWindow* _window,
-		string _textureLocation, Vector2i _textureStart = Vector2i(0, 0), Vector2i _textureSize = maxTextureResolution,
-		MODES _mode = MODE_NOTHING, function<void(void)> _modeFunction = [&](void) {});
-	Button(Vector2f _position, Vector2f _size, RenderWindow* _window,
-		string _textureLocation, string _texturePressedLocation,
-		MODES _mode = MODE_NOTHING, function<void(void)> _modeFunction = [&](void) {});
-	Button(Vector2f _position, Vector2f _size, RenderWindow* _window,
-		string _textureLocation, Vector2i _textureStart, Vector2i _textureSize,
-		string _texturePressedLocation, Vector2i _texturePressedStart, Vector2i _texturePressedSize,
-		MODES _mode = MODE_NOTHING, function<void(void)> _modeFunction = [&](void) {});
+	Button(Vector2f position, Vector2f size, RenderWindow* window,
+		std::string textureLocation, Vector2i textureStart = Vector2i(0, 0), Vector2i textureSize = maxTextureResolution,
+		MODES mode = MODE_NOTHING, std::function<void(void)> modeFunction = [](void) {});
+	Button(Vector2f position, Vector2f size, RenderWindow* window,
+		std::string textureLocation, std::string texturePressedLocation,
+		MODES mode = MODE_NOTHING, std::function<void(void)> modeFunction = [](void) {});
+	Button(Vector2f position, Vector2f size, RenderWindow* window,
+		std::string textureLocation, Vector2i textureStart, Vector2i textureSize,
+		std::string texturePressedLocation, Vector2i texturePressedStart, Vector2i texturePressedSize,
+		MODES mode = MODE_NOTHING, std::function<void(void)> modeFunction = [](void) {});
 	void setPosition(Vector2f);
 	void setSize(Vector2f size);
 	void draw();
@@ -64,7 +63,7 @@ public:
 	void press();
 	void unpress();
 	bool getPressed();
-	function<void(void)> getObjectCreationMethod();
+	std::function<void(void)> getObjectCreationMethod();
 };
 
 
@@ -79,11 +78,11 @@ private:
 	const FloatRect viewport = FloatRect(0.f, 0.f, 1.0f, 0.2f);
 	const Color color = Color(128, 128, 128, 255);
 	const Vector2f position = Vector2f(0, 0);
-	vector<Button*> buttons;
+	std::vector<Button*> buttons;
 	RectangleShape background;
 	void updateButtons();
 public:
-	Menu(RenderWindow* _window);
+	Menu(RenderWindow* window);
 	void update(Event);
 	bool mouseOnMenu();
 	void pushButton(Button* newButton);
@@ -111,8 +110,8 @@ protected:
 	RectangleShape shadow = dialogBox;
 	RectangleShape textBox = RectangleShape(sizeTextBox);
 	Font font;
-	string textIn;
-	string formatIn;
+	std::string textIn;
+	std::string formatIn;
 	bool finished = false;
 public:
 	DialogBox(RenderWindow* window);
@@ -143,8 +142,8 @@ class TextBox
 	const Vector2f sizeTextBox = Vector2f(30, 300);
 	RectangleShape textBox = RectangleShape(sizeTextBox);
 	Vector2f position;
-	string text;
+	std::string text;
 public:
-	void setText(string text);
+	void setText(std::string text);
 	void draw();
 };

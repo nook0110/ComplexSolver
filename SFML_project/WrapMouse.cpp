@@ -1,6 +1,6 @@
 #include "WrapMouse.h"
 
-extern RenderWindow  window;
+extern RenderWindow mainWindow;
 
 Vector2i WrapMouse::leftClickedCoord;
 Vector2i WrapMouse::rightClickedCoord;
@@ -52,10 +52,10 @@ void WrapMouse::setClickedCoord(Mouse::Button button)
 	switch (button)
 	{
 	case Mouse::Button::Left:
-		WrapMouse::leftClickedCoord = Mouse::getPosition(window);
+		WrapMouse::leftClickedCoord = Mouse::getPosition(mainWindow);
 		break;
 	case Mouse::Button::Right:
-		WrapMouse::rightClickedCoord = Mouse::getPosition(window);
+		WrapMouse::rightClickedCoord = Mouse::getPosition(mainWindow);
 		break;
 	}
 }
