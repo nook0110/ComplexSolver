@@ -6,7 +6,7 @@
 
 #include <iostream>
 
-//The "heart" of the programme. This is file is about objects.
+//The "heart" of the programm. This is file is about objects.
 
 using namespace sf;
 
@@ -24,6 +24,13 @@ struct Equation
 	virtual ~Equation();
 	Equation();
 	static Vector2f Projection(LineEquation lineEquation, PointEquation pointEquation);
+};
+
+struct CircleEquation : public Equation
+{
+	Vector2f center;
+	double radius;
+	CircleEquation(Vector2f center, double radius);
 };
 
 struct LineEquation : public Equation
@@ -91,18 +98,27 @@ public:
 	virtual ~ConstructionData();
 };
 
+class ConstructionCircle : public ConstructionData
+{
+};
+
+class ByFourPoints : public ConstructionCircle
+{
+	Point* firstParent, * secondParent, * thirdParent, * fourthParent;
+public:
+	ByFourPoints(Object* object, Point* first, Point* secondm, Point* third, Point* fourth);
+	void recreate(Equation* equation) override;
+	~ByFourPoints();
+};
+
 class ConstructionPoint : public ConstructionData
 {
 public:
-	virtual void recreate(Equation* equation);
 	virtual void moveTo(Vector2f coords);
 };
 
 class ConstructionLine : public ConstructionData
 {
-public:
-	virtual void recreate(Equation* equation);
-	virtual ~ConstructionLine();
 };
 
 class ByComplexScalar : public ConstructionPoint
@@ -166,7 +182,7 @@ class ByLineAndScalar : public ByTwoPointsAndScalar
 {
 	Line* fourthParent;
 public:
-	ByLineAndScalar(Object* object,Point* firstParent, Point* secondParent, Scalar* thirdParent, Line* fourthParent);
+	ByLineAndScalar(Object* object, Point* firstParent, Point* secondParent, Scalar* thirdParent, Line* fourthParent);
 	void moveTo(Vector2f coords) override;
 	~ByLineAndScalar();
 };
@@ -314,6 +330,18 @@ public:
 	bool isNearby(Vector2f mousePosition);
 	void draw();
 	void drawDescription() {}
+};
+
+class Circle : public VisibleObject
+{
+	const double outlineThickness = unitSeg / 100;
+	CircleShape shape;
+	void reposition() override;
+public:
+	bool isNearby(Vector2f mousePosition);
+	Circle(Point* first, Point* second, Point* third, Point* fourth);
+	void draw();
+	void drawDescription();
 };
 
 class Point;

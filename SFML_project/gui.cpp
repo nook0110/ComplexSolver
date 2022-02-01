@@ -9,11 +9,11 @@ extern MODES Mousemode;
 
 void Button::updateSprite()
 {
-	Sprite.setScale(1 / Sprite.getScale().x, 1 / Sprite.getScale().y); // Scaling Sprite to 1*1;
-	Sprite.setTexture(texture);
-	Sprite.setScale(
-		size.x / Sprite.getLocalBounds().width,
-		size.y / Sprite.getLocalBounds().height); // Scaling Sprite to required size;
+	sprite.setScale(1 / sprite.getScale().x, 1 / sprite.getScale().y); // Scaling Sprite to 1*1;
+	sprite.setTexture(texture);
+	sprite.setScale(
+		size.x / sprite.getLocalBounds().width,
+		size.y / sprite.getLocalBounds().height); // Scaling Sprite to required size;
 }
 
 void Button::setTexture(std::string textureLocation, Vector2i textureStart, Vector2i textureSize)
@@ -69,7 +69,7 @@ Button::Button(Vector2f position, Vector2f size, RenderWindow* window,
 void Button::setPosition(Vector2f position)
 {
 	position = position;
-	Sprite.setPosition(position);
+	sprite.setPosition(position);
 }
 
 void Button::setSize(Vector2f size)
@@ -79,22 +79,21 @@ void Button::setSize(Vector2f size)
 }
 
 void Button::draw() {
-	(*window).draw(Sprite);
+	window->draw(sprite);
 }
 
 bool Button::mouseCheck(View buttonView = view)
 {
-	Vector2f point = (*window).mapPixelToCoords(WrapMouse::getClickedCoord(Mouse::Button::Left), buttonView);
-	//cout << MouseCoords.x + Offset.x;
-	return Sprite.getGlobalBounds().contains(point);
+	Vector2f point = window->mapPixelToCoords(WrapMouse::getClickedCoord(Mouse::Button::Left), buttonView);
+	return sprite.getGlobalBounds().contains(point);
 }
 
 bool Button::leftClickCheck(View buttonView = view)
 {
-	Vector2f point = (*window).mapPixelToCoords(WrapMouse::getClickedCoord(Mouse::Button::Left), buttonView);
+	Vector2f point = window->mapPixelToCoords(WrapMouse::getClickedCoord(Mouse::Button::Left), buttonView);
 	if (!Mouse::isButtonPressed(Mouse::Button::Left)) LeftPressed = false;
 	if (!LeftPressed
-		&& Sprite.getGlobalBounds().contains(point)
+		&& sprite.getGlobalBounds().contains(point)
 		&& Mouse::isButtonPressed(Mouse::Button::Left))
 	{
 		LeftPressed = true;
@@ -105,9 +104,9 @@ bool Button::leftClickCheck(View buttonView = view)
 
 bool Button::rightClickCheck(View buttonView = view)
 {
-	Vector2f point = (*window).mapPixelToCoords(WrapMouse::getClickedCoord(Mouse::Button::Right), buttonView);
+	Vector2f point = window->mapPixelToCoords(WrapMouse::getClickedCoord(Mouse::Button::Right), buttonView);
 	if (!Mouse::isButtonPressed(Mouse::Button::Right)) RightPressed = false;
-	if (!RightPressed && Sprite.getGlobalBounds().contains(point)) {
+	if (!RightPressed && sprite.getGlobalBounds().contains(point)) {
 		RightPressed = true;
 		return true;
 	}
@@ -126,7 +125,7 @@ Vector2f Button::getLocalPosition()
 
 Vector2f Button::getGlobalPosition()
 {
-	return  Sprite.getPosition();
+	return  sprite.getPosition();
 }
 
 void Button::setMode()
@@ -145,7 +144,7 @@ void Button::press()
 	}
 	else
 	{
-		Sprite.setColor(GreyColor);
+		sprite.setColor(GreyColor);
 	}
 }
 
@@ -158,7 +157,7 @@ void Button::unpress()
 	}
 	else
 	{
-		Sprite.setColor(WhiteColor);
+		sprite.setColor(WhiteColor);
 	}
 }
 
@@ -198,7 +197,7 @@ void Menu::updateButtons()
 Menu::Menu(RenderWindow* window)
 	:window(window)
 {
-	menuView = (*window).getDefaultView();
+	menuView = window->getDefaultView();
 	menuView.setSize(menuView.getSize().x * viewport.width, menuView.getSize().y * viewport.height);
 	menuView.setCenter(menuView.getCenter().x * viewport.width, menuView.getCenter().x * viewport.height);
 	menuView.setViewport(viewport);
@@ -208,28 +207,28 @@ Menu::Menu(RenderWindow* window)
 void Menu::update(Event event)
 {
 	FloatRect visibleArea(menuView.getCenter().x - menuView.getSize().x / 2, menuView.getCenter().y - menuView.getSize().y / 2, event.size.width * viewport.width, event.size.height * viewport.height);
-	(*window).setView(View(visibleArea));
+	window->setView(View(visibleArea));
 	menuView = View(visibleArea);
 	updateButtons();
 }
 
 bool Menu::mouseOnMenu()
 {
-	Vector2f mousePosition = (*window).mapPixelToCoords(Mouse::getPosition(*window), menuView);
+	Vector2f mousePosition = window->mapPixelToCoords(Mouse::getPosition(*window), menuView);
 	return background.getGlobalBounds().contains(mousePosition);
 }
 
 
 void Menu::pushButton(Button* button)
 {
-	(*window).setView(menuView);
+	window->setView(menuView);
 	buttons.push_back(button);
 	updateButtons();
 }
 
 bool Menu::checkMouse()
 {
-	(*window).setView(menuView);
+	window->setView(menuView);
 	for (auto& Button : buttons)
 	{
 		if (Button->mouseCheck(menuView))
@@ -242,7 +241,7 @@ bool Menu::checkMouse()
 
 Button* Menu::leftClickCheck()
 {
-	(*window).setView(menuView);
+	window->setView(menuView);
 	for (auto& Button : buttons)
 	{
 		if (Button->leftClickCheck(menuView))
@@ -255,7 +254,7 @@ Button* Menu::leftClickCheck()
 
 void Menu::unpress()
 {
-	(*window).setView(menuView);
+	window->setView(menuView);
 	for (auto& Button : buttons)
 	{
 		Button->unpress();
@@ -265,11 +264,11 @@ void Menu::unpress()
 
 void Menu::draw()
 {
-	(*window).setView(menuView);
+	window->setView(menuView);
 	menuView.setViewport(FloatRect(0.f, 0.f, 1.f, 0.2f));
 	background.setSize(menuView.getSize());
 	background.setPosition(position);
-	(*window).draw(background);
+	window->draw(background);
 	for (auto& button : buttons)
 	{
 		button->draw();
@@ -294,7 +293,7 @@ DialogBox::DialogBox(RenderWindow* window)
 void DialogBox::update(Event event)
 {
 	FloatRect visibleArea(dialogBoxView.getCenter().x - dialogBoxView.getSize().x / 2, dialogBoxView.getCenter().y - dialogBoxView.getSize().y / 2, event.size.width * viewport.width, event.size.height * viewport.height);
-	(*window).setView(View(visibleArea));
+	window->setView(View(visibleArea));
 	dialogBoxView = View(visibleArea);
 }
 
@@ -305,7 +304,7 @@ void DialogBox::cin(Event event)
 
 void DialogBox::draw()
 {
-	(*window).setView(dialogBoxView);
+	window->setView(dialogBoxView);
 	Vector2f position = dialogBoxView.getCenter() - sizeDialogBox / 2.f;
 	dialogBox.setPosition(position);
 	textBox.setPosition(position + textBoxOffset);

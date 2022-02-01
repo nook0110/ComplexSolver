@@ -4,10 +4,7 @@
 //namespace Global
 //{
 double const unitSeg = 200;
-std::thread Creator;
-ContextSettings settings(0, 0, 8);
-RenderWindow mainWindow(VideoMode(1000,1000), "Version 0.5", Style::Default, settings);
-
+RenderWindow mainWindow(VideoMode(1000,1000), "Version 0.5", Style::Default, ContextSettings(0, 0, 8));
 View view = mainWindow.getDefaultView();
 double const epsilon = unitSeg / 10;
 Vector2i maxTextureResolution = Vector2i(10000, 10000);

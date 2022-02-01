@@ -24,11 +24,11 @@ private:
 	std::string textureLocation, texturePressedLocation;
 	RenderWindow* window;
 	Texture texture;
-	Sprite Sprite;
+	Sprite sprite;
 
 	//Button mode
 	MODES mode = MODE_NOTHING;
-	std::function<void(void)> modeFunction = [&](void) {};
+	std::function<void(void)> modeFunction = [](void) {};
 
 	bool pressed = false;
 	bool LeftPressed = false;

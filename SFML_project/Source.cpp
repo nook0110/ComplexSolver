@@ -38,7 +38,7 @@ int main()
 
 	view.setViewport(FloatRect(0.f, 0.2f, 1.0f, 1.0f));
 	view.move(-500, -500);
-	mainWindow.setVerticalSyncEnabled(true);
+	//mainWindow.setVerticalSyncEnabled(true);
 
 	//Menu initialization
 	mainMenu.pushButton(&moveButton);
@@ -54,9 +54,8 @@ int main()
 	mainMenu.pushButton(&scalarButton);
 	mainMenu.pushButton(&symmetryButton);
 	mainMenu.pushButton(&clearButton);
-	//mainMenu.pushButton(fourPointsOnACircle);
+	mainMenu.pushButton(&fourPointsOnACircle);
 	mainMenu.pushButton(&hideButton);
-
 
 
 	//(*Creation::getInstance())();

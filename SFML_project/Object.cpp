@@ -149,12 +149,53 @@ void UnitCircle::draw()
 	mainWindow.draw(shape);
 }
 
+void Circle::draw()
+{
+	mainWindow.draw(shape);
+}
+
+void Circle::drawDescription()
+{
+}
+
+void Circle::reposition()
+{
+	construction->recreate(equation);
+	CircleEquation* circleEquation = dynamic_cast<CircleEquation*>(equation);
+	Vector2f position = circleEquation->center;
+	double radius = circleEquation->radius;
+	shape.setRadius(radius - outlineThickness / 2);
+	shape.setOrigin(radius - outlineThickness / 2, radius - outlineThickness / 2);
+	shape.setPosition(position);
+	shape.setOutlineThickness(outlineThickness);
+}
+
+bool Circle::isNearby(Vector2f mousePosition)
+{
+	return false;
+}
+
+Circle::Circle(Point* first, Point* second, Point* third, Point* fourth)
+{
+	first->addChild(this);
+	second->addChild(this);
+	third->addChild(this);
+	fourth->addChild(this);
+	construction = new ByFourPoints(this, first, second, third, fourth);
+	equation = new CircleEquation(Vector2f(0, 0), 0);
+	shape.setPointCount(100);
+	shape.setOutlineColor(getColor());
+	shape.setFillColor(Color(0, 0, 0, 0));
+	reposition();
+	Drawer::allVisibleObjects.push_back(this);
+}
+
 double Line::distance(Vector2f point)
 {
 	LineEquation* lineEquation = dynamic_cast<LineEquation*>(getEquation());
-	double A = (*lineEquation).A;
-	double B = (*lineEquation).B;
-	double C = (*lineEquation).C;
+	double A = lineEquation->A;
+	double B = lineEquation->B;
+	double C = lineEquation->C;
 	return abs((A * point.x + B * point.y + C) / sqrt(A * A + B * B));
 }
 
@@ -299,7 +340,7 @@ void Point::reposition()
 {
 	construction->recreate(equation);
 	PointEquation* pointEquation = dynamic_cast<PointEquation*>(equation);
-	Vector2f position = (*pointEquation).point;
+	Vector2f position = pointEquation->point;
 	shape.setPosition(position);
 }
 
@@ -372,6 +413,14 @@ void Point::drawDescription()
 {
 }
 
+ByFourPoints::ByFourPoints(Object* object, Point* first, Point* second, Point* third, Point* fourth)
+	:firstParent(first), secondParent(second), thirdParent(third), fourthParent(fourth)
+
+{
+
+	ConstructionData::object = object;
+}
+
 ByComplexScalar::ByComplexScalar(Object* object, ComplexScalar* ComplexScalar)
 	:parent(ComplexScalar)
 {
@@ -382,7 +431,7 @@ ByComplexScalar::ByComplexScalar(Object* object, ComplexScalar* ComplexScalar)
 void ByComplexScalar::recreate(Equation* equation)
 {
 	ComplexScalarEquation* complexScalarequation = dynamic_cast<ComplexScalarEquation*>(parent->getEquation());
-	*dynamic_cast<PointEquation*>(equation) = PointEquation((*complexScalarequation).point);
+	*dynamic_cast<PointEquation*>(equation) = PointEquation(complexScalarequation->point);
 }
 
 void ByComplexScalar::moveTo(Vector2f coords)
@@ -409,10 +458,10 @@ void IntersectionOfTwoLines::recreate(Equation* equation)
 	LineEquation* firstEquation = dynamic_cast<LineEquation*>(firstParent->getEquation());
 	LineEquation* secondEquation = dynamic_cast<LineEquation*>(secondParent->getEquation());
 	Vector2f pointCoord = Vector2f(
-		(firstEquation->B * (*secondEquation).C - firstEquation->C * (*secondEquation).B)
-		/ (firstEquation->A * (*secondEquation).B - firstEquation->B * (*secondEquation).A),
-		(firstEquation->C * (*secondEquation).A - firstEquation->A * (*secondEquation).C)
-		/ (firstEquation->A * (*secondEquation).B - firstEquation->B * (*secondEquation).A)
+		(firstEquation->B * secondEquation->C - firstEquation->C * secondEquation->B)
+		/ (firstEquation->A * secondEquation->B - firstEquation->B * secondEquation->A),
+		(firstEquation->C * secondEquation->A - firstEquation->A * secondEquation->C)
+		/ (firstEquation->A * secondEquation->B - firstEquation->B * secondEquation->A)
 	);
 	*dynamic_cast<PointEquation*>(equation) = (PointEquation(pointCoord));
 }
@@ -440,7 +489,7 @@ void CentralProjection::recreate(Equation* equation)
 	PointEquation* firstEquation = dynamic_cast<PointEquation*>(secondParent->getEquation());
 	PointEquation* secondEquation = dynamic_cast<PointEquation*>(thirdParent->getEquation());
 	Vector2f firstCoord = firstEquation->point;
-	Vector2f secondCoord = (*secondEquation).point;
+	Vector2f secondCoord = secondEquation->point;
 	double A = -firstCoord.y + secondCoord.y;
 	double B = -(-firstCoord.x + secondCoord.x);
 	double C = firstCoord.x * (firstCoord.y - secondCoord.y) - firstCoord.y * (firstCoord.x - secondCoord.x);
@@ -484,8 +533,8 @@ void ByTwoPointsAndScalar::recreate(Equation* equation)
 	PointEquation* secondEquation = dynamic_cast<PointEquation*>(secondParent->getEquation());
 	ScalarEquation* thirdEquation = dynamic_cast<ScalarEquation*>(thirdParent->getEquation());
 	Vector2f firstCoord = firstEquation->point;
-	Vector2f secondCoord = (*secondEquation).point;
-	float ratio = (*thirdEquation).value;
+	Vector2f secondCoord = secondEquation->point;
+	float ratio = thirdEquation->value;
 	Vector2f pointCoord = (secondCoord * ratio + firstCoord * 1.f) / (ratio + 1.f);
 	*dynamic_cast<PointEquation*>(equation) = PointEquation(pointCoord);
 }
@@ -510,7 +559,7 @@ void ByTwoPoints::recreate(Equation* equation)
 	PointEquation* firstEquation = dynamic_cast<PointEquation*>(firstParent->getEquation());
 	PointEquation* secondEquation = dynamic_cast<PointEquation*>(secondParent->getEquation());
 	Vector2f firstCoord = firstEquation->point;
-	Vector2f secondCoord = (*secondEquation).point;
+	Vector2f secondCoord = secondEquation->point;
 	double A = -firstCoord.y + secondCoord.y;
 	double B = -(-firstCoord.x + secondCoord.x);
 	double C = firstCoord.x * (firstCoord.y - secondCoord.y) - firstCoord.y * (firstCoord.x - secondCoord.x);
@@ -549,9 +598,9 @@ void Perpendicular::recreate(Equation* equation)
 	PointEquation* firstEquation = dynamic_cast<PointEquation*>(firstParent->getEquation());
 	LineEquation* secondEquation = dynamic_cast<LineEquation*>(secondParent->getEquation());
 	Vector2f coord = firstEquation->point;
-	double A = -(*secondEquation).B;
-	double B = (*secondEquation).A;
-	double C = (*secondEquation).B * coord.x - (*secondEquation).A * coord.y;
+	double A = -secondEquation->B;
+	double B = secondEquation->A;
+	double C = secondEquation->B * coord.x - secondEquation->A * coord.y;
 	*dynamic_cast<LineEquation*>(equation) = LineEquation(A, B, C);
 }
 
@@ -577,9 +626,9 @@ void Parallel::recreate(Equation* equation)
 	LineEquation* lineEquation = dynamic_cast<LineEquation*>(firstParent->getEquation());
 	PointEquation* pointEquation = dynamic_cast<PointEquation*>(secondParent->getEquation());
 	Vector2f coord = pointEquation->point;
-	double A = (*lineEquation).A;
-	double B = (*lineEquation).B;
-	double C = -(*lineEquation).A * coord.x - (*lineEquation).B * coord.y;
+	double A = lineEquation->A;
+	double B = lineEquation->B;
+	double C = -lineEquation->A * coord.x - lineEquation->B * coord.y;
 	*dynamic_cast<LineEquation*>(equation) = LineEquation(A, B, C);
 }
 
@@ -607,26 +656,9 @@ void Tangent::recreate(Equation* equation)
 	*dynamic_cast<LineEquation*>(equation) = LineEquation(A, B, C);
 }
 
-
-void ConstructionLine::recreate(Equation*)
-{
-}
-
-ConstructionLine::~ConstructionLine()
-{
-}
-
-
-
-void ConstructionPoint::recreate(Equation*)
-{
-}
-
 void ConstructionPoint::moveTo(Vector2f coords)
 {
 }
-
-
 
 void ConstructionData::recreate(Equation*)
 {
@@ -691,10 +723,10 @@ ComplexScalarEquation& ComplexScalarEquation::operator+=(Vector2f delta)
 
 
 
-ByLineAndScalar::ByLineAndScalar(Object* object, Point* firstParent, Point* secondParent, Scalar* thirdParent, Line* fourthParent) : ByTwoPointsAndScalar(object,firstParent,secondParent,thirdParent)
-	,fourthParent(fourthParent)
+ByLineAndScalar::ByLineAndScalar(Object* object, Point* firstParent, Point* secondParent, Scalar* thirdParent, Line* fourthParent) : ByTwoPointsAndScalar(object, firstParent, secondParent, thirdParent)
+, fourthParent(fourthParent)
 {
-	
+
 }
 
 void ByLineAndScalar::moveTo(Vector2f coord)
@@ -704,7 +736,7 @@ void ByLineAndScalar::moveTo(Vector2f coord)
 	PointEquation* secondEquation = dynamic_cast<PointEquation*>(secondParent->getEquation());
 	ScalarEquation* thirdEquation = dynamic_cast<ScalarEquation*>(thirdParent->getEquation());
 	Vector2f firstCoord = firstEquation->point;
-	Vector2f secondCoord = (*secondEquation).point;
+	Vector2f secondCoord = secondEquation->point;
 	float ratio = -(proj - firstCoord).x / (proj - secondCoord).x;
 	thirdEquation->value = ratio;
 }
@@ -836,4 +868,36 @@ Projection::~Projection()
 {
 	firstParent->eraseChild(object);
 	secondParent->eraseChild(object);
+}
+
+void ByFourPoints::recreate(Equation* equation)
+{
+	PointEquation* first = dynamic_cast<PointEquation*>(firstParent->getEquation());
+	PointEquation* second = dynamic_cast<PointEquation*>(secondParent->getEquation());
+	PointEquation* third = dynamic_cast<PointEquation*>(thirdParent->getEquation());
+	Vector2f deltaOneTwo = first->point - second->point;
+	Vector2f deltaTwoThree = second->point - third->point;
+	Vector2f deltaThreeOne = third->point - first->point;
+	double zFirst = (first->point.x) * (first->point.x) + (first->point.y) * (first->point.y);
+	double zSecond = (second->point.x) * (second->point.x) + (second->point.y) * (second->point.y);
+	double zThird = (third->point.x) * (third->point.x) + (third->point.y) * (third->point.y);
+	double zX = deltaOneTwo.y * zThird + deltaTwoThree.y * zFirst + deltaThreeOne.y * zSecond;
+	double zY = deltaOneTwo.x * zThird + deltaTwoThree.x * zFirst + deltaThreeOne.x * zSecond;
+	double z = deltaOneTwo.x * deltaThreeOne.y - deltaOneTwo.y * deltaThreeOne.x;
+	Vector2f center(-zX / (2 * z), zY / (2 * z));
+	double radius = sqrt((first->point - center).x * (first->point - center).x + (first->point - center).y * (first->point - center).y);
+	*dynamic_cast<CircleEquation*>(equation) = CircleEquation(center, radius);
+}
+
+ByFourPoints::~ByFourPoints()
+{
+	firstParent->eraseChild(object);
+	secondParent->eraseChild(object);
+	thirdParent->eraseChild(object);
+	fourthParent->eraseChild(object);
+}
+
+CircleEquation::CircleEquation(Vector2f center, double radius)
+	:center(center), radius(radius)
+{
 }
