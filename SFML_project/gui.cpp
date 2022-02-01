@@ -199,7 +199,7 @@ Menu::Menu(RenderWindow* window)
 {
 	menuView = window->getDefaultView();
 	menuView.setSize(menuView.getSize().x * viewport.width, menuView.getSize().y * viewport.height);
-	menuView.setCenter(menuView.getCenter().x * viewport.width, menuView.getCenter().x * viewport.height);
+	menuView.setCenter(menuView.getCenter().x * viewport.width, menuView.getCenter().y * viewport.height);
 	menuView.setViewport(viewport);
 	background.setFillColor(color);
 
@@ -265,7 +265,7 @@ void Menu::unpress()
 void Menu::draw()
 {
 	window->setView(menuView);
-	menuView.setViewport(FloatRect(0.f, 0.f, 1.f, 0.2f));
+	menuView.setViewport(viewport);
 	background.setSize(menuView.getSize());
 	background.setPosition(position);
 	window->draw(background);

@@ -376,7 +376,7 @@ class Point : public VisibleObject
 {
 protected:
 	Point();
-	const double pointSize = 5;
+	const double pointSize = unitSeg/30;
 	CircleShape shape = CircleShape(pointSize);
 	double distance(Vector2f point);
 	void reposition() override;

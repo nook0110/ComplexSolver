@@ -45,7 +45,7 @@ Button moveButton = Button(Vector2f(10, 10), Vector2f(100, 100), &mainWindow,
 	});
 
 Button pointButton = Button(Vector2f(120, 10), Vector2f(100, 100), &mainWindow,
-	"Textures\\SFML_project\\PointButton.jpg", Vector2i(0, 0), maxTextureResolution,
+	"Textures\\SFML_project\\Point.png", Vector2i(0, 0), maxTextureResolution,
 	MODE_POINT, []()->VisibleObject* {
 		Waiter wait;
 		Finder find;
@@ -65,7 +65,7 @@ Button pointButton = Button(Vector2f(120, 10), Vector2f(100, 100), &mainWindow,
 
 
 Button lineButton = Button(Vector2f(230, 10), Vector2f(100, 100), &mainWindow,
-	"Textures\\SFML_project\\LineButton.jpg", Vector2i(0, 0), maxTextureResolution,
+	"Textures\\SFML_project\\Line.png", Vector2i(0, 0), maxTextureResolution,
 	MODE_LINE, []()->VisibleObject* {
 		Waiter wait;
 		Finder find;
@@ -115,7 +115,7 @@ Button lineButton = Button(Vector2f(230, 10), Vector2f(100, 100), &mainWindow,
 	});
 
 Button pointBetweenPoints = Button(Vector2f(230, 10), Vector2f(100, 100), &mainWindow,
-	"Textures\\SFML_project\\LineButton.jpg", Vector2i(0, 0), maxTextureResolution,
+	"Textures\\SFML_project\\PointBetweenPoints.png", Vector2i(0, 0), maxTextureResolution,
 	MODE_POINT_BETWEEN_POINTS, []()->VisibleObject* {
 		Waiter wait;
 		Finder find;
@@ -172,7 +172,7 @@ Button pointBetweenPoints = Button(Vector2f(230, 10), Vector2f(100, 100), &mainW
 	});
 
 Button centralProjectionButton = Button(Vector2f(340, 10), Vector2f(100, 100), &mainWindow,
-	"Textures\\SFML_project\\Test.jpg", Vector2i(0, 0), maxTextureResolution,
+	"Textures\\SFML_project\\CentralProjection.png", Vector2i(0, 0), maxTextureResolution,
 	MODE_CENTRAL_PROJECTION, []()->VisibleObject* {
 		Waiter wait;
 		Finder find;
@@ -205,7 +205,7 @@ Button centralProjectionButton = Button(Vector2f(340, 10), Vector2f(100, 100), &
 	});
 
 Button perpendicularButton = Button(Vector2f(340, 10), Vector2f(100, 100), &mainWindow,
-	"Textures\\SFML_project\\PerpendicularButton.jpg", Vector2i(0, 0), maxTextureResolution,
+	"Textures\\SFML_project\\Perpendicular.png", Vector2i(0, 0), maxTextureResolution,
 	MODE_PERPENDICULAR, []()->VisibleObject* {
 		Waiter wait;
 		InterruptionChecker interruptionChecker;
@@ -234,7 +234,7 @@ Button perpendicularButton = Button(Vector2f(340, 10), Vector2f(100, 100), &main
 		return new Line(point, line);
 	});
 Button midPointButton = Button(Vector2f(670, 10), Vector2f(100, 100), &mainWindow,
-	"Textures\\SFML_project\\MidpointButton.jpg", Vector2i(0, 0), maxTextureResolution,
+	"Textures\\SFML_project\\Midpoint.png", Vector2i(0, 0), maxTextureResolution,
 	MODE_MIDPOINT, []()->VisibleObject* {
 		Waiter wait;
 		Finder find;
@@ -276,7 +276,7 @@ Button midPointButton = Button(Vector2f(670, 10), Vector2f(100, 100), &mainWindo
 	});
 
 Button symmetryButton = Button(Vector2f(670, 10), Vector2f(100, 100), &mainWindow,
-	"Textures\\SFML_project\\Test.jpg", Vector2i(0, 0), maxTextureResolution,
+	"Textures\\SFML_project\\Symmetry.png", Vector2i(0, 0), maxTextureResolution,
 	MODE_SYMMETRY, []()->VisibleObject* {
 		Waiter wait;
 		Finder find;
@@ -318,7 +318,7 @@ Button symmetryButton = Button(Vector2f(670, 10), Vector2f(100, 100), &mainWindo
 	});
 
 Button projectionButton = Button(Vector2f(450, 10), Vector2f(100, 100), &mainWindow,
-	"Textures\\SFML_project\\Test.jpg", Vector2i(0, 0), maxTextureResolution,
+	"Textures\\SFML_project\\Projection.png", Vector2i(0, 0), maxTextureResolution,
 	MODE_PROJECTION, []()->VisibleObject* {
 		Waiter wait;
 		InterruptionChecker interruptionChecker;
@@ -348,7 +348,7 @@ Button projectionButton = Button(Vector2f(450, 10), Vector2f(100, 100), &mainWin
 	});
 
 Button parallelButton = Button(Vector2f(560, 10), Vector2f(120, 120), &mainWindow,
-	"Textures\\SFML_project\\Test.jpg", Vector2i(0, 0), maxTextureResolution,
+	"Textures\\SFML_project\\Parallel.png", Vector2i(0, 0), maxTextureResolution,
 	MODE_PARALLEL, []()->VisibleObject* {
 		Waiter wait;
 		InterruptionChecker interruptionChecker;
@@ -377,7 +377,7 @@ Button parallelButton = Button(Vector2f(560, 10), Vector2f(120, 120), &mainWindo
 	});
 
 Button scalarButton = Button(Vector2f(670, 10), Vector2f(100, 100), &mainWindow,
-	"Textures\\SFML_project\\MidpointButton.jpg", Vector2i(0, 0), maxTextureResolution,
+	"Textures\\SFML_project\\Scalar.png", Vector2i(0, 0), maxTextureResolution,
 	MODE_MIDPOINT, []()->VisibleObject* {
 		InterruptionChecker checker;
 		Waiter wait;

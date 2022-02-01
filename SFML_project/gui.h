@@ -8,6 +8,7 @@ using namespace sf;
 
 extern Vector2i maxTextureResolution;
 extern Event event;
+extern FloatRect mainWindowRect;
 
 class VisibleObject;
 //Button is a clickable object on the screen.
@@ -77,8 +78,8 @@ private:
 	View menuView;
 	RenderWindow* window;
 	const double shiftRatio = 0.1;
-	Vector2i buttonTable = Vector2i(10, 2);
-	const FloatRect viewport = FloatRect(0.f, 0.f, 1.0f, 0.2f);
+	Vector2i buttonTable;
+	const FloatRect viewport = FloatRect(0.f, 0.f, 1.0f, mainWindowRect.top);
 	const Color color = Color(128, 128, 128, 255);
 	const Vector2f position = Vector2f(0, 0);
 	std::vector<Button*> buttons;

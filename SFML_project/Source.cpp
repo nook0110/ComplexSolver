@@ -35,7 +35,7 @@ int main()
 {
 	CenterPoint::getInstance();
 
-	view.setViewport(FloatRect(0.f, 0.2f, 1.0f, 1.0f));
+	view.setViewport(mainWindowRect);
 	view.move(-500, -500);
 	//mainWindow.setVerticalSyncEnabled(true);
 
@@ -53,9 +53,9 @@ int main()
 	mainMenu.pushButton(&scalarButton);
 	mainMenu.pushButton(&symmetryButton);
 	mainMenu.pushButton(&clearButton);
-	mainMenu.pushButton(&fourPointsOnACircle);
 	mainMenu.pushButton(&hideButton);
-	mainMenu.pushButton(&ProveConstructionButton);
+	//mainMenu.pushButton(&fourPointsOnACircle);
+	//mainMenu.pushButton(&ProveConstructionButton);
 
 
 	//(*Creation::getInstance())();
