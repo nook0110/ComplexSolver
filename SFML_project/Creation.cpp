@@ -41,11 +41,6 @@ MODES Creation::getCurrentMode()
 	return checker.getLast();
 }
 
-void Creation::Create()
-{
-	created = true;
-}
-
 void Drawer::drawObjects()
 {
 	if (UnitCircle::getInstance()->getVisibility() || Creation::getInstance()->getCurrentMode() == MODE_HIDE)
@@ -56,24 +51,33 @@ void Drawer::drawObjects()
 	{
 		CenterPoint::getInstance()->draw();
 	}
-	if (Creation::getInstance()->getCurrentMode() != MODE_CLEAR)
+	if (Creation::getInstance()->getCurrentMode() == MODE_CLEAR)
 	{
-		if (Creation::getInstance()->getCurrentMode() != MODE_HIDE)
+		return;
+	}
+	if (Creation::getInstance()->getCurrentMode() != MODE_HIDE)
+	{
+		for (auto object : Drawer::allVisibleObjects)
 		{
-			for (auto object : Drawer::allVisibleObjects)
+			if (object->getVisibility())
 			{
-				if (object->getVisibility())
+				if (Creation::getInstance()->getCurrentMode() == MODE_CLEAR)
 				{
-					object->draw();
+					return;
 				}
-			}
-		}
-		else
-		{
-			for (auto object : Drawer::allVisibleObjects)
-			{
 				object->draw();
 			}
+		}
+	}
+	else
+	{
+		for (auto object : Drawer::allVisibleObjects)
+		{
+			if (Creation::getInstance()->getCurrentMode() == MODE_CLEAR)
+			{
+				return;
+			}
+			object->draw();
 		}
 	}
 }

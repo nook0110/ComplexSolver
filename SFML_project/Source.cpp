@@ -1,7 +1,7 @@
 #include "gui.h"
 #include "Creation.h"
 using namespace sf;
-bool Creation::created;
+
 extern RenderWindow mainWindow;
 extern View view;
 extern double const epsilon;
@@ -27,13 +27,12 @@ extern Button clearButton;
 extern Button projectionButton;
 extern Button parallelButton;
 extern Button pointBetweenPoints;
+extern Button ProveConstructionButton;
 Vector2f CamCenter = Vector2f(0, 0);
 Plane* plane = Plane::getInstance();
 
 int main()
 {
-
-
 	CenterPoint::getInstance();
 
 	view.setViewport(FloatRect(0.f, 0.2f, 1.0f, 1.0f));
@@ -56,6 +55,7 @@ int main()
 	mainMenu.pushButton(&clearButton);
 	mainMenu.pushButton(&fourPointsOnACircle);
 	mainMenu.pushButton(&hideButton);
+	mainMenu.pushButton(&ProveConstructionButton);
 
 
 	//(*Creation::getInstance())();

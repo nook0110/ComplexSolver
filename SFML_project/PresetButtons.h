@@ -12,7 +12,6 @@ private:
 public:
 	InterruptionChecker();
 	bool checkInterruption();
-	bool checkInterruption(VisibleObject* object);
 };
 
 class Waiter

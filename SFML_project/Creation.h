@@ -27,44 +27,35 @@ class Creation
 {
 	Creation();
 	~Creation();
-	static Creation* creator;
-	//static MODES last;
 	static Checker checker;
+	static Creation* creator;
 public:
-	std::function<void(void)> CurrentMethod = [](void) {
+	std::function<VisibleObject* (void)>  CurrentMethod = [](void)->VisibleObject* {
 		std::this_thread::sleep_for(std::chrono::nanoseconds(1000));
-		Create();
-		return;
+		return nullptr;
 	};
 private:
-	static bool created;
 
 	std::thread* running = new std::thread([&]() {
 		while (true)
 		{
 			std::this_thread::sleep_for(std::chrono::nanoseconds(1000));
-			if (created && getCurrentMode() != MODE_NOTHING)
+			if (getCurrentMode() != MODE_NOTHING)
 			{
-				created = false;
 				try
 				{
 					CurrentMethod();
 				}
 				catch (const std::exception& ex)
 				{
-					created = true;
 				}
 			}
-			if (!checker.checkMode())
-			{
-				created = true;
-			}
+			checker.checkMode();
 		}
 		});
 public:
 	static Creation* getInstance();
 	static MODES getCurrentMode();
-	static void Create();
 };
 
 class VisibleObject;

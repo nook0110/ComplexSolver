@@ -72,6 +72,11 @@ void VisibleObject::changeVisibility()
 	visible = !visible;
 }
 
+void VisibleObject::changeColor(Color color)
+{
+	visibleColor = color;
+}
+
 bool VisibleObject::getVisibility()
 {
 	return visible;
@@ -135,18 +140,24 @@ double UnitCircle::getDistance(Vector2f point)
 	double distanceToCenter = sqrt(
 		pow(point.x - 0, 2) +
 		pow(point.y - 0, 2));
-	return abs(distanceToCenter - radius);
+	double distance = abs(distanceToCenter - radius);
+	Vector2f delta = Vector2f(mainWindow.mapCoordsToPixel(Vector2f(0, distance), view) - mainWindow.mapCoordsToPixel(Vector2f(0, 0), view));
+	return sqrt(delta.x * delta.x + delta.y * delta.y);
 }
 
-bool UnitCircle::isNearby(Vector2f mousePosition)
+bool UnitCircle::isNearby(Vector2f position)
 {
-	return getDistance(mousePosition) < epsilon;
+	return getDistance(position) < epsilon;
 }
 
 void UnitCircle::draw()
 {
 	shape.setOutlineColor(getColor());
 	mainWindow.draw(shape);
+}
+
+void UnitCircle::drawDescription()
+{
 }
 
 void Circle::draw()
@@ -170,7 +181,7 @@ void Circle::reposition()
 	shape.setOutlineThickness(outlineThickness);
 }
 
-bool Circle::isNearby(Vector2f mousePosition)
+bool Circle::isNearby(Vector2f position)
 {
 	return false;
 }
@@ -196,7 +207,9 @@ double Line::distance(Vector2f point)
 	double A = lineEquation->A;
 	double B = lineEquation->B;
 	double C = lineEquation->C;
-	return abs((A * point.x + B * point.y + C) / sqrt(A * A + B * B));
+	double distance = abs((A * point.x + B * point.y + C) / sqrt(A * A + B * B));
+	Vector2f delta = Vector2f(mainWindow.mapCoordsToPixel(Vector2f(0, distance), view) - mainWindow.mapCoordsToPixel(Vector2f(0, 0), view));
+	return sqrt(delta.x * delta.x + delta.y * delta.y);
 }
 
 Line::Line(Line* first, Point* second)
@@ -209,9 +222,9 @@ Line::Line(Line* first, Point* second)
 	Init();
 }
 
-bool Line::isNearby(Vector2f mousePosition)
+bool Line::isNearby(Vector2f position)
 {
-	return distance(mousePosition) < epsilon;
+	return distance(position) < epsilon;
 }
 
 void Line::draw()
@@ -316,10 +329,11 @@ Chord::Chord(UnitPoint* first, UnitPoint* second)
 }
 
 
-double Point::distance(Vector2f Point)
+double Point::distance(Vector2f point)
 {
-	Vector2f coord = shape.getPosition();
-	return sqrt(pow((coord.x - Point.x), 2) + pow((coord.y - Point.y), 2));
+	point = Vector2f(mainWindow.mapCoordsToPixel(point, view));
+	Vector2f coord = Vector2f(mainWindow.mapCoordsToPixel(shape.getPosition(), view));
+	return sqrt(pow((coord.x - point.x), 2) + pow((coord.y - point.y), 2));
 }
 
 Vector2f Point::getCoordinate()
@@ -364,9 +378,9 @@ void Point::Init()
 	Drawer::allVisibleObjects.push_back(this);
 }
 
-Point::Point(Vector2f mousePosition)
+Point::Point(Vector2f position)
 {
-	auto parent = new ComplexScalar(mousePosition);
+	auto parent = new ComplexScalar(position);
 	construction = new ByComplexScalar(this, parent);
 	parent->addChild(this);
 	Init();
@@ -380,14 +394,14 @@ Point::Point(Line* first, Line* second)
 	Init();
 }
 
-Point::Point(Line* line, Point* first, Point* second, Vector2f mousePosition)
+Point::Point(Line* line, Point* first, Point* second, Vector2f position)
 {
 	construction = new ByLineAndScalar(this, first, second, new Scalar(0), line);
 	first->addChild(this);
 	second->addChild(this);
 	line->addChild(this);
 	Init();
-	moveTo(mousePosition);
+	moveTo(position);
 }
 
 Point::Point(Point* point, Line* line)
@@ -398,9 +412,9 @@ Point::Point(Point* point, Line* line)
 	Init();
 }
 
-bool Point::isNearby(Vector2f mousePosition)
+bool Point::isNearby(Vector2f position)
 {
-	return distance(mousePosition) < epsilon;
+	return distance(position) < epsilon;
 }
 
 void Point::draw()
@@ -704,12 +718,6 @@ ComplexScalar::ComplexScalar(Vector2f coord)
 	equation = new ComplexScalarEquation(coord);
 }
 
-ComplexScalar& ComplexScalar::operator+=(Vector2f delta)
-{
-	dynamic_cast<ComplexScalarEquation*>(equation)->operator+=(delta);
-	return *this;
-}
-
 ComplexScalarEquation::ComplexScalarEquation(Vector2f point)
 	:point(point)
 {
@@ -749,12 +757,6 @@ ByLineAndScalar::~ByLineAndScalar()
 Scalar::Scalar(double value)
 {
 	equation = new ScalarEquation(value);
-}
-
-Scalar& Scalar::operator+=(double deltaValue)
-{
-	dynamic_cast<ScalarEquation*>(equation)->operator+=(deltaValue);
-	return *this;
 }
 
 ScalarEquation::ScalarEquation(double value)
@@ -828,9 +830,9 @@ void CenterPoint::moveTo(Vector2f coords)
 {
 }
 
-UnitPoint::UnitPoint(UnitCircle* unitCircle, Vector2f mousePosition)
+UnitPoint::UnitPoint(UnitCircle* unitCircle, Vector2f position)
 {
-	auto scalar = new Scalar(atan2(mousePosition.y, mousePosition.x));
+	auto scalar = new Scalar(atan2(position.y, position.x));
 	construction = new ByCircleAndScalar(this, unitCircle, scalar);
 	unitCircle->addChild(this);
 	scalar->addChild(this);

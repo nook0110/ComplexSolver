@@ -18,7 +18,7 @@ extern MODES Mousemode;
 class LineEquation;
 class PointEquation;
 
-//equation for all objects
+//Equation for all objects
 struct Equation
 {
 	virtual ~Equation();
@@ -59,7 +59,7 @@ struct ComplexScalarEquation : public Equation
 	ComplexScalarEquation& operator+=(Vector2f delta);
 };
 
-//objects - geomtrical shapes on the screen
+//Objects - things that appear on the screen or help to construct them, such as UnitCircle, Circle, Points, Lines or Scalar and ComplexScalar
 class Object
 {
 private:
@@ -106,7 +106,7 @@ class ByFourPoints : public ConstructionCircle
 {
 	Point* firstParent, * secondParent, * thirdParent, * fourthParent;
 public:
-	ByFourPoints(Object* object, Point* first, Point* secondm, Point* third, Point* fourth);
+	ByFourPoints(Object* object, Point* first, Point* second, Point* third, Point* fourth);
 	void recreate(Equation* equation) override;
 	~ByFourPoints();
 };
@@ -264,10 +264,10 @@ public:
 	void recreate(Equation* equation) override;
 };
 
-
+//VisibleObject - objects that you can see on the screen.
 class VisibleObject : public Object
 {
-	const Color visibleColor = Color::Black;
+	Color visibleColor = Color::Black;
 	const Color unvisibleColor = Color::Blue;
 	void erase();
 protected:
@@ -276,11 +276,12 @@ protected:
 	bool visible = true;
 	Color getColor();
 public:
-	virtual bool isNearby(Vector2f mousePosition) = 0;
+	virtual bool isNearby(Vector2f position) = 0;
 	virtual void draw() = 0;
 	virtual void drawDescription() = 0;
 	void changeVisibility(bool newVisibility);
 	void changeVisibility();
+	void changeColor(Color color);
 	bool getVisibility();
 	bool isOnCircle();
 	~VisibleObject();
@@ -290,19 +291,16 @@ class Parametr : public Object
 {
 };
 
-
 class Scalar : public Parametr
 {
 public:
 	Scalar(double value);
-	Scalar& operator+=(double deltaValue);
 };
 
 class ComplexScalar : public Parametr
 {
 public:
 	ComplexScalar(Vector2f coord);
-	ComplexScalar& operator += (Vector2f delta);
 };
 
 class Plane : public Parametr
@@ -327,18 +325,19 @@ private:
 	CircleShape shape;
 public:
 	static UnitCircle* getInstance();
-	bool isNearby(Vector2f mousePosition);
+	bool isNearby(Vector2f position);
 	void draw();
-	void drawDescription() {}
+	void drawDescription();
 };
 
+//Circle can only be constructed to prove the problem
 class Circle : public VisibleObject
 {
 	const double outlineThickness = unitSeg / 100;
 	CircleShape shape;
 	void reposition() override;
 public:
-	bool isNearby(Vector2f mousePosition);
+	bool isNearby(Vector2f position);
 	Circle(Point* first, Point* second, Point* third, Point* fourth);
 	void draw();
 	void drawDescription();
@@ -361,7 +360,7 @@ public:
 	Line(UnitCircle* first, Point* second);
 	//Parallel
 	Line(Line* first, Point* second);
-	bool isNearby(Vector2f mousePosition);
+	bool isNearby(Vector2f position);
 	void draw() override;
 	void drawDescription();
 };
@@ -379,7 +378,7 @@ protected:
 	Point();
 	const double pointSize = 5;
 	CircleShape shape = CircleShape(pointSize);
-	double distance(Vector2f Point);
+	double distance(Vector2f point);
 	void reposition() override;
 	void Init();
 public:
@@ -387,16 +386,16 @@ public:
 	Vector2f getCoordinate();
 	virtual void moveTo(Vector2f coords);
 	// By complex scalar (Point on the plain)
-	Point(Vector2f mousePosition);
+	Point(Vector2f position);
 	// Intersection of two lines
 	Point(Line* first, Line* second);
 	// Point on a line (By line and scalar)
-	Point(Line* line, Point* first, Point* second, Vector2f mousePosition);
+	Point(Line* line, Point* first, Point* second, Vector2f position);
 	// Projection on a line
 	Point(Point* point, Line* line);
 	// Point by two points and scalar
 	Point(Point* first, Point* second, Scalar* scalar);
-	bool isNearby(Vector2f mousePosition) override;
+	bool isNearby(Vector2f position) override;
 	void draw() override;
 	void drawDescription() override;
 };
@@ -416,6 +415,6 @@ public:
 class UnitPoint : public Point
 {
 public:
-	UnitPoint(UnitCircle* unitCircle, Vector2f mousePosition);
+	UnitPoint(UnitCircle* unitCircle, Vector2f position);
 	UnitPoint(UnitCircle* unitCircle, Point* first, UnitPoint* second);
 };
