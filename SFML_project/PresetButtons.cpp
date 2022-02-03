@@ -6,6 +6,8 @@ extern View view;//
 extern Vector2i maxTextureResolution;//
 extern MODES Mousemode;//
 extern Plane* plane;//
+extern Menu mainMenu;
+
 std::list<VisibleObject*> Drawer::allVisibleObjects;
 
 Button moveButton = Button(Vector2f(10, 10), Vector2f(100, 100), &mainWindow,
@@ -502,6 +504,12 @@ Button clearButton = Button(Vector2f(890, 10), Vector2f(100, 100), &mainWindow,
 		return nullptr;
 	});
 
+Button switchButton = Button(Vector2f(890, 10), Vector2f(100, 100), &mainWindow,
+	"Textures\\SFML_project\\Test.jpg", Vector2i(0, 0), maxTextureResolution,
+	MODE_SWITCH, []()->VisibleObject* {
+		mainMenu.switchLayer();
+		return nullptr;
+	});
 
 Button fourPointsOnACircle = Button(Vector2f(890, 10), Vector2f(100, 100), &mainWindow,
 	"Textures\\SFML_project\\Test.jpg", Vector2i(0, 0), maxTextureResolution,
@@ -592,6 +600,7 @@ Button ProveConstructionButton = Button(Vector2f(890, 10), Vector2f(100, 100), &
 			Vector2f mousePosition = mainWindow.mapPixelToCoords(Mouse::getPosition(mainWindow), view);
 			firstObject = find.nearbyVisibleObject(mousePosition);
 		}
+		mainMenu.switchLayer();
 		VisibleObject* secondObject = nullptr;
 		while (checker.checkInterruption())
 		{

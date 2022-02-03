@@ -28,6 +28,8 @@ extern Button projectionButton;
 extern Button parallelButton;
 extern Button pointBetweenPoints;
 extern Button ProveConstructionButton;
+extern Button switchButton;
+
 Vector2f CamCenter = Vector2f(0, 0);
 Plane* plane = Plane::getInstance();
 
@@ -40,23 +42,25 @@ int main()
 	//mainWindow.setVerticalSyncEnabled(true);
 
 	//Menu initialization
-	mainMenu.pushButton(&moveButton);
-	mainMenu.pushButton(&lineButton);
-	mainMenu.pushButton(&pointButton);
-	mainMenu.pushButton(&pointBetweenPoints);
-	mainMenu.pushButton(&centralProjectionButton);
-	mainMenu.pushButton(&perpendicularButton);
-	mainMenu.pushButton(&tangentButton);
-	mainMenu.pushButton(&projectionButton);
-	mainMenu.pushButton(&deleteButton);
-	mainMenu.pushButton(&parallelButton);
-	mainMenu.pushButton(&scalarButton);
-	mainMenu.pushButton(&symmetryButton);
-	mainMenu.pushButton(&clearButton);
-	mainMenu.pushButton(&hideButton);
-	//mainMenu.pushButton(&fourPointsOnACircle);
-	//mainMenu.pushButton(&ProveConstructionButton);
+	mainMenu.pushButton(&moveButton,0);
+	mainMenu.pushButton(&lineButton, 0);
+	mainMenu.pushButton(&pointButton, 0);
+	mainMenu.pushButton(&pointBetweenPoints, 0);
+	mainMenu.pushButton(&centralProjectionButton, 0);
+	mainMenu.pushButton(&perpendicularButton, 0);
+	mainMenu.pushButton(&tangentButton, 0);
+	mainMenu.pushButton(&projectionButton, 0);
+	mainMenu.pushButton(&deleteButton, 0);
+	mainMenu.pushButton(&parallelButton, 0);
+	mainMenu.pushButton(&scalarButton, 0);
+	mainMenu.pushButton(&symmetryButton, 0);
+	mainMenu.pushButton(&clearButton, 0);
+	mainMenu.pushButton(&hideButton, 0);
+	mainMenu.pushButton(&switchButton, 0);
 
+	mainMenu.pushButton(&fourPointsOnACircle,1);
+	//mainMenu.pushButton(&ProveConstructionButton,1);
+	mainMenu.pushButton(&switchButton, 1);
 
 	//(*Creation::getInstance())();
 	while (mainWindow.isOpen())
@@ -93,7 +97,6 @@ int main()
 		mainWindow.clear(Color::White);
 		mainWindow.setView(view);
 		Drawer::draw();
-		mainMenu.draw();
 
 
 		mainWindow.display();

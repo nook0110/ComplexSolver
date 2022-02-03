@@ -10,6 +10,7 @@ extern Vector2i maxTextureResolution;
 extern Event event;
 extern FloatRect mainWindowRect;
 
+
 class VisibleObject;
 //Button is a clickable object on the screen.
 //It has it own mode and std::function.
@@ -82,17 +83,19 @@ private:
 	const FloatRect viewport = FloatRect(0.f, 0.f, 1.0f, mainWindowRect.top);
 	const Color color = Color(128, 128, 128, 255);
 	const Vector2f position = Vector2f(0, 0);
-	std::vector<Button*> buttons;
+	int layer = 0;
+	std::vector<std::vector<Button*>> buttons;
 	RectangleShape background;
 	void updateButtons();
 public:
 	Menu(RenderWindow* window);
 	void update(Event);
 	bool mouseOnMenu();
-	void pushButton(Button* newButton);
+	void pushButton(Button* newButton, int layerPB);
 	bool checkMouse();
 	Button* leftClickCheck();
 	void unpress();
+	void switchLayer();
 	void draw();
 };
 

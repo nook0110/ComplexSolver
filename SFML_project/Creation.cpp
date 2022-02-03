@@ -168,4 +168,5 @@ void Drawer::draw()
 	drawObjects();
 	drawTextBoxes();
 	drawDialogBox();
+	drawMenu();
 }

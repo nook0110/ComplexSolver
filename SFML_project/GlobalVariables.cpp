@@ -1,8 +1,8 @@
 #include "gui.h"
 #include "Object.h"
 
-double const unitSeg = 300;
-RenderWindow mainWindow(VideoMode(1000,1000), "Version 0.6", Style::Fullscreen, ContextSettings(0, 0, 8));
+double const unitSeg = 200;
+RenderWindow mainWindow(VideoMode(1000,1000), "Version 0.6", Style::Default, ContextSettings(0, 0, 8));
 View view = mainWindow.getDefaultView();
 double const epsilon = 50; //In pixels
 Vector2i maxTextureResolution = Vector2i(10000, 10000);

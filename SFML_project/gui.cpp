@@ -24,7 +24,7 @@ void Button::setTexture(std::string textureLocation, Vector2i textureStart, Vect
 
 Button::Button(Vector2f position, Vector2f size, RenderWindow* window,
 	std::string textureLocation, Vector2i textureStart, Vector2i textureSize,
-	MODES mode, std::function<VisibleObject*(void)> modeFunction)
+	MODES mode, std::function<VisibleObject* (void)> modeFunction)
 	:position(position),
 	size(size),
 	window(window),
@@ -38,7 +38,7 @@ Button::Button(Vector2f position, Vector2f size, RenderWindow* window,
 
 Button::Button(Vector2f position, Vector2f size, RenderWindow* window,
 	std::string textureLocation, std::string texturePressedLocation,
-	MODES mode, std::function<VisibleObject*(void)> modeFunction)
+	MODES mode, std::function<VisibleObject* (void)> modeFunction)
 	:position(position),
 	size(size),
 	window(window),
@@ -53,7 +53,7 @@ Button::Button(Vector2f position, Vector2f size, RenderWindow* window,
 Button::Button(Vector2f position, Vector2f size, RenderWindow* window,
 	std::string textureLocation, Vector2i textureStart, Vector2i textureSize,
 	std::string texturePressedLocation, Vector2i texturePressedStart, Vector2i texturePressedSize,
-	MODES mode, std::function<VisibleObject*(void)> modeFunction)
+	MODES mode, std::function<VisibleObject* (void)> modeFunction)
 	:position(position),
 	size(size),
 	window(window),
@@ -166,7 +166,7 @@ bool Button::getPressed()
 	return pressed;
 }
 
-std::function<VisibleObject*(void)> Button::getObjectCreationMethod()
+std::function<VisibleObject* (void)> Button::getObjectCreationMethod()
 {
 	return modeFunction;
 }
@@ -175,34 +175,37 @@ void Menu::updateButtons()
 {
 	Vector2f menuSize = menuView.getSize();
 	//c-buttons.size(), s-size, x-menuSize.x, y-menuSize.y
+	//(x/s-1)(y/s-1)>c
 	//(c-1)s^2+(x+y)*s-xy=0
-	double a = buttons.size() - 1;
+	double a = buttons[layer].size() - 1;
 	double b = menuSize.x + menuSize.y;
 	double c = -menuSize.x * menuSize.y;
 	double size = ((-b + sqrt(b * b - 4 * a * c)) / (2 * a)) / (1 + shiftRatio);
 	buttonTable.x = (menuSize.x - size * shiftRatio) / (size * (1 + shiftRatio));
 	buttonTable.y = (menuSize.y - size * shiftRatio) / (size * (1 + shiftRatio));
 	double shiftSize = size * shiftRatio;
-	for (int i = 0; i < buttons.size(); i++)
+
+	for (int i = 0; i < buttons[layer].size(); i++)
 	{
 		int row = i / buttonTable.x;
-		buttons[i]->setPosition(Vector2f(
+		buttons[layer][i]->setPosition(Vector2f(
 			(i - row * buttonTable.x) * (size + shiftSize) + shiftSize,
 			row * (size + shiftSize) + shiftSize
 		));
-		buttons[i]->setSize(Vector2f(size, size));
+		buttons[layer][i]->setSize(Vector2f(size, size));
 	}
+
 }
 
 Menu::Menu(RenderWindow* window)
 	:window(window)
 {
+	buttons.resize(2);
 	menuView = window->getDefaultView();
 	menuView.setSize(menuView.getSize().x * viewport.width, menuView.getSize().y * viewport.height);
 	menuView.setCenter(menuView.getCenter().x * viewport.width, menuView.getCenter().y * viewport.height);
 	menuView.setViewport(viewport);
 	background.setFillColor(color);
-
 }
 void Menu::update(Event event)
 {
@@ -218,18 +221,24 @@ bool Menu::mouseOnMenu()
 	return background.getGlobalBounds().contains(mousePosition);
 }
 
-
-void Menu::pushButton(Button* button)
+void Menu::pushButton(Button* newButton, int layerPB)
 {
 	window->setView(menuView);
-	buttons.push_back(button);
+	try
+	{
+		buttons[layerPB].push_back(newButton);
+	}
+	catch (std::exception)
+	{
+		throw std::out_of_range("Layer is not supported");
+	}
 	updateButtons();
 }
 
 bool Menu::checkMouse()
 {
 	window->setView(menuView);
-	for (auto& Button : buttons)
+	for (auto& Button : buttons[layer])
 	{
 		if (Button->mouseCheck(menuView))
 		{
@@ -242,7 +251,7 @@ bool Menu::checkMouse()
 Button* Menu::leftClickCheck()
 {
 	window->setView(menuView);
-	for (auto& Button : buttons)
+	for (auto& Button : buttons[layer])
 	{
 		if (Button->leftClickCheck(menuView))
 		{
@@ -255,11 +264,18 @@ Button* Menu::leftClickCheck()
 void Menu::unpress()
 {
 	window->setView(menuView);
-	for (auto& Button : buttons)
+	for (auto& Button : buttons[layer])
 	{
 		Button->unpress();
 	}
 	Mousemode = MODE_NOTHING;
+}
+
+void Menu::switchLayer()
+{
+	layer = 1 - layer; //0<->1 switcher
+	updateButtons();
+	unpress();
 }
 
 void Menu::draw()
@@ -269,7 +285,7 @@ void Menu::draw()
 	background.setSize(menuView.getSize());
 	background.setPosition(position);
 	window->draw(background);
-	for (auto& button : buttons)
+	for (auto& button : buttons[layer])
 	{
 		button->draw();
 	}
