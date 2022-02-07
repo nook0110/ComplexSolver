@@ -171,6 +171,18 @@ std::function<VisibleObject* (void)> Button::getObjectCreationMethod()
 	return modeFunction;
 }
 
+double Menu::adjustSize(double size, Vector2f menuSize, int count)
+{
+	const double coeff = 1.001;
+	double nextSize = size * coeff;
+	while (floor((menuSize.x - nextSize * shiftRatio) / nextSize) * floor((menuSize.y - nextSize * shiftRatio) / nextSize) > count - 1)
+	{
+		size = nextSize;
+		nextSize *= coeff;
+	}
+	return size;
+}
+
 void Menu::updateButtons()
 {
 	Vector2f menuSize = menuView.getSize();
@@ -180,9 +192,11 @@ void Menu::updateButtons()
 	double a = buttons[layer].size() - 1;
 	double b = menuSize.x + menuSize.y;
 	double c = -menuSize.x * menuSize.y;
-	double size = ((-b + sqrt(b * b - 4 * a * c)) / (2 * a)) / (1 + shiftRatio);
-	buttonTable.x = (menuSize.x - size * shiftRatio) / (size * (1 + shiftRatio));
-	buttonTable.y = (menuSize.y - size * shiftRatio) / (size * (1 + shiftRatio));
+	double size = ((-b + sqrt(b * b - 4 * a * c)) / (2 * a));
+	size = adjustSize(size, menuSize, buttons[layer].size());
+	size /= (1 + shiftRatio);
+	buttonTable.x = (menuSize.x) / (size * (1 + shiftRatio));
+	buttonTable.y = (menuSize.y) / (size * (1 + shiftRatio));
 	double shiftSize = size * shiftRatio;
 
 	for (int i = 0; i < buttons[layer].size(); i++)
@@ -280,10 +294,11 @@ void Menu::switchLayer()
 
 void Menu::draw()
 {
-	window->setView(menuView);
 	menuView.setViewport(viewport);
+	menuView.setCenter(menuView.getSize() / 2.f + position);
 	background.setSize(menuView.getSize());
 	background.setPosition(position);
+	window->setView(menuView);
 	window->draw(background);
 	for (auto& button : buttons[layer])
 	{

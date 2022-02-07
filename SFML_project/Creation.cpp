@@ -146,9 +146,13 @@ void Drawer::resizeDialogBox(Event event)
 
 void Drawer::update(Event event)
 {
-	updateMenu();
+	
 	switch (event.type)
 	{
+	case Event::MouseButtonPressed:
+	case Event::MouseButtonReleased:
+		updateMenu();
+		break;
 	case Event::Resized:
 		resizeMenu(event);
 		resizeTextBoxes(event);

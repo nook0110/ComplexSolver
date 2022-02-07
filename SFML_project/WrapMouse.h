@@ -43,7 +43,7 @@ enum MODES
 //Wrappper of SFML Mouse
 class WrapMouse
 {
-public:
+private:
 	static Vector2i leftClickedCoord;
 	static Vector2i rightClickedCoord;
 	static bool leftClicked;
@@ -53,5 +53,5 @@ public:
 public:
 	static bool getClicked(Mouse::Button button);
 	static Vector2i getClickedCoord(Mouse::Button button);
-	static bool checkPress(Mouse::Button button);
+	static bool checkPress(Mouse::Button button = Mouse::Button::Left);
 };

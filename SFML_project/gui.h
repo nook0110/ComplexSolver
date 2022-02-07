@@ -86,6 +86,7 @@ private:
 	int layer = 0;
 	std::vector<std::vector<Button*>> buttons;
 	RectangleShape background;
+	double adjustSize(double size, Vector2f menuSize, int count);
 	void updateButtons();
 public:
 	Menu(RenderWindow* window);
