@@ -324,8 +324,7 @@ DialogBox::DialogBox(RenderWindow* window)
 void DialogBox::update(Event event)
 {
 	FloatRect visibleArea(dialogBoxView.getCenter().x - dialogBoxView.getSize().x / 2, dialogBoxView.getCenter().y - dialogBoxView.getSize().y / 2, event.size.width * viewport.width, event.size.height * viewport.height);
-	window->setView(View(visibleArea));
-	dialogBoxView = View(visibleArea);
+	window->setView(dialogBoxView = View(visibleArea));
 }
 
 void DialogBox::cin(Event event)
@@ -416,6 +415,38 @@ void ScalarBox::cin(Event event)
 	}
 }
 
+NameBox::NameBox(RenderWindow* window) : DialogBox(window)
+{
+	formatIn = "Enter name...";
+}
+
+void NameBox::cin(Event event)
+{
+	switch (event.text.unicode)
+	{
+	case 8:
+		if (!textIn.empty())
+		{
+			textIn.pop_back();
+		}
+		break;
+	case 13:
+		finished = true;
+		break;
+	default:
+		Text text(textIn, font, textSize);
+		if (text.getLocalBounds().width < sizeTextBox.x - 2 * textOffset.x)
+		{
+			textIn += event.text.unicode;
+		}
+	}
+}
+
+std::string NameBox::getName()
+{
+	return textIn;
+}
+
 void TextBox::setText(std::string text)
 {
 	TextBox::text = text;
@@ -424,4 +455,3 @@ void TextBox::setText(std::string text)
 void TextBox::draw()
 {
 }
-

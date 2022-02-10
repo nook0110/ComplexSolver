@@ -65,7 +65,6 @@ Button pointButton = Button(Vector2f(120, 10), Vector2f(100, 100), &mainWindow,
 		return point;
 	});
 
-
 Button lineButton = Button(Vector2f(230, 10), Vector2f(100, 100), &mainWindow,
 	"Textures\\SFML_project\\Line.png", Vector2i(0, 0), maxTextureResolution,
 	MODE_LINE, []()->VisibleObject* {
@@ -417,8 +416,8 @@ Button scalarButton = Button(Vector2f(670, 10), Vector2f(100, 100), &mainWindow,
 				continue;
 			}
 		}
-		ScalarBox dialogBox(&mainWindow);
-		while (!dialogBox.isFinished())
+		ScalarBox* dialogBox = new ScalarBox(&mainWindow);
+		while (!dialogBox->isFinished())
 		{
 			if (!checker.checkInterruption())
 			{
@@ -426,7 +425,9 @@ Button scalarButton = Button(Vector2f(670, 10), Vector2f(100, 100), &mainWindow,
 			}
 			wait.sleep();
 		}
-		new Point(points.first, points.second, new Scalar(dialogBox.getDouble()));
+		double ratio = dialogBox->getDouble();
+		delete dialogBox;
+		new Point(points.first, points.second, new Scalar(ratio));
 		return nullptr;
 	});
 

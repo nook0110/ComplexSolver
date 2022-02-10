@@ -1,5 +1,8 @@
 #include "gui.h"
 #include "Creation.h"
+
+#include <iostream>
+#include <iomanip>
 using namespace sf;
 
 extern RenderWindow mainWindow;
@@ -42,7 +45,7 @@ int main()
 	//mainWindow.setVerticalSyncEnabled(true);
 
 	//Menu initialization
-	mainMenu.pushButton(&moveButton,0);
+	mainMenu.pushButton(&moveButton, 0);
 	mainMenu.pushButton(&lineButton, 0);
 	mainMenu.pushButton(&pointButton, 0);
 	mainMenu.pushButton(&pointBetweenPoints, 0);
@@ -58,11 +61,18 @@ int main()
 	mainMenu.pushButton(&hideButton, 0);
 	mainMenu.pushButton(&switchButton, 0);
 
-	mainMenu.pushButton(&fourPointsOnACircle,1);
-	//mainMenu.pushButton(&ProveConstructionButton,1);
+	mainMenu.pushButton(&fourPointsOnACircle, 1);
+	mainMenu.pushButton(&ProveConstructionButton, 1);
 	mainMenu.pushButton(&switchButton, 1);
 
-	//(*Creation::getInstance())();
+
+	//DEBUG
+	//Point test(Vector2f(unitSeg,0));
+	//std::string strTest;
+	//std::getline(std::cin, strTest);
+	//test.setName(strTest);
+	//
+
 	while (mainWindow.isOpen())
 	{	
 		Event event;

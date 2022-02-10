@@ -68,7 +68,7 @@ public:
 	void press();
 	void unpress();
 	bool getPressed();
-	std::function<VisibleObject*(void)> getObjectCreationMethod();
+	std::function<VisibleObject* (void)> getObjectCreationMethod();
 };
 
 
@@ -139,10 +139,16 @@ public:
 	void cin(Event event) override;
 };
 
-class NameBox :DialogBox
+class NameBox : public DialogBox
 {
-
+public:
+	NameBox(RenderWindow* window);
+	void cin(Event event) override;
+	std::string getName();
 };
+
+
+// In construction...
 class TextBox
 {
 	RenderWindow* window;

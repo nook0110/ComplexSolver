@@ -371,6 +371,8 @@ void Point::moveTo(Vector2f coords)
 
 void Point::Init()
 {
+	font.loadFromFile("Textures\\SFML_project\\Fonts\\arial.ttf");
+	setName();
 	equation = new PointEquation(Vector2f(0, 0));
 	shape.setOrigin(pointSize, pointSize);
 	shape.setFillColor(Color::Black);
@@ -417,10 +419,24 @@ bool Point::isNearby(Vector2f position)
 	return distance(position) < epsilon;
 }
 
+void Point::setName()
+{
+	NameBox nameBox(&mainWindow);
+	while (!nameBox.isFinished())
+	{
+		std::this_thread::sleep_for(std::chrono::nanoseconds(1000));
+	}
+	pointName = nameBox.getName();
+	nameText = Text(pointName, font, textSize);
+	nameText.setFillColor(Color::Black);
+}
+
 void Point::draw()
 {
+	nameText.setPosition(shape.getPosition());
 	shape.setFillColor(getColor());
 	mainWindow.draw(shape);
+	mainWindow.draw(nameText);
 }
 
 void Point::drawDescription()
@@ -798,6 +814,10 @@ void ByCircleAndScalar::recreate(Equation* equation)
 
 CenterPoint::CenterPoint() : Point()
 {
+	pointName = "O";
+	font.loadFromFile("Textures\\SFML_project\\Fonts\\arial.ttf");
+	nameText = Text(pointName, font, textSize);
+	nameText.setFillColor(Color::Black);
 	auto parent = new ComplexScalar(Vector2f(0, 0));
 	construction = new ByComplexScalar(this, parent);
 	parent->addChild(this);

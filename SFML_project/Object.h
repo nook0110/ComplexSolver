@@ -14,7 +14,7 @@ extern double const epsilon;
 extern double const unitSeg;
 extern std::thread Creator;
 extern MODES Mousemode;
-
+extern RenderWindow mainWindow;
 class LineEquation;
 class PointEquation;
 
@@ -375,11 +375,16 @@ public:
 class Point : public VisibleObject
 {
 protected:
+	std::string pointName;
+	Font font;
+	unsigned int textSize = 30;
+	Text nameText;
 	Point();
 	const double pointSize = unitSeg/30;
 	CircleShape shape = CircleShape(pointSize);
 	double distance(Vector2f point);
 	void reposition() override;
+	void setName();
 	void Init();
 public:
 	//static Vector2f intersectLines(Line::equationLine FirstEq, Line::equationLine SecondEq);
