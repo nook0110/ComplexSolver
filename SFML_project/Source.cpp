@@ -38,11 +38,9 @@ Plane* plane = Plane::getInstance();
 
 int main()
 {
-	CenterPoint::getInstance();
-
 	view.setViewport(mainWindowRect);
 	view.move(-500, -500);
-	//mainWindow.setVerticalSyncEnabled(true);
+	mainWindow.setVerticalSyncEnabled(true);
 
 	//Menu initialization
 	mainMenu.pushButton(&moveButton, 0);
@@ -65,16 +63,8 @@ int main()
 	mainMenu.pushButton(&ProveConstructionButton, 1);
 	mainMenu.pushButton(&switchButton, 1);
 
-
-	//DEBUG
-	//Point test(Vector2f(unitSeg,0));
-	//std::string strTest;
-	//std::getline(std::cin, strTest);
-	//test.setName(strTest);
-	//
-
 	while (mainWindow.isOpen())
-	{	
+	{
 		Event event;
 		while (mainWindow.pollEvent(event))
 		{

@@ -232,6 +232,11 @@ Button perpendicularButton = Button(Vector2f(340, 10), Vector2f(100, 100), &main
 			line = find.nearbyLine(mousePosition);
 			wait.sleep();
 		}
+		if (dynamic_cast<UnitPoint*>(point) && dynamic_cast<Chord*>(line))
+		{
+			UnitPoint* unitPoint = new UnitPoint(UnitCircle::getInstance(), dynamic_cast<UnitPoint*>(point), dynamic_cast<Chord*>(line));
+			return new Chord(dynamic_cast<UnitPoint*>(point), unitPoint);
+		}
 		return new Line(point, line);
 	});
 Button midPointButton = Button(Vector2f(670, 10), Vector2f(100, 100), &mainWindow,
@@ -281,8 +286,8 @@ Button symmetryButton = Button(Vector2f(670, 10), Vector2f(100, 100), &mainWindo
 	MODE_SYMMETRY, []()->VisibleObject* {
 		Waiter wait;
 		Finder find;
-		const int twotimes = 2;
 		std::pair<Point*, Point*> points(nullptr, nullptr);
+		const int twotimes = 2;
 		for (int i = 0; i < twotimes; ++i)
 		{
 			if (wait.untilClick())
@@ -373,6 +378,11 @@ Button parallelButton = Button(Vector2f(560, 10), Vector2f(120, 120), &mainWindo
 		if (!point)
 		{
 			point = find.nearbyNewPoint(mousePosition);
+		}
+		if (dynamic_cast<Chord*>(line) && dynamic_cast<UnitPoint*>(point))
+		{
+			UnitPoint* unitPoint = new UnitPoint(UnitCircle::getInstance(), dynamic_cast<Chord*>(line), dynamic_cast<UnitPoint*>(point));
+			return new Chord(dynamic_cast<UnitPoint*>(point), unitPoint);
 		}
 		return new Line(line, point);
 	});

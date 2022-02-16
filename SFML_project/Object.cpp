@@ -414,6 +414,10 @@ Point::Point(Point* point, Line* line)
 	Init();
 }
 
+Point::Point(Point* center, Point* preimage)
+{
+}
+
 bool Point::isNearby(Vector2f position)
 {
 	return distance(position) < epsilon;
@@ -868,6 +872,24 @@ UnitPoint::UnitPoint(UnitCircle* unitCircle, Point* first, UnitPoint* second)
 	Init();
 }
 
+UnitPoint::UnitPoint(UnitCircle* unitCircle, UnitPoint* point, Chord* chord)
+{
+	construction = new IntersectionPerpendicularChord(this, unitCircle, point, chord);
+	unitCircle->addChild(this);
+	chord->addChild(this);
+	point->addChild(this);
+	Init();
+}
+
+UnitPoint::UnitPoint(UnitCircle* unitCircle, Chord* chord, UnitPoint* point)
+{
+	construction = new IntersectionParallelChord(this, unitCircle, chord, point);
+	unitCircle->addChild(this);
+	chord->addChild(this);
+	point->addChild(this);
+	Init();
+}
+
 Projection::Projection(Object* object, Point* first, Line* second)
 	:firstParent(first), secondParent(second)
 {
@@ -922,4 +944,74 @@ ByFourPoints::~ByFourPoints()
 CircleEquation::CircleEquation(Vector2f center, double radius)
 	:center(center), radius(radius)
 {
+}
+
+IntersectionParallelChord::IntersectionParallelChord(Object* object, UnitCircle* unitCircle, Chord* firstParent, UnitPoint* secondParent)
+	: unitCircle(unitCircle), firstParent(firstParent), secondParent(secondParent)
+{
+	ConstructionData::object = object;
+}
+
+IntersectionParallelChord::~IntersectionParallelChord()
+{
+	unitCircle->eraseChild(object);
+	firstParent->eraseChild(object);
+	secondParent->eraseChild(object);
+}
+
+void IntersectionParallelChord::recreate(Equation* equation)
+{
+	LineEquation* firstEquation = dynamic_cast<LineEquation*>(firstParent->getEquation());
+	PointEquation* secondEquation = dynamic_cast<PointEquation*>(secondParent->getEquation());
+	Vector2f coord = secondEquation->point;
+	double A = firstEquation->A;
+	double B = firstEquation->B;
+	double C = -(A * coord.x + B * coord.y);
+	LineEquation lineEquation(A, B, C);
+	Vector2f projection = Equation::Projection(lineEquation, PointEquation(Vector2f(0, 0)));
+	Vector2f delta = projection - coord;
+	*dynamic_cast<PointEquation*>(equation) = PointEquation(projection + delta);
+}
+
+IntersectionPerpendicularChord::IntersectionPerpendicularChord(Object* object, UnitCircle* unitCircle, UnitPoint* firstParent, Chord* secondParent)
+	:unitCircle(unitCircle), firstParent(firstParent), secondParent(secondParent)
+{
+	ConstructionData::object = object;
+}
+
+IntersectionPerpendicularChord::~IntersectionPerpendicularChord()
+{
+	unitCircle->eraseChild(object);
+	firstParent->eraseChild(object);
+	secondParent->eraseChild(object);
+}
+
+void IntersectionPerpendicularChord::recreate(Equation* equation)
+{
+	PointEquation* firstEquation = dynamic_cast<PointEquation*>(firstParent->getEquation());
+	LineEquation* secondEquation = dynamic_cast<LineEquation*>(secondParent->getEquation());
+	Vector2f coord = firstEquation->point;
+	double A = secondEquation->B;
+	double B = -secondEquation->A;
+	double C = -(A * coord.x + B * coord.y);
+	LineEquation lineEquation(A, B, C);
+	Vector2f projection = Equation::Projection(lineEquation, PointEquation(Vector2f(0, 0)));
+	Vector2f delta = projection - coord;
+	*dynamic_cast<PointEquation*>(equation) = PointEquation(projection + delta);
+}
+
+Rotation90::Rotation90(Object* object, Point* firstParent, Point* secondParent, int sign)
+	:firstParent(firstParent), secondParent(secondParent), sign((sign>0)-(sign<0))
+{
+	ConstructionData::object = object;
+}
+
+void Rotation90::recreate(Equation* equation)
+{
+}
+
+Rotation90::~Rotation90()
+{
+	firstParent->eraseChild(object);
+	secondParent->eraseChild(object);
 }

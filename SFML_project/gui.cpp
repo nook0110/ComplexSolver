@@ -319,6 +319,8 @@ DialogBox::DialogBox(RenderWindow* window)
 	font.loadFromFile("Textures\\SFML_project\\Fonts\\arial.ttf");
 	dialogBox.setFillColor(color);
 	shadow.setFillColor(shadowColor);
+	FloatRect visibleArea(dialogBoxView.getCenter().x - dialogBoxView.getSize().x / 2, dialogBoxView.getCenter().y - dialogBoxView.getSize().y / 2, window->getSize().x * viewport.width, window->getSize().y * viewport.height);
+	dialogBoxView = View(visibleArea);
 }
 
 void DialogBox::update(Event event)

@@ -142,6 +142,17 @@ public:
 	~IntersectionOfTwoLines() override;
 };
 
+class Rotation90 : public ConstructionPoint
+{
+	Point* firstParent;
+	Point* secondParent;
+	int sign;
+public:
+	Rotation90(Object* object, Point* firstParent, Point* secondParent, int sign);
+	void recreate(Equation* equation) override;
+	~Rotation90();
+};
+
 class UnitPoint;
 class CentralProjection : public ConstructionPoint
 {
@@ -195,6 +206,29 @@ public:
 	ByCircleAndScalar(Object* object, UnitCircle* firstParent, Scalar* secondParent);
 	void moveTo(Vector2f coords) override;
 	~ByCircleAndScalar();
+	void recreate(Equation* equation) override;
+};
+
+class Chord;
+class IntersectionParallelChord : public ConstructionPoint
+{
+	UnitCircle* unitCircle;
+	Chord* firstParent;
+	UnitPoint* secondParent;
+public:
+	IntersectionParallelChord(Object* object, UnitCircle* unitCircle, Chord* firstParent, UnitPoint* secondParent);
+	~IntersectionParallelChord();
+	void recreate(Equation* equation) override;
+};
+
+class IntersectionPerpendicularChord : public ConstructionPoint
+{
+	UnitCircle* unitCircle;
+	UnitPoint* firstParent;
+	Chord* secondParent;
+public:
+	IntersectionPerpendicularChord(Object* object, UnitCircle* unitCircle, UnitPoint* firstParent, Chord* secondParent);
+	~IntersectionPerpendicularChord();
 	void recreate(Equation* equation) override;
 };
 
@@ -369,6 +403,7 @@ class UnitPoint;
 class Chord : public Line
 {
 public:
+	//By two UnitPoints
 	Chord(UnitPoint* first, UnitPoint* second);
 };
 
@@ -380,14 +415,13 @@ protected:
 	unsigned int textSize = 30;
 	Text nameText;
 	Point();
-	const double pointSize = unitSeg/30;
+	const double pointSize = unitSeg / 30;
 	CircleShape shape = CircleShape(pointSize);
 	double distance(Vector2f point);
 	void reposition() override;
 	void setName();
 	void Init();
 public:
-	//static Vector2f intersectLines(Line::equationLine FirstEq, Line::equationLine SecondEq);
 	Vector2f getCoordinate();
 	virtual void moveTo(Vector2f coords);
 	// By complex scalar (Point on the plain)
@@ -400,6 +434,8 @@ public:
 	Point(Point* point, Line* line);
 	// Point by two points and scalar
 	Point(Point* first, Point* second, Scalar* scalar);
+	// Rotation on 90°
+	Point(Point* center, Point* preimage);
 	bool isNearby(Vector2f position) override;
 	void draw() override;
 	void drawDescription() override;
@@ -422,4 +458,8 @@ class UnitPoint : public Point
 public:
 	UnitPoint(UnitCircle* unitCircle, Vector2f position);
 	UnitPoint(UnitCircle* unitCircle, Point* first, UnitPoint* second);
+	// Intersection of parallel chord and Unit Circle (though a UnitPoint)
+	UnitPoint(UnitCircle* unitCircle, Chord* first, UnitPoint* second);
+	// Intersection of perpendicular chord and Unit Circle (though a UnitPoint)
+	UnitPoint(UnitCircle* unitCircle, UnitPoint* first, Chord* second);
 };

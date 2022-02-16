@@ -19,8 +19,8 @@ class Button
 {
 private:
 
-	Color WhiteColor = Color(255, 255, 255, 255);
-	Color GreyColor = Color(128, 128, 128, 255);
+	const Color WhiteColor = Color(255, 255, 255, 255);
+	const Color GreyColor = Color(128, 128, 128, 255);
 
 	Vector2f position;
 	Vector2f size;
