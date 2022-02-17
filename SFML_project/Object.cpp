@@ -414,8 +414,12 @@ Point::Point(Point* point, Line* line)
 	Init();
 }
 
-Point::Point(Point* center, Point* preimage)
+Point::Point(Point* center, Point* preimage, int sign)
 {
+	construction = new Rotation90(this, center, preimage, sign);
+	center->addChild(this);
+	preimage->addChild(this);
+	Init();
 }
 
 bool Point::isNearby(Vector2f position)
@@ -1001,13 +1005,23 @@ void IntersectionPerpendicularChord::recreate(Equation* equation)
 }
 
 Rotation90::Rotation90(Object* object, Point* firstParent, Point* secondParent, int sign)
-	:firstParent(firstParent), secondParent(secondParent), sign((sign>0)-(sign<0))
+	:firstParent(firstParent), secondParent(secondParent), sign(sign)
 {
 	ConstructionData::object = object;
 }
 
 void Rotation90::recreate(Equation* equation)
 {
+	PointEquation* firstEquation = dynamic_cast<PointEquation*>(firstParent->getEquation());
+	PointEquation* secondEquation = dynamic_cast<PointEquation*>(secondParent->getEquation());
+	Vector2f center = firstEquation->point;
+	Vector2f preimage = secondEquation->point;
+	Vector2f delta = preimage - center;
+	Vector2f deltaRot;
+	deltaRot.x = -delta.y;
+	deltaRot.y = delta.x;
+	deltaRot *= (float)sign;
+	*dynamic_cast<PointEquation*>(equation) = PointEquation(center + deltaRot);
 }
 
 Rotation90::~Rotation90()

@@ -323,6 +323,90 @@ Button symmetryButton = Button(Vector2f(670, 10), Vector2f(100, 100), &mainWindo
 		return point;
 	});
 
+Button rotateLeftButton = Button(Vector2f(450, 10), Vector2f(100, 100), &mainWindow,
+	"Textures\\SFML_project\\Test.jpg", Vector2i(0, 0), maxTextureResolution,
+	MODE_ROTATION_LEFT, []()->VisibleObject* {
+		Waiter wait;
+		Finder find;
+		std::pair<Point*, Point*> points(nullptr, nullptr);
+		const int twotimes = 2;
+		for (int i = 0; i < twotimes; ++i)
+		{
+			if (wait.untilClick())
+			{
+				return nullptr;
+			}
+			Vector2f mousePosition = mainWindow.mapPixelToCoords(Mouse::getPosition(mainWindow), view);
+			Point* point = find.nearbyConstructedPoint(mousePosition);
+			if (!point)
+			{
+				point = find.nearbyNewPoint(mousePosition);
+			}
+			if (std::get<0>(points))
+			{
+				if (point != std::get<0>(points))
+				{
+					points.second = point;
+					break;
+				}
+				else
+				{
+					i--;
+					continue;
+				}
+			}
+			else
+			{
+				points.first = point;
+				continue;
+			}
+		}
+		Point* point = new Point(points.first, points.second, -1);
+		return point;
+	});
+
+Button rotateRightButton = Button(Vector2f(450, 10), Vector2f(100, 100), &mainWindow,
+	"Textures\\SFML_project\\Test.jpg", Vector2i(0, 0), maxTextureResolution,
+	MODE_ROTATION_RIGHT, []()->VisibleObject* {
+		Waiter wait;
+		Finder find;
+		std::pair<Point*, Point*> points(nullptr, nullptr);
+		const int twotimes = 2;
+		for (int i = 0; i < twotimes; ++i)
+		{
+			if (wait.untilClick())
+			{
+				return nullptr;
+			}
+			Vector2f mousePosition = mainWindow.mapPixelToCoords(Mouse::getPosition(mainWindow), view);
+			Point* point = find.nearbyConstructedPoint(mousePosition);
+			if (!point)
+			{
+				point = find.nearbyNewPoint(mousePosition);
+			}
+			if (std::get<0>(points))
+			{
+				if (point != std::get<0>(points))
+				{
+					points.second = point;
+					break;
+				}
+				else
+				{
+					i--;
+					continue;
+				}
+			}
+			else
+			{
+				points.first = point;
+				continue;
+			}
+		}
+		Point* point = new Point(points.first, points.second, 1);
+		return point;
+	});
+
 Button projectionButton = Button(Vector2f(450, 10), Vector2f(100, 100), &mainWindow,
 	"Textures\\SFML_project\\Projection.png", Vector2i(0, 0), maxTextureResolution,
 	MODE_PROJECTION, []()->VisibleObject* {

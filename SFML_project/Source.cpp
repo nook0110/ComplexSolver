@@ -20,6 +20,8 @@ extern Button lineButton;
 extern Button centralProjectionButton;
 extern Button perpendicularButton;
 extern Button tangentButton;
+extern Button rotateLeftButton;
+extern Button rotateRightButton;
 extern Button deleteButton;
 extern Button midPointButton;
 extern Button symmetryButton;
@@ -51,6 +53,8 @@ int main()
 	mainMenu.pushButton(&perpendicularButton, 0);
 	mainMenu.pushButton(&tangentButton, 0);
 	mainMenu.pushButton(&projectionButton, 0);
+	mainMenu.pushButton(&rotateLeftButton, 0);
+	mainMenu.pushButton(&rotateRightButton, 0);
 	mainMenu.pushButton(&deleteButton, 0);
 	mainMenu.pushButton(&parallelButton, 0);
 	mainMenu.pushButton(&scalarButton, 0);

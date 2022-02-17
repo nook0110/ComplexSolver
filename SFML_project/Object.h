@@ -435,7 +435,7 @@ public:
 	// Point by two points and scalar
 	Point(Point* first, Point* second, Scalar* scalar);
 	// Rotation on 90°
-	Point(Point* center, Point* preimage);
+	Point(Point* center, Point* preimage, int sign);
 	bool isNearby(Vector2f position) override;
 	void draw() override;
 	void drawDescription() override;

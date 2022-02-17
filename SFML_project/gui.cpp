@@ -427,12 +427,17 @@ void NameBox::cin(Event event)
 	switch (event.text.unicode)
 	{
 	case 8:
-		if (!textIn.empty())
+		if (textIn.empty())
 		{
-			textIn.pop_back();
+			break;
 		}
+		textIn.pop_back();
 		break;
 	case 13:
+		if (textIn.empty())
+		{
+			break;
+		}
 		finished = true;
 		break;
 	default:
