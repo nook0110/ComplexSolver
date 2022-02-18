@@ -36,7 +36,6 @@ extern Button ProveConstructionButton;
 extern Button switchButton;
 
 Vector2f CamCenter = Vector2f(0, 0);
-Plane* plane = Plane::getInstance();
 
 int main()
 {

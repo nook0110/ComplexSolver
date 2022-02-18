@@ -99,20 +99,6 @@ bool VisibleObject::isOnCircle()
 	return dynamic_cast<ByCircleAndScalar*>(construction);
 }
 
-Plane* Plane::plane = nullptr;
-Plane::Plane()
-{
-}
-
-Plane* Plane::getInstance()
-{
-	if (plane == nullptr) {
-		plane = new Plane();
-	}
-	return plane;
-}
-
-
 UnitCircle* UnitCircle::unitCircle = nullptr;
 UnitCircle::UnitCircle()
 {
@@ -341,12 +327,11 @@ Vector2f Point::getCoordinate()
 	return shape.getPosition();
 }
 
-Point::Point(Point* first, Point* second, Scalar* scalar)
+Point::Point(Point* first, Point* second, float ratio)
 {
-	construction = new ByTwoPointsAndScalar(this, first, second, scalar);
+	construction = new ByTwoPointsAndScalar(this, first, second, ratio);
 	first->addChild(this);
 	second->addChild(this);
-	scalar->addChild(this);
 	Init();
 }
 
@@ -382,9 +367,7 @@ void Point::Init()
 
 Point::Point(Vector2f position)
 {
-	auto parent = new ComplexScalar(position);
-	construction = new ByComplexScalar(this, parent);
-	parent->addChild(this);
+	construction = new ByComplexScalar(this, position);
 	Init();
 }
 
@@ -398,7 +381,7 @@ Point::Point(Line* first, Line* second)
 
 Point::Point(Line* line, Point* first, Point* second, Vector2f position)
 {
-	construction = new ByLineAndScalar(this, first, second, new Scalar(0), line);
+	construction = new ByLineAndScalar(this, first, second, 0, line);
 	first->addChild(this);
 	second->addChild(this);
 	line->addChild(this);
@@ -459,8 +442,8 @@ ByFourPoints::ByFourPoints(Object* object, Point* first, Point* second, Point* t
 	ConstructionData::object = object;
 }
 
-ByComplexScalar::ByComplexScalar(Object* object, ComplexScalar* ComplexScalar)
-	:parent(ComplexScalar)
+ByComplexScalar::ByComplexScalar(Object* object, Vector2f point)
+	:point(point)
 {
 	ConstructionData::object = object;
 }
@@ -468,20 +451,16 @@ ByComplexScalar::ByComplexScalar(Object* object, ComplexScalar* ComplexScalar)
 
 void ByComplexScalar::recreate(Equation* equation)
 {
-	ComplexScalarEquation* complexScalarequation = dynamic_cast<ComplexScalarEquation*>(parent->getEquation());
-	*dynamic_cast<PointEquation*>(equation) = PointEquation(complexScalarequation->point);
+	*dynamic_cast<PointEquation*>(equation) = PointEquation(point);
 }
 
 void ByComplexScalar::moveTo(Vector2f coords)
 {
-	*parent = (ComplexScalar(coords));
+	point = coords;
 }
 
 ByComplexScalar::~ByComplexScalar()
 {
-	parent->eraseChild(object);
-	delete parent;
-	parent = nullptr;
 }
 
 IntersectionOfTwoLines::IntersectionOfTwoLines(Object* object, Line* first, Line* second)
@@ -549,8 +528,8 @@ CentralProjection::~CentralProjection()
 }
 
 
-ByTwoPointsAndScalar::ByTwoPointsAndScalar(Object* object, Point* firstParent, Point* secondParent, Scalar* thirdParent)
-	:firstParent(firstParent), secondParent(secondParent), thirdParent(thirdParent)
+ByTwoPointsAndScalar::ByTwoPointsAndScalar(Object* object, Point* firstParent, Point* secondParent, float ratio)
+	:firstParent(firstParent), secondParent(secondParent), ratio(ratio)
 {
 	ConstructionData::object = object;
 }
@@ -559,9 +538,6 @@ ByTwoPointsAndScalar::~ByTwoPointsAndScalar()
 {
 	firstParent->eraseChild(object);
 	secondParent->eraseChild(object);
-	thirdParent->eraseChild(object);
-	delete thirdParent;
-	thirdParent = nullptr;
 }
 
 
@@ -569,10 +545,8 @@ void ByTwoPointsAndScalar::recreate(Equation* equation)
 {
 	PointEquation* firstEquation = dynamic_cast<PointEquation*>(firstParent->getEquation());
 	PointEquation* secondEquation = dynamic_cast<PointEquation*>(secondParent->getEquation());
-	ScalarEquation* thirdEquation = dynamic_cast<ScalarEquation*>(thirdParent->getEquation());
 	Vector2f firstCoord = firstEquation->point;
 	Vector2f secondCoord = secondEquation->point;
-	float ratio = thirdEquation->value;
 	Vector2f pointCoord = (secondCoord * ratio + firstCoord * 1.f) / (ratio + 1.f);
 	*dynamic_cast<PointEquation*>(equation) = PointEquation(pointCoord);
 }
@@ -737,65 +711,29 @@ Vector2f Equation::Projection(LineEquation lineEquation, PointEquation pointEqua
 	return point;
 }
 
-ComplexScalar::ComplexScalar(Vector2f coord)
-{
-	equation = new ComplexScalarEquation(coord);
-}
-
-ComplexScalarEquation::ComplexScalarEquation(Vector2f point)
-	:point(point)
-{
-}
-
-ComplexScalarEquation& ComplexScalarEquation::operator+=(Vector2f delta)
-{
-	point += delta;
-	return *this;
-}
-
-
-
-ByLineAndScalar::ByLineAndScalar(Object* object, Point* firstParent, Point* secondParent, Scalar* thirdParent, Line* fourthParent) : ByTwoPointsAndScalar(object, firstParent, secondParent, thirdParent)
-, fourthParent(fourthParent)
+ByLineAndScalar::ByLineAndScalar(Object* object, Point* firstParent, Point* secondParent, float ratio, Line* fourthParent) : ByTwoPointsAndScalar(object, firstParent, secondParent, ratio)
+, thirdParent(fourthParent)
 {
 
 }
 
 void ByLineAndScalar::moveTo(Vector2f coord)
 {
-	Vector2f proj = Equation::Projection(*dynamic_cast<LineEquation*>(fourthParent->getEquation()), coord);
+	Vector2f proj = Equation::Projection(*dynamic_cast<LineEquation*>(thirdParent->getEquation()), coord);
 	PointEquation* firstEquation = dynamic_cast<PointEquation*>(firstParent->getEquation());
 	PointEquation* secondEquation = dynamic_cast<PointEquation*>(secondParent->getEquation());
-	ScalarEquation* thirdEquation = dynamic_cast<ScalarEquation*>(thirdParent->getEquation());
 	Vector2f firstCoord = firstEquation->point;
 	Vector2f secondCoord = secondEquation->point;
-	float ratio = -(proj - firstCoord).x / (proj - secondCoord).x;
-	thirdEquation->value = ratio;
+	ratio = -(proj - firstCoord).x / (proj - secondCoord).x;
 }
 
 ByLineAndScalar::~ByLineAndScalar()
 {
-	fourthParent->eraseChild(object);
+	thirdParent->eraseChild(object);
 }
 
-Scalar::Scalar(double value)
-{
-	equation = new ScalarEquation(value);
-}
-
-ScalarEquation::ScalarEquation(double value)
-	: value(value)
-{
-}
-
-ScalarEquation& ScalarEquation::operator+=(double deltaValue)
-{
-	value += deltaValue;
-	return *this;
-}
-
-ByCircleAndScalar::ByCircleAndScalar(Object* object, UnitCircle* firstParent, Scalar* secondParent)
-	: firstParent(firstParent), secondParent(secondParent)
+ByCircleAndScalar::ByCircleAndScalar(Object* object, UnitCircle* firstParent, float angle)
+	: firstParent(firstParent), angle(angle)
 {
 	ConstructionData::object = object;
 }
@@ -803,20 +741,14 @@ ByCircleAndScalar::ByCircleAndScalar(Object* object, UnitCircle* firstParent, Sc
 ByCircleAndScalar::~ByCircleAndScalar()
 {
 	firstParent->eraseChild(object);
-	secondParent->eraseChild(object);
-	delete secondParent;
-	secondParent = nullptr;
 }
 
 void ByCircleAndScalar::moveTo(Vector2f coord)
 {
-	double angle = atan2(coord.y, coord.x);
-	*secondParent = (angle);
+	angle = atan2(coord.y, coord.x);
 }
 void ByCircleAndScalar::recreate(Equation* equation)
 {
-	ScalarEquation* scalarEquation = dynamic_cast<ScalarEquation*>(secondParent->getEquation());
-	double angle = (*scalarEquation).value;
 	*dynamic_cast<PointEquation*>(equation) = PointEquation(Vector2f(cos(angle) * unitSeg, sin(angle) * unitSeg));
 }
 
@@ -826,9 +758,7 @@ CenterPoint::CenterPoint() : Point()
 	font.loadFromFile("Textures\\SFML_project\\Fonts\\arial.ttf");
 	nameText = Text(pointName, font, textSize);
 	nameText.setFillColor(Color::Black);
-	auto parent = new ComplexScalar(Vector2f(0, 0));
-	construction = new ByComplexScalar(this, parent);
-	parent->addChild(this);
+	construction = new ByComplexScalar(this, Vector2f(0,0));
 	equation = new PointEquation(Vector2f(0, 0));
 	shape.setOrigin(pointSize, pointSize);
 	shape.setFillColor(Color::Black);
@@ -860,10 +790,9 @@ void CenterPoint::moveTo(Vector2f coords)
 
 UnitPoint::UnitPoint(UnitCircle* unitCircle, Vector2f position)
 {
-	auto scalar = new Scalar(atan2(position.y, position.x));
-	construction = new ByCircleAndScalar(this, unitCircle, scalar);
+	float angle = atan2(position.y, position.x);
+	construction = new ByCircleAndScalar(this, unitCircle, angle);
 	unitCircle->addChild(this);
-	scalar->addChild(this);
 	Init();
 }
 

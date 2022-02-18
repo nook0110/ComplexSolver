@@ -45,20 +45,6 @@ struct PointEquation : public Equation
 	PointEquation(Vector2f point);
 };
 
-struct ScalarEquation : public Equation
-{
-	double value;
-	ScalarEquation(double value);
-	ScalarEquation& operator+=(double deltaValue);
-};
-
-struct ComplexScalarEquation : public Equation
-{
-	Vector2f point;
-	ComplexScalarEquation(Vector2f point);
-	ComplexScalarEquation& operator+=(Vector2f delta);
-};
-
 //Objects - things that appear on the screen or help to construct them, such as UnitCircle, Circle, Points, Lines or Scalar and ComplexScalar
 class Object
 {
@@ -83,8 +69,6 @@ class Line;
 class Point;
 class UnitCircle;
 class Parametr;
-class Scalar;
-class ComplexScalar;
 
 //Data - how object was created (By two points and so on)
 class ConstructionData
@@ -123,9 +107,9 @@ class ConstructionLine : public ConstructionData
 
 class ByComplexScalar : public ConstructionPoint
 {
-	ComplexScalar* parent;
+	Vector2f point;
 public:
-	ByComplexScalar(Object* object, ComplexScalar* ComplexScalar);
+	ByComplexScalar(Object* object, Vector2f point);
 	void recreate(Equation* equation) override;
 	void moveTo(Vector2f coords) override;
 	~ByComplexScalar();
@@ -182,18 +166,18 @@ class ByTwoPointsAndScalar : public ConstructionPoint
 protected:
 	Point* firstParent;
 	Point* secondParent;
-	Scalar* thirdParent;
+	float ratio;
 public:
-	ByTwoPointsAndScalar(Object* object, Point* firstParent, Point* secondParent, Scalar* thirdParent);
+	ByTwoPointsAndScalar(Object* object, Point* firstParent, Point* secondParent, float ratio);
 	~ByTwoPointsAndScalar();
 	void recreate(Equation* equation) override;
 };
 
 class ByLineAndScalar : public ByTwoPointsAndScalar
 {
-	Line* fourthParent;
+	Line* thirdParent;
 public:
-	ByLineAndScalar(Object* object, Point* firstParent, Point* secondParent, Scalar* thirdParent, Line* fourthParent);
+	ByLineAndScalar(Object* object, Point* firstParent, Point* secondParent, float ratio, Line* fourthParent);
 	void moveTo(Vector2f coords) override;
 	~ByLineAndScalar();
 };
@@ -201,9 +185,9 @@ public:
 class ByCircleAndScalar : public ConstructionPoint
 {
 	UnitCircle* firstParent;
-	Scalar* secondParent;
+	float angle;
 public:
-	ByCircleAndScalar(Object* object, UnitCircle* firstParent, Scalar* secondParent);
+	ByCircleAndScalar(Object* object, UnitCircle* firstParent, float angle);
 	void moveTo(Vector2f coords) override;
 	~ByCircleAndScalar();
 	void recreate(Equation* equation) override;
@@ -321,31 +305,6 @@ public:
 	~VisibleObject();
 };
 
-class Parametr : public Object
-{
-};
-
-class Scalar : public Parametr
-{
-public:
-	Scalar(double value);
-};
-
-class ComplexScalar : public Parametr
-{
-public:
-	ComplexScalar(Vector2f coord);
-};
-
-class Plane : public Parametr
-{
-private:
-	Plane();
-	static Plane* plane;
-public:
-	static Plane* getInstance();
-};
-
 //UnitCircle - is the only circle in the programme
 //To get object use UnitCircle::getInstance() method
 class UnitCircle : public VisibleObject
@@ -433,7 +392,7 @@ public:
 	// Projection on a line
 	Point(Point* point, Line* line);
 	// Point by two points and scalar
-	Point(Point* first, Point* second, Scalar* scalar);
+	Point(Point* first, Point* second, float ratio);
 	// Rotation on 90°
 	Point(Point* center, Point* preimage, int sign);
 	bool isNearby(Vector2f position) override;

@@ -5,7 +5,6 @@ extern RenderWindow mainWindow;//
 extern View view;//
 extern Vector2i maxTextureResolution;//
 extern MODES Mousemode;//
-extern Plane* plane;//
 extern Menu mainMenu;
 
 std::list<VisibleObject*> Drawer::allVisibleObjects;
@@ -277,7 +276,7 @@ Button midPointButton = Button(Vector2f(670, 10), Vector2f(100, 100), &mainWindo
 				continue;
 			}
 		}
-		Point* point = new Point(points.first, points.second, new Scalar(1));
+		Point* point = new Point(points.first, points.second, 1);
 		return point;
 	});
 
@@ -319,7 +318,7 @@ Button symmetryButton = Button(Vector2f(670, 10), Vector2f(100, 100), &mainWindo
 				continue;
 			}
 		}
-		Point* point = new Point(points.first, points.second, new Scalar(-2));
+		Point* point = new Point(points.first, points.second, -2);
 		return point;
 	});
 
@@ -519,9 +518,9 @@ Button scalarButton = Button(Vector2f(670, 10), Vector2f(100, 100), &mainWindow,
 			}
 			wait.sleep();
 		}
-		double ratio = dialogBox->getDouble();
+		float ratio = dialogBox->getDouble();
 		delete dialogBox;
-		new Point(points.first, points.second, new Scalar(ratio));
+		new Point(points.first, points.second, ratio);
 		return nullptr;
 	});
 
