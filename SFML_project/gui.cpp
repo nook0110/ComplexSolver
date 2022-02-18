@@ -10,7 +10,6 @@ extern MODES Mousemode;
 void Button::updateSprite()
 {
 	sprite.setScale(1 / sprite.getScale().x, 1 / sprite.getScale().y); // Scaling Sprite to 1*1;
-	sprite.setTexture(texture);
 	sprite.setScale(
 		size.x / sprite.getLocalBounds().width,
 		size.y / sprite.getLocalBounds().height); // Scaling Sprite to required size;
@@ -19,6 +18,7 @@ void Button::updateSprite()
 void Button::setTexture(std::string textureLocation, Vector2i textureStart, Vector2i textureSize)
 {
 	texture.loadFromFile(textureLocation, IntRect(textureStart, textureSize));
+	sprite.setTexture(texture);
 	updateSprite();
 }
 

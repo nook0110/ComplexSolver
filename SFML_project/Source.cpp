@@ -11,7 +11,6 @@ extern double const epsilon;
 
 extern Vector2i maxTextureResolution;
 extern FloatRect mainWindowRect;
-
 extern MODES Mousemode;
 
 extern Button moveButton;
@@ -41,7 +40,7 @@ int main()
 {
 	view.setViewport(mainWindowRect);
 	view.move(-500, -500);
-	mainWindow.setVerticalSyncEnabled(true);
+	mainWindow.setFramerateLimit(60);
 
 	//Menu initialization
 	mainMenu.pushButton(&moveButton, 0);

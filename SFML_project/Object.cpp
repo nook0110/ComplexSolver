@@ -91,12 +91,11 @@ VisibleObject::~VisibleObject()
 {
 	erase();
 	delete construction;
-	construction = nullptr;
 }
 
 bool VisibleObject::isOnCircle()
 {
-	return dynamic_cast<ByCircleAndScalar*>(construction);
+	return dynamic_cast<OnCircle*>(construction);
 }
 
 UnitCircle* UnitCircle::unitCircle = nullptr;
@@ -329,7 +328,7 @@ Vector2f Point::getCoordinate()
 
 Point::Point(Point* first, Point* second, float ratio)
 {
-	construction = new ByTwoPointsAndScalar(this, first, second, ratio);
+	construction = new byTwoPointsFixedRatio(this, first, second, ratio);
 	first->addChild(this);
 	second->addChild(this);
 	Init();
@@ -367,7 +366,7 @@ void Point::Init()
 
 Point::Point(Vector2f position)
 {
-	construction = new ByComplexScalar(this, position);
+	construction = new OnPlane(this, position);
 	Init();
 }
 
@@ -381,7 +380,7 @@ Point::Point(Line* first, Line* second)
 
 Point::Point(Line* line, Point* first, Point* second, Vector2f position)
 {
-	construction = new ByLineAndScalar(this, first, second, 0, line);
+	construction = new OnLine(this, first, second, 0, line);
 	first->addChild(this);
 	second->addChild(this);
 	line->addChild(this);
@@ -442,24 +441,24 @@ ByFourPoints::ByFourPoints(Object* object, Point* first, Point* second, Point* t
 	ConstructionData::object = object;
 }
 
-ByComplexScalar::ByComplexScalar(Object* object, Vector2f point)
+OnPlane::OnPlane(Object* object, Vector2f point)
 	:point(point)
 {
 	ConstructionData::object = object;
 }
 
 
-void ByComplexScalar::recreate(Equation* equation)
+void OnPlane::recreate(Equation* equation)
 {
 	*dynamic_cast<PointEquation*>(equation) = PointEquation(point);
 }
 
-void ByComplexScalar::moveTo(Vector2f coords)
+void OnPlane::moveTo(Vector2f coords)
 {
 	point = coords;
 }
 
-ByComplexScalar::~ByComplexScalar()
+OnPlane::~OnPlane()
 {
 }
 
@@ -528,20 +527,20 @@ CentralProjection::~CentralProjection()
 }
 
 
-ByTwoPointsAndScalar::ByTwoPointsAndScalar(Object* object, Point* firstParent, Point* secondParent, float ratio)
+byTwoPointsFixedRatio::byTwoPointsFixedRatio(Object* object, Point* firstParent, Point* secondParent, float ratio)
 	:firstParent(firstParent), secondParent(secondParent), ratio(ratio)
 {
 	ConstructionData::object = object;
 }
 
-ByTwoPointsAndScalar::~ByTwoPointsAndScalar()
+byTwoPointsFixedRatio::~byTwoPointsFixedRatio()
 {
 	firstParent->eraseChild(object);
 	secondParent->eraseChild(object);
 }
 
 
-void ByTwoPointsAndScalar::recreate(Equation* equation)
+void byTwoPointsFixedRatio::recreate(Equation* equation)
 {
 	PointEquation* firstEquation = dynamic_cast<PointEquation*>(firstParent->getEquation());
 	PointEquation* secondEquation = dynamic_cast<PointEquation*>(secondParent->getEquation());
@@ -711,13 +710,13 @@ Vector2f Equation::Projection(LineEquation lineEquation, PointEquation pointEqua
 	return point;
 }
 
-ByLineAndScalar::ByLineAndScalar(Object* object, Point* firstParent, Point* secondParent, float ratio, Line* fourthParent) : ByTwoPointsAndScalar(object, firstParent, secondParent, ratio)
-, thirdParent(fourthParent)
+OnLine::OnLine(Object* object, Point* firstParent, Point* secondParent, float ratio, Line* thirdParent)
+	:firstParent(firstParent), secondParent(secondParent), ratio(ratio), thirdParent(thirdParent)
 {
-
+	ConstructionData::object = object;
 }
 
-void ByLineAndScalar::moveTo(Vector2f coord)
+void OnLine::moveTo(Vector2f coord)
 {
 	Vector2f proj = Equation::Projection(*dynamic_cast<LineEquation*>(thirdParent->getEquation()), coord);
 	PointEquation* firstEquation = dynamic_cast<PointEquation*>(firstParent->getEquation());
@@ -727,27 +726,39 @@ void ByLineAndScalar::moveTo(Vector2f coord)
 	ratio = -(proj - firstCoord).x / (proj - secondCoord).x;
 }
 
-ByLineAndScalar::~ByLineAndScalar()
+void OnLine::recreate(Equation* equation)
 {
+	PointEquation* firstEquation = dynamic_cast<PointEquation*>(firstParent->getEquation());
+	PointEquation* secondEquation = dynamic_cast<PointEquation*>(secondParent->getEquation());
+	Vector2f firstCoord = firstEquation->point;
+	Vector2f secondCoord = secondEquation->point;
+	Vector2f pointCoord = (secondCoord * ratio + firstCoord * 1.f) / (ratio + 1.f);
+	*dynamic_cast<PointEquation*>(equation) = PointEquation(pointCoord);
+}
+
+OnLine::~OnLine()
+{
+	firstParent->eraseChild(object);
+	secondParent->eraseChild(object);
 	thirdParent->eraseChild(object);
 }
 
-ByCircleAndScalar::ByCircleAndScalar(Object* object, UnitCircle* firstParent, float angle)
+OnCircle::OnCircle(Object* object, UnitCircle* firstParent, float angle)
 	: firstParent(firstParent), angle(angle)
 {
 	ConstructionData::object = object;
 }
 
-ByCircleAndScalar::~ByCircleAndScalar()
+OnCircle::~OnCircle()
 {
 	firstParent->eraseChild(object);
 }
 
-void ByCircleAndScalar::moveTo(Vector2f coord)
+void OnCircle::moveTo(Vector2f coord)
 {
 	angle = atan2(coord.y, coord.x);
 }
-void ByCircleAndScalar::recreate(Equation* equation)
+void OnCircle::recreate(Equation* equation)
 {
 	*dynamic_cast<PointEquation*>(equation) = PointEquation(Vector2f(cos(angle) * unitSeg, sin(angle) * unitSeg));
 }
@@ -758,7 +769,7 @@ CenterPoint::CenterPoint() : Point()
 	font.loadFromFile("Textures\\SFML_project\\Fonts\\arial.ttf");
 	nameText = Text(pointName, font, textSize);
 	nameText.setFillColor(Color::Black);
-	construction = new ByComplexScalar(this, Vector2f(0,0));
+	construction = new OnPlane(this, Vector2f(0, 0));
 	equation = new PointEquation(Vector2f(0, 0));
 	shape.setOrigin(pointSize, pointSize);
 	shape.setFillColor(Color::Black);
@@ -791,7 +802,7 @@ void CenterPoint::moveTo(Vector2f coords)
 UnitPoint::UnitPoint(UnitCircle* unitCircle, Vector2f position)
 {
 	float angle = atan2(position.y, position.x);
-	construction = new ByCircleAndScalar(this, unitCircle, angle);
+	construction = new OnCircle(this, unitCircle, angle);
 	unitCircle->addChild(this);
 	Init();
 }

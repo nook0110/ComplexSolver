@@ -5,7 +5,6 @@
 #include "Creation.h"
 
 #include <iostream>
-
 //The "heart" of the programm. This is file is about objects.
 
 using namespace sf;
@@ -105,14 +104,14 @@ class ConstructionLine : public ConstructionData
 {
 };
 
-class ByComplexScalar : public ConstructionPoint
+class OnPlane : public ConstructionPoint
 {
 	Vector2f point;
 public:
-	ByComplexScalar(Object* object, Vector2f point);
+	OnPlane(Object* object, Vector2f point);
 	void recreate(Equation* equation) override;
 	void moveTo(Vector2f coords) override;
-	~ByComplexScalar();
+	~OnPlane();
 };
 
 class IntersectionOfTwoLines : public ConstructionPoint // intersect 2 lines
@@ -161,35 +160,39 @@ public:
 	~Projection() override;
 };
 
-class ByTwoPointsAndScalar : public ConstructionPoint
+class byTwoPointsFixedRatio : public ConstructionPoint
 {
-protected:
+private:
 	Point* firstParent;
 	Point* secondParent;
-	float ratio;
+	const float ratio;
 public:
-	ByTwoPointsAndScalar(Object* object, Point* firstParent, Point* secondParent, float ratio);
-	~ByTwoPointsAndScalar();
+	byTwoPointsFixedRatio(Object* object, Point* firstParent, Point* secondParent, float ratio);
+	~byTwoPointsFixedRatio();
 	void recreate(Equation* equation) override;
 };
 
-class ByLineAndScalar : public ByTwoPointsAndScalar
+class OnLine : public ConstructionPoint
 {
+	Point* firstParent;
+	Point* secondParent;
 	Line* thirdParent;
+	float ratio;
 public:
-	ByLineAndScalar(Object* object, Point* firstParent, Point* secondParent, float ratio, Line* fourthParent);
+	OnLine(Object* object, Point* firstParent, Point* secondParent, float ratio, Line* fourthParent);
 	void moveTo(Vector2f coords) override;
-	~ByLineAndScalar();
+	void recreate(Equation* equation) override;
+	~OnLine();
 };
 
-class ByCircleAndScalar : public ConstructionPoint
+class OnCircle : public ConstructionPoint
 {
 	UnitCircle* firstParent;
 	float angle;
 public:
-	ByCircleAndScalar(Object* object, UnitCircle* firstParent, float angle);
+	OnCircle(Object* object, UnitCircle* firstParent, float angle);
 	void moveTo(Vector2f coords) override;
-	~ByCircleAndScalar();
+	~OnCircle();
 	void recreate(Equation* equation) override;
 };
 
