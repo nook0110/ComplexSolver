@@ -860,17 +860,22 @@ std::pair<Line*, Line*> Finder::nearbyLines(Vector2f mousePosition)
 Point* Finder::nearbyIntersection(Vector2f mousePosition)
 {
 	std::pair<Line*, Line*> lines = nearbyLines(mousePosition);
-	if (lines.first)
+	if (lines.second)
 	{
-		Point* point = new Point(lines.first, lines.second);
-		if (point->isNearby(mousePosition) && point->getVisibility())
+		LineEquation* firstEquation = dynamic_cast<LineEquation*>(lines.first->getEquation());
+		LineEquation* secondEquation = dynamic_cast<LineEquation*>(lines.second->getEquation());
+		Vector2f pointCoord = Vector2f(
+			(firstEquation->B * secondEquation->C - firstEquation->C * secondEquation->B)
+			/ (firstEquation->A * secondEquation->B - firstEquation->B * secondEquation->A),
+			(firstEquation->C * secondEquation->A - firstEquation->A * secondEquation->C)
+			/ (firstEquation->A * secondEquation->B - firstEquation->B * secondEquation->A)
+		);
+		Vector2f mousePixelPosition = Vector2f(mainWindow.mapCoordsToPixel(mousePosition, view));
+		Vector2f coord = Vector2f(mainWindow.mapCoordsToPixel(pointCoord, view));
+		double distance = sqrt(pow((coord.x - mousePixelPosition.x), 2) + pow((coord.y - mousePixelPosition.y), 2));
+		if (distance < epsilon)
 		{
-			return point;
-		}
-		else
-		{
-			delete point;
-			point = nullptr;
+			return new Point(lines.first, lines.second);
 		}
 	}
 	return nullptr;

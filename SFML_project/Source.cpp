@@ -79,10 +79,10 @@ int main()
 
 	while (mainWindow.isOpen())
 	{
-		//while (!mainWindow.hasFocus())
-		//{
-			sleep(Time(seconds(0.01)));
-		//}
+		while (!mainWindow.hasFocus())
+		{
+			std::this_thread::sleep_for(std::chrono::nanoseconds(1000));
+		}
 		Event event;
 		if (mainWindow.pollEvent(event))
 		{
