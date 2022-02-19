@@ -285,16 +285,6 @@ Line::Line(Point* first, Point* second)
 	Init();
 }
 
-Line::Line(Point* first, Line* second)
-{
-	first->addChild(this);
-	second->addChild(this);
-	construction = new Perpendicular(this, first, second);
-	equation = new LineEquation(0, 0, 0);
-	reposition();
-	Init();
-}
-
 Chord::Chord(UnitPoint* first, UnitPoint* second)
 {
 	first->addChild(this);
@@ -348,7 +338,6 @@ void Point::moveTo(Vector2f coords)
 void Point::Init()
 {
 	font.loadFromFile("Textures\\SFML_project\\Fonts\\arial.ttf");
-	setName();
 	equation = new PointEquation(Vector2f(0, 0));
 	shape.setOrigin(pointSize, pointSize);
 	shape.setFillColor(Color::Black);
@@ -358,12 +347,14 @@ void Point::Init()
 
 Point::Point(Vector2f position)
 {
+	setName();
 	construction = new OnPlane(this, position);
 	Init();
 }
 
 Point::Point(Line* first, Line* second)
 {
+	setName();
 	construction = new IntersectionOfTwoLines(this, first, second);
 	first->addChild(this);
 	second->addChild(this);
@@ -372,6 +363,7 @@ Point::Point(Line* first, Line* second)
 
 Point::Point(Line* line, Point* first, Point* second, Vector2f position)
 {
+	setName();
 	construction = new OnLine(this, first, second, 0, line);
 	first->addChild(this);
 	second->addChild(this);
@@ -382,6 +374,7 @@ Point::Point(Line* line, Point* first, Point* second, Vector2f position)
 
 Point::Point(Point* point, Line* line)
 {
+	setName();
 	construction = new Projection(this, point, line);
 	point->addChild(this);
 	line->addChild(this);
@@ -390,11 +383,14 @@ Point::Point(Point* point, Line* line)
 
 void Point::printExpr()
 {
-	dynamic_cast<ConstructionPoint*>(construction)->coord.print();
+	ConstructionPoint* cp = dynamic_cast<ConstructionPoint*>(construction);
+	cp->coord.print();
+	std::cout << std::endl;
 }
 
 Point::Point(Point* center, Point* preimage, int sign)
 {
+	setName();
 	construction = new Rotation90(this, center, preimage, sign);
 	center->addChild(this);
 	preimage->addChild(this);
@@ -430,9 +426,12 @@ void Point::drawDescription()
 {
 }
 
-std::string Point::getName()
+std::string Point::getLowerCaseName()
 {
-	return pointName;
+	auto name = pointName;
+	std::transform(name.begin(), name.end(), name.begin(),
+		[](unsigned char c) { return std::tolower(c); });
+	return name;
 }
 
 ByFourPoints::ByFourPoints(Object* object, Point* first, Point* second, Point* third, Point* fourth)
@@ -553,33 +552,10 @@ void PerpendicularBisector::recreate(Equation* equation)
 	return;
 }
 
-Perpendicular::Perpendicular(Object* object, Point* firstParent, Line* secondParent)
-	:firstParent(firstParent), secondParent(secondParent), ConstructionLine(object)
-{
-}
-
-Perpendicular::~Perpendicular()
-{
-	firstParent->eraseChild(object);
-	secondParent->eraseChild(object);
-}
-
-void Perpendicular::recreate(Equation* equation)
-{
-	PointEquation* firstEquation = dynamic_cast<PointEquation*>(firstParent->getEquation());
-	LineEquation* secondEquation = dynamic_cast<LineEquation*>(secondParent->getEquation());
-	Vector2f coord = firstEquation->point;
-	double A = -secondEquation->B;
-	double B = secondEquation->A;
-	double C = secondEquation->B * coord.x - secondEquation->A * coord.y;
-	*dynamic_cast<LineEquation*>(equation) = LineEquation(A, B, C);
-}
-
 void Polar::recreate(Equation* equation)
 {
 	return;
 }
-
 
 Parallel::Parallel(Object* object, Line* first, Point* second)
 	:firstParent(first),secondParent(second),ConstructionLine(object)
@@ -750,6 +726,7 @@ void CenterPoint::moveTo(Vector2f coords)
 
 UnitPoint::UnitPoint(UnitCircle* unitCircle, Vector2f position)
 {
+	setName();
 	float angle = atan2(position.y, position.x);
 	construction = new OnCircle(this, unitCircle, angle);
 	unitCircle->addChild(this);
@@ -758,6 +735,7 @@ UnitPoint::UnitPoint(UnitCircle* unitCircle, Vector2f position)
 
 UnitPoint::UnitPoint(UnitCircle* unitCircle, Point* first, UnitPoint* second)
 {
+	setName();
 	construction = new CentralProjection(this, unitCircle, first, second);
 	unitCircle->addChild(this);
 	first->addChild(this);
@@ -767,6 +745,7 @@ UnitPoint::UnitPoint(UnitCircle* unitCircle, Point* first, UnitPoint* second)
 
 UnitPoint::UnitPoint(UnitCircle* unitCircle, UnitPoint* point, Chord* chord)
 {
+	setName();
 	construction = new IntersectionPerpendicularChord(this, unitCircle, point, chord);
 	unitCircle->addChild(this);
 	chord->addChild(this);
@@ -776,6 +755,7 @@ UnitPoint::UnitPoint(UnitCircle* unitCircle, UnitPoint* point, Chord* chord)
 
 UnitPoint::UnitPoint(UnitCircle* unitCircle, Chord* chord, UnitPoint* point)
 {
+	setName();
 	construction = new IntersectionParallelChord(this, unitCircle, chord, point);
 	unitCircle->addChild(this);
 	chord->addChild(this);

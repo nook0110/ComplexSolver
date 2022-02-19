@@ -88,7 +88,6 @@ class Object;
 class Line;
 class Point;
 class UnitCircle;
-class Parametr;
 
 //Data - how object was created (By two points and so on)
 class ConstructionData
@@ -280,16 +279,6 @@ class PerpendicularBisector : public ConstructionLine
 	void recreate(Equation* equation) override;
 };
 
-class Perpendicular : public ConstructionLine
-{
-	Point* firstParent;
-	Line* secondParent;
-public:
-	Perpendicular(Object* object, Point* firstParent, Line* secondParent);
-	~Perpendicular();
-	void recreate(Equation* equation) override;
-};
-
 class Polar : public ConstructionLine
 {
 	Point* parent;
@@ -315,9 +304,6 @@ public:
 	~Tangent();
 	void recreate(Equation* equation) override;
 };
-
-//VisibleObject - objects that you can see on the screen.
-
 
 //UnitCircle - is the only circle in the programme
 //To get object use UnitCircle::getInstance() method
@@ -361,8 +347,6 @@ public:
 	Line();
 	//By two points
 	Line(Point* first, Point* second);
-	//Perpendicular
-	Line(Point* first, Line* second);
 	//Tangent
 	Line(UnitCircle* first, Point* second);
 	//Parallel
@@ -400,21 +384,22 @@ public:
 	//
 	Vector2f getCoordinate();
 	virtual void moveTo(Vector2f coords);
-	// By complex scalar (Point on the plain)
+
+	// On a plane
 	Point(Vector2f position);
 	// Intersection of two lines
 	Point(Line* first, Line* second);
-	// Point on a line (By line and scalar)
+	// Point on a line
 	Point(Line* line, Point* first, Point* second, Vector2f position);
 	// Projection on a line
 	Point(Point* point, Line* line);
 	// Point by two points and scalar
 	Point(Point* first, Point* second, float ratio);
-	// Rotation on 90�
+	// Rotation on 90 degrees
 	Point(Point* center, Point* preimage, int sign);
 	bool isNearby(Vector2f position) override;
 	void draw() override;
-	std::string getName();
+	std::string getLowerCaseName();
 	void drawDescription() override;
 };
 

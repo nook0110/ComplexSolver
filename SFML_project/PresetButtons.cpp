@@ -236,7 +236,8 @@ Button perpendicularButton = Button(Vector2f(340, 10), Vector2f(100, 100), &main
 			UnitPoint* unitPoint = new UnitPoint(UnitCircle::getInstance(), dynamic_cast<UnitPoint*>(point), dynamic_cast<Chord*>(line));
 			return new Chord(dynamic_cast<UnitPoint*>(point), unitPoint);
 		}
-		return new Line(point, line);
+		Point* projPoint = new Point(point, line);
+		return new Line(point, projPoint);
 	});
 Button midPointButton = Button(Vector2f(670, 10), Vector2f(100, 100), &mainWindow,
 	"Textures\\SFML_project\\Midpoint.png", Vector2i(0, 0), maxTextureResolution,
@@ -591,7 +592,7 @@ Button clearButton = Button(Vector2f(890, 10), Vector2f(100, 100), &mainWindow,
 		while (Drawer::allVisibleObjects.size() > 1)
 		{
 			auto object = *prev(Drawer::allVisibleObjects.end());
-			delete object;
+				delete object;
 			object = nullptr;
 		}
 		wait.sleep();

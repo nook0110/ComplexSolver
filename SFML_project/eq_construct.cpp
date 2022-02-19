@@ -79,7 +79,7 @@ Projection::Projection(Object* object, Point* first, Line* second)
 OnPlane::OnPlane(Point* object, Vector2f point)
 	:point(point), ConstructionPoint(object)
 {
-	coord = expr(make_term(object->getName()));
+	coord = expr(make_term(object->getLowerCaseName()));
 }
 
 byTwoPointsFixedRatio::byTwoPointsFixedRatio(Object* object, Point* firstParent, Point* secondParent, float ratio)
@@ -99,7 +99,7 @@ OnLine::OnLine(Object* object, Point* firstParent, Point* secondParent, float ra
 	const ConstructionPoint* second_point_data = dynamic_cast<ConstructionPoint*>(secondParent->construction);
 	expr A = first_point_data->coord;
 	expr B = second_point_data->coord;
-	expr k = expr(make_real_term("k" + firstParent->getName() + secondParent->getName()));
+	expr k = expr(make_real_term("k" + firstParent->getLowerCaseName() + secondParent->getLowerCaseName()));
 	coord = (A * k) + (B * (expr(make_scalar(1)) - k));
 }
 
@@ -107,7 +107,7 @@ OnCircle::OnCircle(Point* object, UnitCircle* firstParent, float angle)
 	:firstParent(firstParent), angle(angle), ConstructionPoint(object)
 {
 
-	coord = expr(make_unit_term(object->getName()));
+	coord = expr(make_unit_term(object->getLowerCaseName()));
 }
 
 IntersectionParallelChord::IntersectionParallelChord(Object* object, UnitCircle* unitCircle, Chord* firstParent, UnitPoint* secondParent)
