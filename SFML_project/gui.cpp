@@ -3,7 +3,6 @@
 
 extern RenderWindow mainWindow;
 extern View view;
-extern Vector2i maxTextureResolution;
 
 extern MODES Mousemode;
 
@@ -64,6 +63,12 @@ Button::Button(Vector2f position, Vector2f size, RenderWindow* window,
 	mode(mode), modeFunction(modeFunction)
 {
 	setTexture(textureLocation, textureStart, textureSize);
+}
+
+Button::Button(RenderWindow* window, std::string textureLocation, MODES mode, std::function<Object* (void)> modeFunction)
+	:window(window), textureLocation(textureLocation), mode(mode), modeFunction(modeFunction)
+{
+	setTexture(textureLocation, Vector2i(0, 0), Vector2i(0, 0));
 }
 
 void Button::setPosition(Vector2f position)

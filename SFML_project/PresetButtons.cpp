@@ -3,15 +3,13 @@ using namespace sf;
 
 extern RenderWindow mainWindow;//
 extern View view;//
-extern Vector2i maxTextureResolution;//
 extern MODES Mousemode;//
 extern Menu mainMenu;
 
 std::list<Object*> Drawer::allVisibleObjects;
 
-Button moveButton = Button(Vector2f(10, 10), Vector2f(100, 100), &mainWindow,
-	"Textures\\SFML_project\\MoveButton.jpg", Vector2i(0, 0), maxTextureResolution,
-	MODE_MOVE, []()->Object* {
+Button moveButton = Button(&mainWindow,
+	"Textures\\SFML_project\\MoveButton.jpg", MODE_MOVE, []()->Object* {
 		Waiter wait;
 		InterruptionChecker interruptionChecker;
 		Finder find;
@@ -45,8 +43,8 @@ Button moveButton = Button(Vector2f(10, 10), Vector2f(100, 100), &mainWindow,
 		return nullptr;
 	});
 
-Button pointButton = Button(Vector2f(120, 10), Vector2f(100, 100), &mainWindow,
-	"Textures\\SFML_project\\Point.png", Vector2i(0, 0), maxTextureResolution,
+Button pointButton = Button(&mainWindow,
+	"Textures\\SFML_project\\Point.png",
 	MODE_POINT, []()->Object* {
 		Waiter wait;
 		Finder find;
@@ -64,8 +62,8 @@ Button pointButton = Button(Vector2f(120, 10), Vector2f(100, 100), &mainWindow,
 		return point;
 	});
 
-Button lineButton = Button(Vector2f(230, 10), Vector2f(100, 100), &mainWindow,
-	"Textures\\SFML_project\\Line.png", Vector2i(0, 0), maxTextureResolution,
+Button lineButton = Button(&mainWindow,
+	"Textures\\SFML_project\\Line.png",
 	MODE_LINE, []()->Object* {
 		Waiter wait;
 		Finder find;
@@ -114,8 +112,8 @@ Button lineButton = Button(Vector2f(230, 10), Vector2f(100, 100), &mainWindow,
 		return line;
 	});
 
-Button pointBetweenPoints = Button(Vector2f(230, 10), Vector2f(100, 100), &mainWindow,
-	"Textures\\SFML_project\\PointBetweenPoints.png", Vector2i(0, 0), maxTextureResolution,
+Button pointBetweenPoints = Button(&mainWindow,
+	"Textures\\SFML_project\\PointBetweenPoints.png",
 	MODE_POINT_BETWEEN_POINTS, []()->Object* {
 		Waiter wait;
 		Finder find;
@@ -171,8 +169,8 @@ Button pointBetweenPoints = Button(Vector2f(230, 10), Vector2f(100, 100), &mainW
 		return point;
 	});
 
-Button centralProjectionButton = Button(Vector2f(340, 10), Vector2f(100, 100), &mainWindow,
-	"Textures\\SFML_project\\CentralProjection.png", Vector2i(0, 0), maxTextureResolution,
+Button centralProjectionButton = Button(&mainWindow,
+	"Textures\\SFML_project\\CentralProjection.png",
 	MODE_CENTRAL_PROJECTION, []()->Object* {
 		Waiter wait;
 		Finder find;
@@ -204,8 +202,8 @@ Button centralProjectionButton = Button(Vector2f(340, 10), Vector2f(100, 100), &
 		return point;
 	});
 
-Button perpendicularButton = Button(Vector2f(340, 10), Vector2f(100, 100), &mainWindow,
-	"Textures\\SFML_project\\Perpendicular.png", Vector2i(0, 0), maxTextureResolution,
+Button perpendicularButton = Button(&mainWindow,
+	"Textures\\SFML_project\\Perpendicular.png",
 	MODE_PERPENDICULAR, []()->Object* {
 		Waiter wait;
 		InterruptionChecker interruptionChecker;
@@ -239,8 +237,9 @@ Button perpendicularButton = Button(Vector2f(340, 10), Vector2f(100, 100), &main
 		Point* projPoint = new Point(point, line);
 		return new Line(point, projPoint);
 	});
-Button midPointButton = Button(Vector2f(670, 10), Vector2f(100, 100), &mainWindow,
-	"Textures\\SFML_project\\Midpoint.png", Vector2i(0, 0), maxTextureResolution,
+
+Button midPointButton = Button(&mainWindow,
+	"Textures\\SFML_project\\Midpoint.png",
 	MODE_MIDPOINT, []()->Object* {
 		Waiter wait;
 		Finder find;
@@ -281,8 +280,8 @@ Button midPointButton = Button(Vector2f(670, 10), Vector2f(100, 100), &mainWindo
 		return point;
 	});
 
-Button symmetryButton = Button(Vector2f(670, 10), Vector2f(100, 100), &mainWindow,
-	"Textures\\SFML_project\\Symmetry.png", Vector2i(0, 0), maxTextureResolution,
+Button symmetryButton = Button(&mainWindow,
+	"Textures\\SFML_project\\Symmetry.png",
 	MODE_SYMMETRY, []()->Object* {
 		Waiter wait;
 		Finder find;
@@ -323,8 +322,8 @@ Button symmetryButton = Button(Vector2f(670, 10), Vector2f(100, 100), &mainWindo
 		return point;
 	});
 
-Button rotateLeftButton = Button(Vector2f(450, 10), Vector2f(100, 100), &mainWindow,
-	"Textures\\SFML_project\\Test.jpg", Vector2i(0, 0), maxTextureResolution,
+Button rotateLeftButton = Button(&mainWindow,
+	"Textures\\SFML_project\\Test.jpg",
 	MODE_ROTATION_LEFT, []()->Object* {
 		Waiter wait;
 		Finder find;
@@ -365,8 +364,8 @@ Button rotateLeftButton = Button(Vector2f(450, 10), Vector2f(100, 100), &mainWin
 		return point;
 	});
 
-Button rotateRightButton = Button(Vector2f(450, 10), Vector2f(100, 100), &mainWindow,
-	"Textures\\SFML_project\\Test.jpg", Vector2i(0, 0), maxTextureResolution,
+Button rotateRightButton = Button(&mainWindow,
+	"Textures\\SFML_project\\Test.jpg",
 	MODE_ROTATION_RIGHT, []()->Object* {
 		Waiter wait;
 		Finder find;
@@ -407,8 +406,8 @@ Button rotateRightButton = Button(Vector2f(450, 10), Vector2f(100, 100), &mainWi
 		return point;
 	});
 
-Button projectionButton = Button(Vector2f(450, 10), Vector2f(100, 100), &mainWindow,
-	"Textures\\SFML_project\\Projection.png", Vector2i(0, 0), maxTextureResolution,
+Button projectionButton = Button(&mainWindow,
+	"Textures\\SFML_project\\Projection.png",
 	MODE_PROJECTION, []()->Object* {
 		Waiter wait;
 		InterruptionChecker interruptionChecker;
@@ -437,8 +436,8 @@ Button projectionButton = Button(Vector2f(450, 10), Vector2f(100, 100), &mainWin
 		return new Point(point, line);
 	});
 
-Button parallelButton = Button(Vector2f(560, 10), Vector2f(120, 120), &mainWindow,
-	"Textures\\SFML_project\\Parallel.png", Vector2i(0, 0), maxTextureResolution,
+Button parallelButton = Button(&mainWindow,
+	"Textures\\SFML_project\\Parallel.png",
 	MODE_PARALLEL, []()->Object* {
 		Waiter wait;
 		InterruptionChecker interruptionChecker;
@@ -471,8 +470,8 @@ Button parallelButton = Button(Vector2f(560, 10), Vector2f(120, 120), &mainWindo
 		return new Line(line, point);
 	});
 
-Button scalarButton = Button(Vector2f(670, 10), Vector2f(100, 100), &mainWindow,
-	"Textures\\SFML_project\\Scalar.png", Vector2i(0, 0), maxTextureResolution,
+Button scalarButton = Button(&mainWindow,
+	"Textures\\SFML_project\\Scalar.png",
 	MODE_MIDPOINT, []()->Object* {
 		InterruptionChecker checker;
 		Waiter wait;
@@ -525,8 +524,8 @@ Button scalarButton = Button(Vector2f(670, 10), Vector2f(100, 100), &mainWindow,
 		return nullptr;
 	});
 
-Button tangentButton = Button(Vector2f(450, 10), Vector2f(100, 100), &mainWindow,
-	"Textures\\SFML_project\\TangentButton.jpg", Vector2i(0, 0), maxTextureResolution,
+Button tangentButton = Button(&mainWindow,
+	"Textures\\SFML_project\\TangentButton.jpg",
 	MODE_TANGENT, []()->Object* {
 		Waiter wait;
 		Finder find;
@@ -548,8 +547,8 @@ Button tangentButton = Button(Vector2f(450, 10), Vector2f(100, 100), &mainWindow
 		return nullptr;
 	});
 
-Button deleteButton = Button(Vector2f(560, 10), Vector2f(100, 100), &mainWindow,
-	"Textures\\SFML_project\\DeleteButton.jpg", Vector2i(0, 0), maxTextureResolution,
+Button deleteButton = Button(&mainWindow,
+	"Textures\\SFML_project\\DeleteButton.jpg",
 	MODE_DELETE, []()->Object* {
 		Waiter wait;
 		Finder find;
@@ -567,8 +566,8 @@ Button deleteButton = Button(Vector2f(560, 10), Vector2f(100, 100), &mainWindow,
 		return nullptr;
 	});
 
-Button hideButton = Button(Vector2f(780, 10), Vector2f(100, 100), &mainWindow,
-	"Textures\\SFML_project\\HideButton.jpg", Vector2i(0, 0), maxTextureResolution,
+Button hideButton = Button(&mainWindow,
+	"Textures\\SFML_project\\HideButton.jpg",
 	MODE_HIDE, []()->Object* {
 		Waiter wait;
 		Finder find;
@@ -585,29 +584,29 @@ Button hideButton = Button(Vector2f(780, 10), Vector2f(100, 100), &mainWindow,
 		return nullptr;
 	});
 
-Button clearButton = Button(Vector2f(890, 10), Vector2f(100, 100), &mainWindow,
-	"Textures\\SFML_project\\ClearButton.jpg", Vector2i(0, 0), maxTextureResolution,
+Button clearButton = Button(&mainWindow,
+	"Textures\\SFML_project\\ClearButton.jpg",
 	MODE_CLEAR, []()->Object* {
 		Waiter wait;
 		while (Drawer::allVisibleObjects.size() > 1)
 		{
 			auto object = *prev(Drawer::allVisibleObjects.end());
-				delete object;
+			delete object;
 			object = nullptr;
 		}
 		wait.sleep();
 		return nullptr;
 	});
 
-Button switchButton = Button(Vector2f(890, 10), Vector2f(100, 100), &mainWindow,
-	"Textures\\SFML_project\\Test.jpg", Vector2i(0, 0), maxTextureResolution,
+Button switchButton = Button(&mainWindow,
+	"Textures\\SFML_project\\Test.jpg",
 	MODE_SWITCH, []()->Object* {
 		mainMenu.switchLayer();
 		return nullptr;
 	});
 
-Button fourPointsOnACircle = Button(Vector2f(890, 10), Vector2f(100, 100), &mainWindow,
-	"Textures\\SFML_project\\Test.jpg", Vector2i(0, 0), maxTextureResolution,
+Button fourPointsOnACircle = Button(&mainWindow,
+	"Textures\\SFML_project\\Test.jpg",
 	MODE_FOUR_POINTS, []()->Object* {
 		Waiter wait;
 		Finder find;
@@ -631,9 +630,9 @@ Button fourPointsOnACircle = Button(Vector2f(890, 10), Vector2f(100, 100), &main
 		return nullptr;
 	});
 
-Button ñollinearityOfLines = Button(Vector2f(890, 10), Vector2f(100, 100), &mainWindow,
-	"Textures\\SFML_project\\Test.jpg", Vector2i(0, 0), maxTextureResolution,
-	MODE_HIDE, []()->Object* {
+Button ñollinearityOfLines = Button(&mainWindow,
+	"Textures\\SFML_project\\Test.jpg",
+	MODE_THREE_LINES, []()->Object* {
 		Waiter wait;
 		Finder find;
 		const int threeTimes = 3;
@@ -655,9 +654,9 @@ Button ñollinearityOfLines = Button(Vector2f(890, 10), Vector2f(100, 100), &main
 		return nullptr;
 	});
 
-Button ñollinearityOfPoints = Button(Vector2f(890, 10), Vector2f(100, 100), &mainWindow,
-	"Textures\\SFML_project\\Test.jpg", Vector2i(0, 0), maxTextureResolution,
-	MODE_HIDE, []()->Object* {
+Button ñollinearityOfPoints = Button(&mainWindow,
+	"Textures\\SFML_project\\Test.jpg",
+	MODE_THREE_POINTS, []()->Object* {
 		Waiter wait;
 		Finder find;
 		const int threeTimes = 4;
@@ -679,8 +678,8 @@ Button ñollinearityOfPoints = Button(Vector2f(890, 10), Vector2f(100, 100), &mai
 		return nullptr;
 	});
 
-Button proveConstructionButton = Button(Vector2f(890, 10), Vector2f(100, 100), &mainWindow,
-	"Textures\\SFML_project\\Test.jpg", Vector2i(0, 0), maxTextureResolution,
+Button proveConstructionButton = Button(&mainWindow,
+	"Textures\\SFML_project\\Test.jpg",
 	MODE_PROVE_CONSTRUCTION, []()->Object* {
 		Waiter wait;
 		Finder find;
@@ -712,8 +711,8 @@ Button proveConstructionButton = Button(Vector2f(890, 10), Vector2f(100, 100), &
 		wait.sleep();
 	});
 
-Button debugButton = Button(Vector2f(890, 10), Vector2f(100, 100), &mainWindow,
-	"Textures\\SFML_project\\Test.jpg", Vector2i(0, 0), maxTextureResolution,
+Button debugButton = Button(&mainWindow,
+	"Textures\\SFML_project\\Test.jpg",
 	MODE_PROVE_CONSTRUCTION, []()->Object* {
 		Waiter wait;
 		Finder find;

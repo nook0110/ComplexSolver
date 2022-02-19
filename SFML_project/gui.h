@@ -5,8 +5,6 @@
 #include<iostream>
 using namespace sf;
 
-
-extern Vector2i maxTextureResolution;
 extern Event event;
 extern FloatRect mainWindowRect;
 
@@ -24,7 +22,7 @@ private:
 
 	Vector2f position;
 	Vector2f size;
-	Vector2i textureSize = maxTextureResolution, texturePressedSize = maxTextureResolution;
+	Vector2i textureSize = Vector2i(0, 0), texturePressedSize = Vector2i(0, 0);
 	Vector2i textureStart = Vector2i(0, 0), texturePressedStart = Vector2i(0, 0);
 	std::string textureLocation, texturePressedLocation;
 	RenderWindow* window;
@@ -44,7 +42,7 @@ private:
 	void setTexture(std::string textureLocation, Vector2i textureStart, Vector2i textureSize);
 public:
 	Button(Vector2f position, Vector2f size, RenderWindow* window,
-		std::string textureLocation, Vector2i textureStart = Vector2i(0, 0), Vector2i textureSize = maxTextureResolution,
+		std::string textureLocation, Vector2i textureStart = Vector2i(0, 0), Vector2i textureSize = Vector2i(0,0),
 		MODES mode = MODE_NOTHING, std::function<Object* (void)> modeFunction = []()->Object* {});
 	Button(Vector2f position, Vector2f size, RenderWindow* window,
 		std::string textureLocation, std::string texturePressedLocation,
@@ -52,6 +50,8 @@ public:
 	Button(Vector2f position, Vector2f size, RenderWindow* window,
 		std::string textureLocation, Vector2i textureStart, Vector2i textureSize,
 		std::string texturePressedLocation, Vector2i texturePressedStart, Vector2i texturePressedSize,
+		MODES mode = MODE_NOTHING, std::function<Object* (void)> modeFunction = []()->Object* {});
+	Button(RenderWindow* window, std::string textureLocation,
 		MODES mode = MODE_NOTHING, std::function<Object* (void)> modeFunction = []()->Object* {});
 	void setPosition(Vector2f);
 	void setSize(Vector2f size);

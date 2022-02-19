@@ -38,12 +38,15 @@ extern Button debugButton;
 
 Vector2f CamCenter = Vector2f(0, 0);
 
-int main()
+void preInit()
 {
 	view.setViewport(mainWindowRect);
 	view.move(-500, -500);
 	mainWindow.setFramerateLimit(60);
+}
 
+void menuInit()
+{
 	//Menu initialization
 	mainMenu.pushButton(&moveButton, 0);
 	mainMenu.pushButton(&lineButton, 0);
@@ -67,6 +70,12 @@ int main()
 	mainMenu.pushButton(&fourPointsOnACircle, 1);
 	mainMenu.pushButton(&proveConstructionButton, 1);
 	mainMenu.pushButton(&switchButton, 1);
+}
+
+int main()
+{
+	preInit();
+	menuInit();
 
 	while (mainWindow.isOpen())
 	{
