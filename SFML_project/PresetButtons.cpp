@@ -318,7 +318,7 @@ Button symmetryButton = Button(Vector2f(670, 10), Vector2f(100, 100), &mainWindo
 				continue;
 			}
 		}
-		Point* point = new Point(points.first, points.second, -2);
+		Point* point = new Point(points.first, points.second, (float)-2);
 		return point;
 	});
 

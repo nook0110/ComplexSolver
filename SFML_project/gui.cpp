@@ -404,7 +404,7 @@ void ScalarBox::cin(Event event)
 		finished = true;
 		break;
 	default:
-		if ((event.text.unicode >= '0' && event.text.unicode <= '9')
+		if ((event.text.unicode >= '0' && event.text.unicode <= '9' || event.text.unicode == '-')
 			|| event.text.unicode == '.' || event.text.unicode == ',' || event.text.unicode == ':'
 			)
 		{

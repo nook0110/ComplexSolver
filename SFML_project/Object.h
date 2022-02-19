@@ -1,7 +1,8 @@
 #pragma once
-#include <SFML/Graphics.hpp>
 #include <list>
+#include <SFML/Graphics.hpp>
 #include "gui.h"
+#include "algebraic.h"
 #include "Creation.h"
 
 #include <iostream>
@@ -74,6 +75,7 @@ class ConstructionData
 {
 protected:
 	Object* object;
+	ConstructionData(Object* object);
 public:
 	//Return equation of the objects 
 	//The equation can be changed if parents were moved
@@ -83,6 +85,8 @@ public:
 
 class ConstructionCircle : public ConstructionData
 {
+protected:
+	ConstructionCircle(Object* object);
 };
 
 class ByFourPoints : public ConstructionCircle
@@ -96,19 +100,26 @@ public:
 
 class ConstructionPoint : public ConstructionData
 {
+protected:
+	ConstructionPoint(Object* object);
 public:
+	expr coord;
 	virtual void moveTo(Vector2f coords);
 };
 
 class ConstructionLine : public ConstructionData
 {
+protected:
+	ConstructionLine(Object* object);
+public:
+	expr z_coef, z_conj_coef, free_coef;
 };
 
 class OnPlane : public ConstructionPoint
 {
 	Vector2f point;
 public:
-	OnPlane(Object* object, Vector2f point);
+	OnPlane(Point* object, Vector2f point);
 	void recreate(Equation* equation) override;
 	void moveTo(Vector2f coords) override;
 	~OnPlane();
@@ -190,7 +201,7 @@ class OnCircle : public ConstructionPoint
 	UnitCircle* firstParent;
 	float angle;
 public:
-	OnCircle(Object* object, UnitCircle* firstParent, float angle);
+	OnCircle(Point* object, UnitCircle* firstParent, float angle);
 	void moveTo(Vector2f coords) override;
 	~OnCircle();
 	void recreate(Equation* equation) override;
@@ -291,8 +302,9 @@ class VisibleObject : public Object
 	Color visibleColor = Color::Black;
 	const Color unvisibleColor = Color::Blue;
 	void erase();
-protected:
+public:
 	ConstructionData* construction;
+protected:
 	virtual void reposition();
 	bool visible = true;
 	Color getColor();
@@ -396,10 +408,11 @@ public:
 	Point(Point* point, Line* line);
 	// Point by two points and scalar
 	Point(Point* first, Point* second, float ratio);
-	// Rotation on 90°
+	// Rotation on 90ï¿½
 	Point(Point* center, Point* preimage, int sign);
 	bool isNearby(Vector2f position) override;
 	void draw() override;
+	std::string getName();
 	void drawDescription() override;
 };
 

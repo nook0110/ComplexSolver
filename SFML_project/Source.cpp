@@ -67,8 +67,12 @@ int main()
 
 	while (mainWindow.isOpen())
 	{
+		//while (!mainWindow.hasFocus())
+		//{
+			sleep(Time(seconds(0.01)));
+		//}
 		Event event;
-		while (mainWindow.pollEvent(event))
+		if (mainWindow.pollEvent(event))
 		{
 			Drawer::update(event);
 			if (event.type == Event::Resized)
@@ -94,14 +98,11 @@ int main()
 					view.zoom(1 / 1.2);
 				}
 			}
+			mainWindow.clear(Color::White);
 			mainWindow.setView(view);
-		}
-		mainWindow.clear(Color::White);
-		mainWindow.setView(view);
-		Drawer::draw();
-
-
-		mainWindow.display();
+			Drawer::draw();
+			mainWindow.display();
+		}				
 	}
 	return 0;
 }

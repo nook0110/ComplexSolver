@@ -433,20 +433,16 @@ void Point::drawDescription()
 {
 }
 
+std::string Point::getName()
+{
+	return pointName;
+}
+
 ByFourPoints::ByFourPoints(Object* object, Point* first, Point* second, Point* third, Point* fourth)
-	:firstParent(first), secondParent(second), thirdParent(third), fourthParent(fourth)
-
-{
-
-	ConstructionData::object = object;
-}
-
-OnPlane::OnPlane(Object* object, Vector2f point)
-	:point(point)
+	:firstParent(first), secondParent(second), thirdParent(third), fourthParent(fourth), ConstructionCircle(object)
 {
 	ConstructionData::object = object;
 }
-
 
 void OnPlane::recreate(Equation* equation)
 {
@@ -461,13 +457,6 @@ void OnPlane::moveTo(Vector2f coords)
 OnPlane::~OnPlane()
 {
 }
-
-IntersectionOfTwoLines::IntersectionOfTwoLines(Object* object, Line* first, Line* second)
-	:firstParent(first), secondParent(second)
-{
-	ConstructionData::object = object;
-}
-
 
 void IntersectionOfTwoLines::recreate(Equation* equation)
 {
@@ -490,14 +479,6 @@ IntersectionOfTwoLines::~IntersectionOfTwoLines()
 {
 	firstParent->eraseChild(object);
 	secondParent->eraseChild(object);
-}
-
-
-
-CentralProjection::CentralProjection(Object* object, UnitCircle* first, Point* second, UnitPoint* third)
-	:firstParent(first), secondParent(second), thirdParent(third)
-{
-	ConstructionData::object = object;
 }
 
 void CentralProjection::recreate(Equation* equation)
@@ -526,13 +507,6 @@ CentralProjection::~CentralProjection()
 	thirdParent->eraseChild(object);
 }
 
-
-byTwoPointsFixedRatio::byTwoPointsFixedRatio(Object* object, Point* firstParent, Point* secondParent, float ratio)
-	:firstParent(firstParent), secondParent(secondParent), ratio(ratio)
-{
-	ConstructionData::object = object;
-}
-
 byTwoPointsFixedRatio::~byTwoPointsFixedRatio()
 {
 	firstParent->eraseChild(object);
@@ -553,12 +527,6 @@ void byTwoPointsFixedRatio::recreate(Equation* equation)
 void Pole::recreate(Equation* equation)
 {
 	return;
-}
-
-ByTwoPoints::ByTwoPoints(Object* object, Point* firstParent, Point* secondParent)
-	:firstParent(firstParent), secondParent(secondParent)
-{
-	ConstructionData::object = object;
 }
 
 void ByTwoPoints::recreate(Equation* equation)
@@ -583,19 +551,14 @@ ByTwoPoints::~ByTwoPoints()
 	secondParent->eraseChild(object);
 }
 
-ByTwoUnitPoints::ByTwoUnitPoints(Object* object, UnitPoint* firstParent, UnitPoint* secondParent) : ByTwoPoints(object, firstParent, secondParent)
-{
-}
-
 void PerpendicularBisector::recreate(Equation* equation)
 {
 	return;
 }
 
 Perpendicular::Perpendicular(Object* object, Point* firstParent, Line* secondParent)
-	:firstParent(firstParent), secondParent(secondParent)
+	:firstParent(firstParent), secondParent(secondParent), ConstructionLine(object)
 {
-	ConstructionData::object = object;
 }
 
 Perpendicular::~Perpendicular()
@@ -620,10 +583,10 @@ void Polar::recreate(Equation* equation)
 	return;
 }
 
+
 Parallel::Parallel(Object* object, Line* first, Point* second)
-	:firstParent(first), secondParent(second)
+	:firstParent(first),secondParent(second),ConstructionLine(object)
 {
-	ConstructionData::object = object;
 }
 
 Parallel::~Parallel()
@@ -643,14 +606,6 @@ void Parallel::recreate(Equation* equation)
 	*dynamic_cast<LineEquation*>(equation) = LineEquation(A, B, C);
 }
 
-Tangent::Tangent(Object* object, UnitCircle* firstParent, Point* secondParent)
-	:firstParent(firstParent), secondParent(secondParent)
-{
-	if (!secondParent->isOnCircle())
-		throw std::invalid_argument("Point isnt on circle?!");
-	ConstructionData::object = object;
-}
-
 Tangent::~Tangent()
 {
 	firstParent->eraseChild(object);
@@ -667,7 +622,16 @@ void Tangent::recreate(Equation* equation)
 	*dynamic_cast<LineEquation*>(equation) = LineEquation(A, B, C);
 }
 
+ConstructionPoint::ConstructionPoint(Object* object) : ConstructionData(object)
+{
+}
+
 void ConstructionPoint::moveTo(Vector2f coords)
+{
+}
+
+ConstructionData::ConstructionData(Object* object)
+	:object(object)
 {
 }
 
@@ -710,12 +674,6 @@ Vector2f Equation::Projection(LineEquation lineEquation, PointEquation pointEqua
 	return point;
 }
 
-OnLine::OnLine(Object* object, Point* firstParent, Point* secondParent, float ratio, Line* thirdParent)
-	:firstParent(firstParent), secondParent(secondParent), ratio(ratio), thirdParent(thirdParent)
-{
-	ConstructionData::object = object;
-}
-
 void OnLine::moveTo(Vector2f coord)
 {
 	Vector2f proj = Equation::Projection(*dynamic_cast<LineEquation*>(thirdParent->getEquation()), coord);
@@ -741,12 +699,6 @@ OnLine::~OnLine()
 	firstParent->eraseChild(object);
 	secondParent->eraseChild(object);
 	thirdParent->eraseChild(object);
-}
-
-OnCircle::OnCircle(Object* object, UnitCircle* firstParent, float angle)
-	: firstParent(firstParent), angle(angle)
-{
-	ConstructionData::object = object;
 }
 
 OnCircle::~OnCircle()
@@ -834,12 +786,6 @@ UnitPoint::UnitPoint(UnitCircle* unitCircle, Chord* chord, UnitPoint* point)
 	Init();
 }
 
-Projection::Projection(Object* object, Point* first, Line* second)
-	:firstParent(first), secondParent(second)
-{
-	ConstructionData::object = object;
-}
-
 void Projection::recreate(Equation* equation)
 {
 	LineEquation* lineEquation = dynamic_cast<LineEquation*>(secondParent->getEquation());
@@ -890,12 +836,6 @@ CircleEquation::CircleEquation(Vector2f center, double radius)
 {
 }
 
-IntersectionParallelChord::IntersectionParallelChord(Object* object, UnitCircle* unitCircle, Chord* firstParent, UnitPoint* secondParent)
-	: unitCircle(unitCircle), firstParent(firstParent), secondParent(secondParent)
-{
-	ConstructionData::object = object;
-}
-
 IntersectionParallelChord::~IntersectionParallelChord()
 {
 	unitCircle->eraseChild(object);
@@ -915,12 +855,6 @@ void IntersectionParallelChord::recreate(Equation* equation)
 	Vector2f projection = Equation::Projection(lineEquation, PointEquation(Vector2f(0, 0)));
 	Vector2f delta = projection - coord;
 	*dynamic_cast<PointEquation*>(equation) = PointEquation(projection + delta);
-}
-
-IntersectionPerpendicularChord::IntersectionPerpendicularChord(Object* object, UnitCircle* unitCircle, UnitPoint* firstParent, Chord* secondParent)
-	:unitCircle(unitCircle), firstParent(firstParent), secondParent(secondParent)
-{
-	ConstructionData::object = object;
 }
 
 IntersectionPerpendicularChord::~IntersectionPerpendicularChord()
@@ -944,12 +878,6 @@ void IntersectionPerpendicularChord::recreate(Equation* equation)
 	*dynamic_cast<PointEquation*>(equation) = PointEquation(projection + delta);
 }
 
-Rotation90::Rotation90(Object* object, Point* firstParent, Point* secondParent, int sign)
-	:firstParent(firstParent), secondParent(secondParent), sign(sign)
-{
-	ConstructionData::object = object;
-}
-
 void Rotation90::recreate(Equation* equation)
 {
 	PointEquation* firstEquation = dynamic_cast<PointEquation*>(firstParent->getEquation());
@@ -968,4 +896,12 @@ Rotation90::~Rotation90()
 {
 	firstParent->eraseChild(object);
 	secondParent->eraseChild(object);
+}
+
+ConstructionLine::ConstructionLine(Object* object) : ConstructionData(object)
+{
+}
+
+ConstructionCircle::ConstructionCircle(Object* object) : ConstructionData(object)
+{
 }
