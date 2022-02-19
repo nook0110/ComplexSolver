@@ -28,8 +28,8 @@ public:
 class Finder
 {
 public:
-	VisibleObject* nearbyVisibleObject(Vector2f mousePosition);
-	VisibleObject* nearbyObject(Vector2f mousePosition);
+	Object* nearbyVisibleObject(Vector2f mousePosition);
+	Object* nearbyObject(Vector2f mousePosition);
 	Point* nearbyConstructedPoint(Vector2f mousePosition);
 	UnitPoint* nearbyConstructedPointOnCircle(Vector2f mousePosition);
 	Point* nearbyNewPoint(Vector2f mousePosition);

@@ -31,8 +31,10 @@ extern Button clearButton;
 extern Button projectionButton;
 extern Button parallelButton;
 extern Button pointBetweenPoints;
-extern Button ProveConstructionButton;
+extern Button proveConstructionButton;
 extern Button switchButton;
+
+extern Button debugButton;
 
 Vector2f CamCenter = Vector2f(0, 0);
 
@@ -59,10 +61,11 @@ int main()
 	mainMenu.pushButton(&symmetryButton, 0);
 	mainMenu.pushButton(&clearButton, 0);
 	mainMenu.pushButton(&hideButton, 0);
+	mainMenu.pushButton(&debugButton, 0);
 	mainMenu.pushButton(&switchButton, 0);
 
 	mainMenu.pushButton(&fourPointsOnACircle, 1);
-	mainMenu.pushButton(&ProveConstructionButton, 1);
+	mainMenu.pushButton(&proveConstructionButton, 1);
 	mainMenu.pushButton(&switchButton, 1);
 
 	while (mainWindow.isOpen())

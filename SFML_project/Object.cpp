@@ -12,6 +12,8 @@ Equation* Object::getEquation()
 
 Object::~Object()
 {
+	erase();
+	delete construction;
 	deleteChildren();
 }
 
@@ -53,47 +55,37 @@ void Object::clearChildren()
 	children.remove(nullptr);
 }
 
-void VisibleObject::reposition()
-{
-}
-
-Color VisibleObject::getColor()
+Color Object::getColor()
 {
 	return visible ? visibleColor : unvisibleColor;
 }
 
-void VisibleObject::changeVisibility(bool visibility)
+void Object::changeVisibility(bool visibility)
 {
 	visible = visibility;
 }
 
-void VisibleObject::changeVisibility()
+void Object::changeVisibility()
 {
 	visible = !visible;
 }
 
-void VisibleObject::changeColor(Color color)
+void Object::changeColor(Color color)
 {
 	visibleColor = color;
 }
 
-bool VisibleObject::getVisibility()
+bool Object::getVisibility()
 {
 	return visible;
 }
 
-void VisibleObject::erase()
+void Object::erase()
 {
 	Drawer::allVisibleObjects.remove(this);
 }
 
-VisibleObject::~VisibleObject()
-{
-	erase();
-	delete construction;
-}
-
-bool VisibleObject::isOnCircle()
+bool Object::isOnCircle()
 {
 	return dynamic_cast<OnCircle*>(construction);
 }
@@ -394,6 +386,11 @@ Point::Point(Point* point, Line* line)
 	point->addChild(this);
 	line->addChild(this);
 	Init();
+}
+
+void Point::printExpr()
+{
+	dynamic_cast<ConstructionPoint*>(construction)->coord.print();
 }
 
 Point::Point(Point* center, Point* preimage, int sign)

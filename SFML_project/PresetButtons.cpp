@@ -7,11 +7,11 @@ extern Vector2i maxTextureResolution;//
 extern MODES Mousemode;//
 extern Menu mainMenu;
 
-std::list<VisibleObject*> Drawer::allVisibleObjects;
+std::list<Object*> Drawer::allVisibleObjects;
 
 Button moveButton = Button(Vector2f(10, 10), Vector2f(100, 100), &mainWindow,
 	"Textures\\SFML_project\\MoveButton.jpg", Vector2i(0, 0), maxTextureResolution,
-	MODE_MOVE, []()->VisibleObject* {
+	MODE_MOVE, []()->Object* {
 		Waiter wait;
 		InterruptionChecker interruptionChecker;
 		Finder find;
@@ -47,7 +47,7 @@ Button moveButton = Button(Vector2f(10, 10), Vector2f(100, 100), &mainWindow,
 
 Button pointButton = Button(Vector2f(120, 10), Vector2f(100, 100), &mainWindow,
 	"Textures\\SFML_project\\Point.png", Vector2i(0, 0), maxTextureResolution,
-	MODE_POINT, []()->VisibleObject* {
+	MODE_POINT, []()->Object* {
 		Waiter wait;
 		Finder find;
 		if (wait.untilClick())
@@ -66,7 +66,7 @@ Button pointButton = Button(Vector2f(120, 10), Vector2f(100, 100), &mainWindow,
 
 Button lineButton = Button(Vector2f(230, 10), Vector2f(100, 100), &mainWindow,
 	"Textures\\SFML_project\\Line.png", Vector2i(0, 0), maxTextureResolution,
-	MODE_LINE, []()->VisibleObject* {
+	MODE_LINE, []()->Object* {
 		Waiter wait;
 		Finder find;
 		const int twotimes = 2;
@@ -116,7 +116,7 @@ Button lineButton = Button(Vector2f(230, 10), Vector2f(100, 100), &mainWindow,
 
 Button pointBetweenPoints = Button(Vector2f(230, 10), Vector2f(100, 100), &mainWindow,
 	"Textures\\SFML_project\\PointBetweenPoints.png", Vector2i(0, 0), maxTextureResolution,
-	MODE_POINT_BETWEEN_POINTS, []()->VisibleObject* {
+	MODE_POINT_BETWEEN_POINTS, []()->Object* {
 		Waiter wait;
 		Finder find;
 		const int twotimes = 2;
@@ -173,7 +173,7 @@ Button pointBetweenPoints = Button(Vector2f(230, 10), Vector2f(100, 100), &mainW
 
 Button centralProjectionButton = Button(Vector2f(340, 10), Vector2f(100, 100), &mainWindow,
 	"Textures\\SFML_project\\CentralProjection.png", Vector2i(0, 0), maxTextureResolution,
-	MODE_CENTRAL_PROJECTION, []()->VisibleObject* {
+	MODE_CENTRAL_PROJECTION, []()->Object* {
 		Waiter wait;
 		Finder find;
 		if (wait.untilClick())
@@ -206,7 +206,7 @@ Button centralProjectionButton = Button(Vector2f(340, 10), Vector2f(100, 100), &
 
 Button perpendicularButton = Button(Vector2f(340, 10), Vector2f(100, 100), &mainWindow,
 	"Textures\\SFML_project\\Perpendicular.png", Vector2i(0, 0), maxTextureResolution,
-	MODE_PERPENDICULAR, []()->VisibleObject* {
+	MODE_PERPENDICULAR, []()->Object* {
 		Waiter wait;
 		InterruptionChecker interruptionChecker;
 		Finder find;
@@ -240,7 +240,7 @@ Button perpendicularButton = Button(Vector2f(340, 10), Vector2f(100, 100), &main
 	});
 Button midPointButton = Button(Vector2f(670, 10), Vector2f(100, 100), &mainWindow,
 	"Textures\\SFML_project\\Midpoint.png", Vector2i(0, 0), maxTextureResolution,
-	MODE_MIDPOINT, []()->VisibleObject* {
+	MODE_MIDPOINT, []()->Object* {
 		Waiter wait;
 		Finder find;
 		const int twotimes = 2;
@@ -282,7 +282,7 @@ Button midPointButton = Button(Vector2f(670, 10), Vector2f(100, 100), &mainWindo
 
 Button symmetryButton = Button(Vector2f(670, 10), Vector2f(100, 100), &mainWindow,
 	"Textures\\SFML_project\\Symmetry.png", Vector2i(0, 0), maxTextureResolution,
-	MODE_SYMMETRY, []()->VisibleObject* {
+	MODE_SYMMETRY, []()->Object* {
 		Waiter wait;
 		Finder find;
 		std::pair<Point*, Point*> points(nullptr, nullptr);
@@ -324,7 +324,7 @@ Button symmetryButton = Button(Vector2f(670, 10), Vector2f(100, 100), &mainWindo
 
 Button rotateLeftButton = Button(Vector2f(450, 10), Vector2f(100, 100), &mainWindow,
 	"Textures\\SFML_project\\Test.jpg", Vector2i(0, 0), maxTextureResolution,
-	MODE_ROTATION_LEFT, []()->VisibleObject* {
+	MODE_ROTATION_LEFT, []()->Object* {
 		Waiter wait;
 		Finder find;
 		std::pair<Point*, Point*> points(nullptr, nullptr);
@@ -366,7 +366,7 @@ Button rotateLeftButton = Button(Vector2f(450, 10), Vector2f(100, 100), &mainWin
 
 Button rotateRightButton = Button(Vector2f(450, 10), Vector2f(100, 100), &mainWindow,
 	"Textures\\SFML_project\\Test.jpg", Vector2i(0, 0), maxTextureResolution,
-	MODE_ROTATION_RIGHT, []()->VisibleObject* {
+	MODE_ROTATION_RIGHT, []()->Object* {
 		Waiter wait;
 		Finder find;
 		std::pair<Point*, Point*> points(nullptr, nullptr);
@@ -408,7 +408,7 @@ Button rotateRightButton = Button(Vector2f(450, 10), Vector2f(100, 100), &mainWi
 
 Button projectionButton = Button(Vector2f(450, 10), Vector2f(100, 100), &mainWindow,
 	"Textures\\SFML_project\\Projection.png", Vector2i(0, 0), maxTextureResolution,
-	MODE_PROJECTION, []()->VisibleObject* {
+	MODE_PROJECTION, []()->Object* {
 		Waiter wait;
 		InterruptionChecker interruptionChecker;
 		Finder find;
@@ -438,7 +438,7 @@ Button projectionButton = Button(Vector2f(450, 10), Vector2f(100, 100), &mainWin
 
 Button parallelButton = Button(Vector2f(560, 10), Vector2f(120, 120), &mainWindow,
 	"Textures\\SFML_project\\Parallel.png", Vector2i(0, 0), maxTextureResolution,
-	MODE_PARALLEL, []()->VisibleObject* {
+	MODE_PARALLEL, []()->Object* {
 		Waiter wait;
 		InterruptionChecker interruptionChecker;
 		Finder find;
@@ -472,7 +472,7 @@ Button parallelButton = Button(Vector2f(560, 10), Vector2f(120, 120), &mainWindo
 
 Button scalarButton = Button(Vector2f(670, 10), Vector2f(100, 100), &mainWindow,
 	"Textures\\SFML_project\\Scalar.png", Vector2i(0, 0), maxTextureResolution,
-	MODE_MIDPOINT, []()->VisibleObject* {
+	MODE_MIDPOINT, []()->Object* {
 		InterruptionChecker checker;
 		Waiter wait;
 		Finder find;
@@ -526,7 +526,7 @@ Button scalarButton = Button(Vector2f(670, 10), Vector2f(100, 100), &mainWindow,
 
 Button tangentButton = Button(Vector2f(450, 10), Vector2f(100, 100), &mainWindow,
 	"Textures\\SFML_project\\TangentButton.jpg", Vector2i(0, 0), maxTextureResolution,
-	MODE_TANGENT, []()->VisibleObject* {
+	MODE_TANGENT, []()->Object* {
 		Waiter wait;
 		Finder find;
 		if (wait.untilClick())
@@ -549,7 +549,7 @@ Button tangentButton = Button(Vector2f(450, 10), Vector2f(100, 100), &mainWindow
 
 Button deleteButton = Button(Vector2f(560, 10), Vector2f(100, 100), &mainWindow,
 	"Textures\\SFML_project\\DeleteButton.jpg", Vector2i(0, 0), maxTextureResolution,
-	MODE_DELETE, []()->VisibleObject* {
+	MODE_DELETE, []()->Object* {
 		Waiter wait;
 		Finder find;
 		if (wait.untilClick())
@@ -568,7 +568,7 @@ Button deleteButton = Button(Vector2f(560, 10), Vector2f(100, 100), &mainWindow,
 
 Button hideButton = Button(Vector2f(780, 10), Vector2f(100, 100), &mainWindow,
 	"Textures\\SFML_project\\HideButton.jpg", Vector2i(0, 0), maxTextureResolution,
-	MODE_HIDE, []()->VisibleObject* {
+	MODE_HIDE, []()->Object* {
 		Waiter wait;
 		Finder find;
 		if (wait.untilClick())
@@ -576,7 +576,7 @@ Button hideButton = Button(Vector2f(780, 10), Vector2f(100, 100), &mainWindow,
 			return nullptr;
 		}
 		Vector2f mousePosition = mainWindow.mapPixelToCoords(Mouse::getPosition(mainWindow), view);
-		VisibleObject* object = find.nearbyObject(mousePosition);
+		Object* object = find.nearbyObject(mousePosition);
 		if (object)
 		{
 			object->changeVisibility();
@@ -586,7 +586,7 @@ Button hideButton = Button(Vector2f(780, 10), Vector2f(100, 100), &mainWindow,
 
 Button clearButton = Button(Vector2f(890, 10), Vector2f(100, 100), &mainWindow,
 	"Textures\\SFML_project\\ClearButton.jpg", Vector2i(0, 0), maxTextureResolution,
-	MODE_CLEAR, []()->VisibleObject* {
+	MODE_CLEAR, []()->Object* {
 		Waiter wait;
 		while (Drawer::allVisibleObjects.size() > 1)
 		{
@@ -600,14 +600,14 @@ Button clearButton = Button(Vector2f(890, 10), Vector2f(100, 100), &mainWindow,
 
 Button switchButton = Button(Vector2f(890, 10), Vector2f(100, 100), &mainWindow,
 	"Textures\\SFML_project\\Test.jpg", Vector2i(0, 0), maxTextureResolution,
-	MODE_SWITCH, []()->VisibleObject* {
+	MODE_SWITCH, []()->Object* {
 		mainMenu.switchLayer();
 		return nullptr;
 	});
 
 Button fourPointsOnACircle = Button(Vector2f(890, 10), Vector2f(100, 100), &mainWindow,
 	"Textures\\SFML_project\\Test.jpg", Vector2i(0, 0), maxTextureResolution,
-	MODE_FOUR_POINTS, []()->VisibleObject* {
+	MODE_FOUR_POINTS, []()->Object* {
 		Waiter wait;
 		Finder find;
 		const int fourTimes = 4;
@@ -632,7 +632,7 @@ Button fourPointsOnACircle = Button(Vector2f(890, 10), Vector2f(100, 100), &main
 
 Button ñollinearityOfLines = Button(Vector2f(890, 10), Vector2f(100, 100), &mainWindow,
 	"Textures\\SFML_project\\Test.jpg", Vector2i(0, 0), maxTextureResolution,
-	MODE_HIDE, []()->VisibleObject* {
+	MODE_HIDE, []()->Object* {
 		Waiter wait;
 		Finder find;
 		const int threeTimes = 3;
@@ -656,7 +656,7 @@ Button ñollinearityOfLines = Button(Vector2f(890, 10), Vector2f(100, 100), &main
 
 Button ñollinearityOfPoints = Button(Vector2f(890, 10), Vector2f(100, 100), &mainWindow,
 	"Textures\\SFML_project\\Test.jpg", Vector2i(0, 0), maxTextureResolution,
-	MODE_HIDE, []()->VisibleObject* {
+	MODE_HIDE, []()->Object* {
 		Waiter wait;
 		Finder find;
 		const int threeTimes = 4;
@@ -678,13 +678,13 @@ Button ñollinearityOfPoints = Button(Vector2f(890, 10), Vector2f(100, 100), &mai
 		return nullptr;
 	});
 
-Button ProveConstructionButton = Button(Vector2f(890, 10), Vector2f(100, 100), &mainWindow,
+Button proveConstructionButton = Button(Vector2f(890, 10), Vector2f(100, 100), &mainWindow,
 	"Textures\\SFML_project\\Test.jpg", Vector2i(0, 0), maxTextureResolution,
-	MODE_PROVE_CONSTRUCTION, []()->VisibleObject* {
+	MODE_PROVE_CONSTRUCTION, []()->Object* {
 		Waiter wait;
 		Finder find;
 		InterruptionChecker checker;
-		VisibleObject* firstObject = nullptr;
+		Object* firstObject = nullptr;
 		while (!firstObject)
 		{
 			if (wait.untilClick())
@@ -695,7 +695,7 @@ Button ProveConstructionButton = Button(Vector2f(890, 10), Vector2f(100, 100), &
 			firstObject = find.nearbyVisibleObject(mousePosition);
 		}
 		mainMenu.switchLayer();
-		VisibleObject* secondObject = nullptr;
+		Object* secondObject = nullptr;
 		while (checker.checkInterruption())
 		{
 			wait.sleep();
@@ -711,7 +711,26 @@ Button ProveConstructionButton = Button(Vector2f(890, 10), Vector2f(100, 100), &
 		wait.sleep();
 	});
 
-VisibleObject* Finder::nearbyVisibleObject(Vector2f mousePosition)
+Button debugButton = Button(Vector2f(890, 10), Vector2f(100, 100), &mainWindow,
+	"Textures\\SFML_project\\Test.jpg", Vector2i(0, 0), maxTextureResolution,
+	MODE_PROVE_CONSTRUCTION, []()->Object* {
+		Waiter wait;
+		Finder find;
+		InterruptionChecker checker;
+		Point* point = nullptr;
+		while (!point)
+		{
+			if (wait.untilClick())
+			{
+				return nullptr;
+			}
+			Vector2f mousePosition = mainWindow.mapPixelToCoords(Mouse::getPosition(mainWindow), view);
+			point = find.nearbyConstructedPoint(mousePosition);
+		}
+		point->printExpr();
+	});
+
+Object* Finder::nearbyVisibleObject(Vector2f mousePosition)
 {
 	Point* point = nearbyConstructedPoint(mousePosition);
 	if (point)
@@ -723,7 +742,7 @@ VisibleObject* Finder::nearbyVisibleObject(Vector2f mousePosition)
 	{
 		return line;
 	}
-	for (VisibleObject* object : Drawer::allVisibleObjects)
+	for (Object* object : Drawer::allVisibleObjects)
 	{
 		if (object && object->isNearby(mousePosition) && object->getVisibility())
 		{
@@ -733,9 +752,9 @@ VisibleObject* Finder::nearbyVisibleObject(Vector2f mousePosition)
 	return nullptr;
 }
 
-VisibleObject* Finder::nearbyObject(Vector2f mousePosition)
+Object* Finder::nearbyObject(Vector2f mousePosition)
 {
-	for (VisibleObject* object : Drawer::allVisibleObjects)
+	for (Object* object : Drawer::allVisibleObjects)
 	{
 		if (object && object->isNearby(mousePosition))
 		{
@@ -751,7 +770,7 @@ VisibleObject* Finder::nearbyObject(Vector2f mousePosition)
 
 Point* Finder::nearbyConstructedPoint(Vector2f mousePosition)
 {
-	for (VisibleObject* object : Drawer::allVisibleObjects)
+	for (Object* object : Drawer::allVisibleObjects)
 	{
 		Point* point = dynamic_cast<Point*>(object);
 		if (point && point->isNearby(mousePosition) && point->getVisibility())
@@ -764,7 +783,7 @@ Point* Finder::nearbyConstructedPoint(Vector2f mousePosition)
 
 UnitPoint* Finder::nearbyConstructedPointOnCircle(Vector2f mousePosition)
 {
-	for (VisibleObject* object : Drawer::allVisibleObjects)
+	for (Object* object : Drawer::allVisibleObjects)
 	{
 		UnitPoint* point = dynamic_cast<UnitPoint*>(object);
 		if (point && point->isNearby(mousePosition) && point->getVisibility())
@@ -807,7 +826,7 @@ UnitPoint* Finder::nearbyNewPointOnCircle(Vector2f mousePosition)
 
 Line* Finder::nearbyLine(Vector2f mousePosition)
 {
-	for (VisibleObject* object : Drawer::allVisibleObjects)
+	for (Object* object : Drawer::allVisibleObjects)
 	{
 		Line* line = dynamic_cast<Line*>(object);
 		if (line && line->isNearby(mousePosition) && line->getVisibility())
@@ -821,7 +840,7 @@ Line* Finder::nearbyLine(Vector2f mousePosition)
 std::pair<Line*, Line*> Finder::nearbyLines(Vector2f mousePosition)
 {
 	std::pair<Line*, Line*> lines = { nullptr,nullptr };
-	for (VisibleObject* object : Drawer::allVisibleObjects)
+	for (Object* object : Drawer::allVisibleObjects)
 	{
 		Line* line = dynamic_cast<Line*>(object);
 		if (line)

@@ -45,13 +45,13 @@ struct PointEquation : public Equation
 	PointEquation(Vector2f point);
 };
 
-//Objects - things that appear on the screen or help to construct them, such as UnitCircle, Circle, Points, Lines or Scalar and ComplexScalar
+class ConstructionData;
+//Objects - things that appear on the screen, such as UnitCircle, Circle, Points, Lines
 class Object
 {
 private:
 	std::list<Object*> children;
 protected:
-	virtual void reposition();
 	void reposeChildren();
 	Equation* equation;
 private:
@@ -62,9 +62,29 @@ public:
 	void clearChildren();
 	Equation* getEquation();
 	virtual ~Object();
+
+private:
+	Color visibleColor = Color::Black;
+	const Color unvisibleColor = Color::Blue;
+	void erase();
+public:
+	ConstructionData* construction;
+protected:
+	virtual void reposition();
+	bool visible = true;
+	Color getColor();
+public:
+	virtual bool isNearby(Vector2f position) = 0;
+	virtual void draw() = 0;
+	virtual void drawDescription() = 0;
+	void changeVisibility(bool newVisibility);
+	void changeVisibility();
+	void changeColor(Color color);
+	bool getVisibility();
+	bool isOnCircle();
 };
 
-class VisibleObject;
+class Object;
 class Line;
 class Point;
 class UnitCircle;
@@ -297,32 +317,11 @@ public:
 };
 
 //VisibleObject - objects that you can see on the screen.
-class VisibleObject : public Object
-{
-	Color visibleColor = Color::Black;
-	const Color unvisibleColor = Color::Blue;
-	void erase();
-public:
-	ConstructionData* construction;
-protected:
-	virtual void reposition();
-	bool visible = true;
-	Color getColor();
-public:
-	virtual bool isNearby(Vector2f position) = 0;
-	virtual void draw() = 0;
-	virtual void drawDescription() = 0;
-	void changeVisibility(bool newVisibility);
-	void changeVisibility();
-	void changeColor(Color color);
-	bool getVisibility();
-	bool isOnCircle();
-	~VisibleObject();
-};
+
 
 //UnitCircle - is the only circle in the programme
 //To get object use UnitCircle::getInstance() method
-class UnitCircle : public VisibleObject
+class UnitCircle : public Object
 {
 private:
 	const double outlineThickness = unitSeg / 100;
@@ -339,7 +338,7 @@ public:
 };
 
 //Circle can only be constructed to prove the problem
-class Circle : public VisibleObject
+class Circle : public Object
 {
 	const double outlineThickness = unitSeg / 100;
 	CircleShape shape;
@@ -352,7 +351,7 @@ public:
 };
 
 class Point;
-class Line : public VisibleObject
+class Line : public Object
 {
 protected:
 	double distance(Vector2f point);
@@ -381,7 +380,7 @@ public:
 	Chord(UnitPoint* first, UnitPoint* second);
 };
 
-class Point : public VisibleObject
+class Point : public Object
 {
 protected:
 	std::string pointName;
@@ -396,6 +395,9 @@ protected:
 	void setName();
 	void Init();
 public:
+	//DEBUG
+	void printExpr();
+	//
 	Vector2f getCoordinate();
 	virtual void moveTo(Vector2f coords);
 	// By complex scalar (Point on the plain)

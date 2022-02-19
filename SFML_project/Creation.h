@@ -8,7 +8,7 @@ class Menu;
 extern Menu mainMenu;
 extern RenderWindow mainWindow;
 
-class VisibleObject;
+class Object;
 //Checks if mode has been changed
 class Checker
 {
@@ -30,7 +30,7 @@ class Creation
 	static Checker checker;
 	static Creation* creator;
 public:
-	std::function<VisibleObject* (void)>  CurrentMethod = [](void)->VisibleObject* {
+	std::function<Object* (void)>  CurrentMethod = [](void)->Object* {
 		std::this_thread::sleep_for(std::chrono::nanoseconds(1000));
 		return nullptr;
 	};
@@ -58,7 +58,7 @@ public:
 	static MODES getCurrentMode();
 };
 
-class VisibleObject;
+class Object;
 class Parametr;
 class TextBox;
 class DialogBox;
@@ -75,7 +75,7 @@ class Drawer
 	static void resizeDialogBox(Event event);
 public:
 	Drawer() = delete;
-	static std::list<VisibleObject*> allVisibleObjects;
+	static std::list<Object*> allVisibleObjects;
 	static std::list<Parametr*> allParametrs;
 	static std::list<TextBox*> allTextBoxes;
 	static DialogBox* dialogBox;

@@ -11,7 +11,7 @@ extern Event event;
 extern FloatRect mainWindowRect;
 
 
-class VisibleObject;
+class Object;
 //Button is a clickable object on the screen.
 //It has it own mode and std::function.
 //Use getObjectCreationMethod() to get funñtion. 
@@ -33,7 +33,7 @@ private:
 
 	//Button mode
 	MODES mode = MODE_NOTHING;
-	std::function<VisibleObject* (void)> modeFunction = []()->VisibleObject* {};
+	std::function<Object* (void)> modeFunction = []()->Object* {};
 
 	bool pressed = false;
 	bool LeftPressed = false;
@@ -45,14 +45,14 @@ private:
 public:
 	Button(Vector2f position, Vector2f size, RenderWindow* window,
 		std::string textureLocation, Vector2i textureStart = Vector2i(0, 0), Vector2i textureSize = maxTextureResolution,
-		MODES mode = MODE_NOTHING, std::function<VisibleObject* (void)> modeFunction = []()->VisibleObject* {});
+		MODES mode = MODE_NOTHING, std::function<Object* (void)> modeFunction = []()->Object* {});
 	Button(Vector2f position, Vector2f size, RenderWindow* window,
 		std::string textureLocation, std::string texturePressedLocation,
-		MODES mode = MODE_NOTHING, std::function<VisibleObject* (void)> modeFunction = []()->VisibleObject* {});
+		MODES mode = MODE_NOTHING, std::function<Object* (void)> modeFunction = []()->Object* {});
 	Button(Vector2f position, Vector2f size, RenderWindow* window,
 		std::string textureLocation, Vector2i textureStart, Vector2i textureSize,
 		std::string texturePressedLocation, Vector2i texturePressedStart, Vector2i texturePressedSize,
-		MODES mode = MODE_NOTHING, std::function<VisibleObject* (void)> modeFunction = []()->VisibleObject* {});
+		MODES mode = MODE_NOTHING, std::function<Object* (void)> modeFunction = []()->Object* {});
 	void setPosition(Vector2f);
 	void setSize(Vector2f size);
 	void draw();
@@ -68,7 +68,7 @@ public:
 	void press();
 	void unpress();
 	bool getPressed();
-	std::function<VisibleObject* (void)> getObjectCreationMethod();
+	std::function<Object* (void)> getObjectCreationMethod();
 };
 
 

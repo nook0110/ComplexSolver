@@ -24,7 +24,7 @@ void Button::setTexture(std::string textureLocation, Vector2i textureStart, Vect
 
 Button::Button(Vector2f position, Vector2f size, RenderWindow* window,
 	std::string textureLocation, Vector2i textureStart, Vector2i textureSize,
-	MODES mode, std::function<VisibleObject* (void)> modeFunction)
+	MODES mode, std::function<Object* (void)> modeFunction)
 	:position(position),
 	size(size),
 	window(window),
@@ -38,7 +38,7 @@ Button::Button(Vector2f position, Vector2f size, RenderWindow* window,
 
 Button::Button(Vector2f position, Vector2f size, RenderWindow* window,
 	std::string textureLocation, std::string texturePressedLocation,
-	MODES mode, std::function<VisibleObject* (void)> modeFunction)
+	MODES mode, std::function<Object* (void)> modeFunction)
 	:position(position),
 	size(size),
 	window(window),
@@ -53,7 +53,7 @@ Button::Button(Vector2f position, Vector2f size, RenderWindow* window,
 Button::Button(Vector2f position, Vector2f size, RenderWindow* window,
 	std::string textureLocation, Vector2i textureStart, Vector2i textureSize,
 	std::string texturePressedLocation, Vector2i texturePressedStart, Vector2i texturePressedSize,
-	MODES mode, std::function<VisibleObject* (void)> modeFunction)
+	MODES mode, std::function<Object* (void)> modeFunction)
 	:position(position),
 	size(size),
 	window(window),
@@ -166,7 +166,7 @@ bool Button::getPressed()
 	return pressed;
 }
 
-std::function<VisibleObject* (void)> Button::getObjectCreationMethod()
+std::function<Object* (void)> Button::getObjectCreationMethod()
 {
 	return modeFunction;
 }
