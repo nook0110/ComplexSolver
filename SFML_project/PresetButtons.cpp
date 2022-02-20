@@ -557,7 +557,7 @@ Button deleteButton = Button(&mainWindow,
 			return nullptr;
 		}
 		Vector2f mousePosition = mainWindow.mapPixelToCoords(Mouse::getPosition(mainWindow), view);
-		Object* object = find.nearbyVisibleObject(mousePosition);
+		Object* object = find.nearbyNotUnitCircleObject(mousePosition);
 		if (object)
 		{
 			delete object;
@@ -598,10 +598,42 @@ Button clearButton = Button(&mainWindow,
 		return nullptr;
 	});
 
-Button switchButton = Button(&mainWindow,
+Button switchTriangleButton = Button(&mainWindow,
 	"Textures\\SFML_project\\Test.jpg",
 	MODE_SWITCH, []()->Object* {
-		mainMenu.switchLayer();
+		mainMenu.switchLayer(2);
+		return nullptr;
+	});
+
+Button orthocenterButton = Button(&mainWindow,
+	"Textures\\SFML_project\\Test.jpg",
+	MODE_ORTHOCENTER, []()->Object* {
+		Waiter wait;
+		Finder find;
+		const int size = 3;
+		std::vector<UnitPoint*> points;
+		while (points.size()<size)
+		{
+			if (wait.untilClick())
+			{
+				return nullptr;
+			}
+			Vector2f mousePosition = mainWindow.mapPixelToCoords(Mouse::getPosition(mainWindow), view);
+			UnitPoint* point = find.nearbyConstructedPointOnCircle(mousePosition);
+			if (!point)
+			{
+				continue;
+			}
+			points.push_back(point);
+		}
+		return new Point(points[0], points[1], points[2]);
+	});
+
+
+Button switchConstructionButton = Button(&mainWindow,
+	"Textures\\SFML_project\\Test.jpg",
+	MODE_SWITCH, []()->Object* {
+		mainMenu.switchLayer(1);
 		return nullptr;
 	});
 
@@ -692,9 +724,9 @@ Button proveConstructionButton = Button(&mainWindow,
 				return nullptr;
 			}
 			Vector2f mousePosition = mainWindow.mapPixelToCoords(Mouse::getPosition(mainWindow), view);
-			firstObject = find.nearbyVisibleObject(mousePosition);
+			firstObject = find.nearbyNotUnitCircleObject(mousePosition);
 		}
-		mainMenu.switchLayer();
+		mainMenu.switchLayer(0);
 		Object* secondObject = nullptr;
 		while (checker.checkInterruption())
 		{
@@ -730,68 +762,87 @@ Button debugButton = Button(&mainWindow,
 		point->printExpr();
 	});
 
-Object* Finder::nearbyVisibleObject(Vector2f mousePosition)
+Object* Finder::nearbyNotUnitCircleObject(Vector2f mousePosition)
 {
-	Point* point = nearbyConstructedPoint(mousePosition);
-	if (point)
-	{
-		return point;
-	}
-	Line* line = nearbyLine(mousePosition);
-	if (line)
-	{
-		return line;
-	}
+	float lastDistance = INFINITY;
+	Object* nearestObject = nullptr;
 	for (Object* object : Drawer::allVisibleObjects)
 	{
 		if (object && object->isNearby(mousePosition) && object->getVisibility())
 		{
-			return object;
+			if (object->distance(mousePosition) < lastDistance)
+			{
+				lastDistance = object->distance(mousePosition);
+				nearestObject = object;
+			}
 		}
 	}
-	return nullptr;
+	return nearestObject;
 }
 
 Object* Finder::nearbyObject(Vector2f mousePosition)
 {
+	float lastDistance = INFINITY;
+	Object* nearestObject = nullptr;
 	for (Object* object : Drawer::allVisibleObjects)
 	{
 		if (object && object->isNearby(mousePosition))
 		{
-			return object;
+			if (object->distance(mousePosition) < lastDistance)
+			{
+				lastDistance = object->distance(mousePosition);
+				nearestObject = object;
+			}
 		}
 	}
-	if (UnitCircle::getInstance()->isNearby(mousePosition))
+	UnitCircle* unitCircle = UnitCircle::getInstance();
+	if (unitCircle->isNearby(mousePosition))
 	{
-		return UnitCircle::getInstance();
+		if (unitCircle->distance(mousePosition) < lastDistance)
+		{
+			lastDistance = unitCircle->distance(mousePosition);
+			nearestObject = unitCircle;
+		}
 	}
-	return nullptr;
+	return nearestObject;
 }
 
 Point* Finder::nearbyConstructedPoint(Vector2f mousePosition)
 {
+	float lastDistance = INFINITY;
+	Point* point = nullptr;
 	for (Object* object : Drawer::allVisibleObjects)
 	{
-		Point* point = dynamic_cast<Point*>(object);
-		if (point && point->isNearby(mousePosition) && point->getVisibility())
+		Point* anotherPoint = dynamic_cast<Point*>(object);
+		if (anotherPoint && anotherPoint->isNearby(mousePosition) && anotherPoint->getVisibility())
 		{
-			return point;
+			if (anotherPoint->distance(mousePosition) < lastDistance)
+			{
+				lastDistance = anotherPoint->distance(mousePosition);
+				point = anotherPoint;
+			}
 		}
 	}
-	return nullptr;
+	return point;
 }
 
 UnitPoint* Finder::nearbyConstructedPointOnCircle(Vector2f mousePosition)
 {
+	float lastDistance = INFINITY;
+	UnitPoint* point = nullptr;
 	for (Object* object : Drawer::allVisibleObjects)
 	{
-		UnitPoint* point = dynamic_cast<UnitPoint*>(object);
-		if (point && point->isNearby(mousePosition) && point->getVisibility())
+		UnitPoint* anotherPoint = dynamic_cast<UnitPoint*>(object);
+		if (anotherPoint && anotherPoint->isNearby(mousePosition) && anotherPoint->getVisibility())
 		{
-			return point;
+			if (anotherPoint->distance(mousePosition) < lastDistance)
+			{
+				lastDistance = anotherPoint->distance(mousePosition);
+				point = anotherPoint;
+			}
 		}
 	}
-	return nullptr;
+	return point;
 }
 
 Point* Finder::nearbyNewPoint(Vector2f mousePosition)
@@ -800,11 +851,6 @@ Point* Finder::nearbyNewPoint(Vector2f mousePosition)
 	if (point)
 	{
 		return point;
-	}
-	Line* line = nearbyLine(mousePosition);
-	if (line)
-	{
-		//return new Point(line, mousePosition);
 	}
 	UnitCircle* unitCircle = UnitCircle::getInstance();
 	if (unitCircle->isNearby(mousePosition))
@@ -826,15 +872,21 @@ UnitPoint* Finder::nearbyNewPointOnCircle(Vector2f mousePosition)
 
 Line* Finder::nearbyLine(Vector2f mousePosition)
 {
+	float lastDistance = INFINITY;
+	Line* line = nullptr;
 	for (Object* object : Drawer::allVisibleObjects)
 	{
-		Line* line = dynamic_cast<Line*>(object);
-		if (line && line->isNearby(mousePosition) && line->getVisibility())
+		Line* anotherLine = dynamic_cast<Line*>(object);
+		if (anotherLine && anotherLine->isNearby(mousePosition) && anotherLine->getVisibility())
 		{
-			return line;
+			if (anotherLine->distance(mousePosition) < lastDistance)
+			{
+				lastDistance = anotherLine->distance(mousePosition);
+				line = anotherLine;
+			}
 		}
 	}
-	return nullptr;
+	return line;
 }
 
 std::vector<Line*> Finder::nearbyLines(Vector2f mousePosition)
@@ -859,6 +911,11 @@ std::vector<Line*> Finder::nearbyLines(Vector2f mousePosition)
 Point* Finder::nearbyIntersection(Vector2f mousePosition)
 {
 	std::vector<Line*> lines = nearbyLines(mousePosition);
+	std::sort(lines.begin(), lines.end(),
+		[mousePosition](Line* first, Line* second)
+		{
+			return first->distance(mousePosition) < second->distance(mousePosition);
+		});
 	for (auto firstLine : lines)
 	{
 		for (auto secondLine : lines)

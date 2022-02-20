@@ -69,6 +69,7 @@ Button::Button(RenderWindow* window, std::string textureLocation, MODES mode, st
 	:window(window), textureLocation(textureLocation), mode(mode), modeFunction(modeFunction)
 {
 	setTexture(textureLocation, Vector2i(0, 0), Vector2i(0, 0));
+	sprite.setColor(unpressedColor);
 }
 
 void Button::setPosition(Vector2f position)
@@ -149,7 +150,7 @@ void Button::press()
 	}
 	else
 	{
-		sprite.setColor(GreyColor);
+		sprite.setColor(pressedColor);
 	}
 }
 
@@ -162,7 +163,7 @@ void Button::unpress()
 	}
 	else
 	{
-		sprite.setColor(WhiteColor);
+		sprite.setColor(unpressedColor);
 	}
 }
 
@@ -194,10 +195,18 @@ void Menu::updateButtons()
 	//c-buttons.size(), s-size, x-menuSize.x, y-menuSize.y
 	//(x/s-1)(y/s-1)>c
 	//(c-1)s^2+(x+y)*s-xy=0
-	double a = buttons[layer].size() - 1;
-	double b = menuSize.x + menuSize.y;
-	double c = -menuSize.x * menuSize.y;
-	double size = ((-b + sqrt(b * b - 4 * a * c)) / (2 * a));
+	double size;
+	if (buttons[layer].size() > 1)
+	{
+		double a = buttons[layer].size() - 1;
+		double b = menuSize.x + menuSize.y;
+		double c = -menuSize.x * menuSize.y;
+		size = ((-b + sqrt(b * b - 4 * a * c)) / (2 * a));
+	}
+	else
+	{
+		size = std::min(menuSize.x, menuSize.y) / 2;
+	}
 	size = adjustSize(size, menuSize, buttons[layer].size());
 	size /= (1 + shiftRatio);
 	buttonTable.x = (menuSize.x) / (size * (1 + shiftRatio));
@@ -243,14 +252,11 @@ bool Menu::mouseOnMenu()
 void Menu::pushButton(Button* newButton, int layerPB)
 {
 	window->setView(menuView);
-	try
+	if(buttons.size()<=layerPB)
 	{
-		buttons[layerPB].push_back(newButton);
+		buttons.resize(layerPB + 1);
 	}
-	catch (std::exception)
-	{
-		throw std::out_of_range("Layer is not supported");
-	}
+	buttons[layerPB].push_back(newButton);
 	updateButtons();
 }
 
@@ -290,9 +296,16 @@ void Menu::unpress()
 	Mousemode = MODE_NOTHING;
 }
 
-void Menu::switchLayer()
+void Menu::switchLayer(unsigned int newLayer)
 {
-	layer = 1 - layer; //0<->1 switcher
+	if (layer == newLayer)
+	{
+		layer = 0;
+	}
+	else
+	{
+		layer = newLayer;
+	}
 	updateButtons();
 	unpress();
 }

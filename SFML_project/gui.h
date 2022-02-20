@@ -17,8 +17,8 @@ class Button
 {
 private:
 
-	const Color WhiteColor = Color(255, 255, 255, 255);
-	const Color GreyColor = Color(128, 128, 128, 255);
+	const Color unpressedColor = Color(255, 255, 255, 255);
+	const Color pressedColor = Color(64, 64, 64, 255);
 
 	Vector2f position;
 	Vector2f size;
@@ -96,7 +96,7 @@ public:
 	bool checkMouse();
 	Button* leftClickCheck();
 	void unpress();
-	void switchLayer();
+	void switchLayer(unsigned int layer);
 	void draw();
 };
 

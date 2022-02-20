@@ -60,6 +60,11 @@ Color Object::getColor()
 	return visible ? visibleColor : unvisibleColor;
 }
 
+double Object::distance(Vector2f point)
+{
+	return 0.0;
+}
+
 void Object::changeVisibility(bool visibility)
 {
 	visible = visibility;
@@ -110,7 +115,7 @@ UnitCircle* UnitCircle::getInstance()
 	return unitCircle;
 }
 
-double UnitCircle::getDistance(Vector2f point)
+double UnitCircle::distance(Vector2f point)
 {
 	Vector2f center = shape.getPosition();
 	double radius = shape.getRadius();
@@ -124,7 +129,7 @@ double UnitCircle::getDistance(Vector2f point)
 
 bool UnitCircle::isNearby(Vector2f position)
 {
-	return getDistance(position) < epsilon;
+	return distance(position) < epsilon;
 }
 
 void UnitCircle::draw()
@@ -156,6 +161,11 @@ void Circle::reposition()
 	shape.setOrigin(radius - outlineThickness / 2, radius - outlineThickness / 2);
 	shape.setPosition(position);
 	shape.setOutlineThickness(outlineThickness);
+}
+
+double Circle::distance(Vector2f point)
+{
+	return 0.0;
 }
 
 bool Circle::isNearby(Vector2f position)
@@ -381,6 +391,16 @@ Point::Point(Point* point, Line* line)
 	Init();
 }
 
+Point::Point(UnitPoint* first, UnitPoint* second, UnitPoint* third)
+{
+	setName();
+	construction = new Orthocenter(this, first, second, third);
+	first->addChild(this);
+	second->addChild(this);
+	third->addChild(this);
+	Init();
+}
+
 void Point::printExpr()
 {
 	ConstructionPoint* cp = dynamic_cast<ConstructionPoint*>(construction);
@@ -487,7 +507,7 @@ void CentralProjection::recreate(Equation* equation)
 	double B = -(-firstCoord.x + secondCoord.x);
 	double C = firstCoord.x * (firstCoord.y - secondCoord.y) - firstCoord.y * (firstCoord.x - secondCoord.x);
 	LineEquation lineEquation(A, B, C);
-	Vector2f projection = Equation::Projection(lineEquation, PointEquation(Vector2f(0, 0)));
+	Vector2f projection = projectionOnLine(lineEquation, PointEquation(Vector2f(0, 0)));
 	Vector2f delta = projection - thirdParent->getCoordinate();
 	*dynamic_cast<PointEquation*>(equation) = PointEquation(projection + delta);
 }
@@ -558,7 +578,7 @@ void Polar::recreate(Equation* equation)
 }
 
 Parallel::Parallel(Object* object, Line* first, Point* second)
-	:firstParent(first),secondParent(second),ConstructionLine(object)
+	:firstParent(first), secondParent(second), ConstructionLine(object)
 {
 }
 
@@ -634,7 +654,7 @@ Equation::Equation()
 {
 }
 
-Vector2f Equation::Projection(LineEquation lineEquation, PointEquation pointEquation)
+Vector2f projectionOnLine(LineEquation lineEquation, PointEquation pointEquation)
 {
 	double A = lineEquation.A;
 	double B = lineEquation.B;
@@ -649,7 +669,7 @@ Vector2f Equation::Projection(LineEquation lineEquation, PointEquation pointEqua
 
 void OnLine::moveTo(Vector2f coord)
 {
-	Vector2f proj = Equation::Projection(*dynamic_cast<LineEquation*>(thirdParent->getEquation()), coord);
+	Vector2f proj = projectionOnLine(*dynamic_cast<LineEquation*>(thirdParent->getEquation()), coord);
 	PointEquation* firstEquation = dynamic_cast<PointEquation*>(firstParent->getEquation());
 	PointEquation* secondEquation = dynamic_cast<PointEquation*>(secondParent->getEquation());
 	Vector2f firstCoord = firstEquation->point;
@@ -767,7 +787,7 @@ void Projection::recreate(Equation* equation)
 {
 	LineEquation* lineEquation = dynamic_cast<LineEquation*>(secondParent->getEquation());
 	PointEquation* pointEquation = dynamic_cast<PointEquation*>(firstParent->getEquation());
-	Vector2f position = Equation::Projection(*lineEquation, *pointEquation);
+	Vector2f position = projectionOnLine(*lineEquation, *pointEquation);
 	*dynamic_cast<PointEquation*>(equation) = PointEquation(position);
 }
 
@@ -829,7 +849,7 @@ void IntersectionParallelChord::recreate(Equation* equation)
 	double B = firstEquation->B;
 	double C = -(A * coord.x + B * coord.y);
 	LineEquation lineEquation(A, B, C);
-	Vector2f projection = Equation::Projection(lineEquation, PointEquation(Vector2f(0, 0)));
+	Vector2f projection = projectionOnLine(lineEquation, PointEquation(Vector2f(0, 0)));
 	Vector2f delta = projection - coord;
 	*dynamic_cast<PointEquation*>(equation) = PointEquation(projection + delta);
 }
@@ -850,7 +870,7 @@ void IntersectionPerpendicularChord::recreate(Equation* equation)
 	double B = -secondEquation->A;
 	double C = -(A * coord.x + B * coord.y);
 	LineEquation lineEquation(A, B, C);
-	Vector2f projection = Equation::Projection(lineEquation, PointEquation(Vector2f(0, 0)));
+	Vector2f projection = projectionOnLine(lineEquation, PointEquation(Vector2f(0, 0)));
 	Vector2f delta = projection - coord;
 	*dynamic_cast<PointEquation*>(equation) = PointEquation(projection + delta);
 }
@@ -881,4 +901,24 @@ ConstructionLine::ConstructionLine(Object* object) : ConstructionData(object)
 
 ConstructionCircle::ConstructionCircle(Object* object) : ConstructionData(object)
 {
+}
+
+Orthocenter::Orthocenter(Object* object, UnitPoint* firstParent, UnitPoint* secondParent, UnitPoint* thirdParent) : ConstructionPoint(object),
+firstParent(firstParent), secondParent(secondParent), thirdParent(thirdParent)
+{
+}
+
+Orthocenter::~Orthocenter()
+{
+	firstParent->eraseChild(object);
+	secondParent->eraseChild(object);
+	thirdParent->eraseChild(object);
+}
+
+void Orthocenter::recreate(Equation* equation)
+{
+	PointEquation* firstEquation = dynamic_cast<PointEquation*>(firstParent->getEquation());
+	PointEquation* secondEquation = dynamic_cast<PointEquation*>(secondParent->getEquation());
+	PointEquation* thirdEquation = dynamic_cast<PointEquation*>(thirdParent->getEquation());
+	*dynamic_cast<PointEquation*>(equation) = PointEquation(firstEquation->point + secondEquation->point + thirdEquation->point);
 }

@@ -18,12 +18,13 @@ extern RenderWindow mainWindow;
 class LineEquation;
 class PointEquation;
 
+Vector2f projectionOnLine(LineEquation lineEquation, PointEquation pointEquation);
+
 //Equation for all objects
 struct Equation
 {
 	virtual ~Equation();
 	Equation();
-	static Vector2f Projection(LineEquation lineEquation, PointEquation pointEquation);
 };
 
 struct CircleEquation : public Equation
@@ -74,6 +75,7 @@ protected:
 	bool visible = true;
 	Color getColor();
 public:
+	virtual double distance(Vector2f point);
 	virtual bool isNearby(Vector2f position) = 0;
 	virtual void draw() = 0;
 	virtual void drawDescription() = 0;
@@ -255,6 +257,17 @@ class Pole : public ConstructionPoint
 	void recreate(Equation* equation) override;
 };
 
+class Orthocenter : public ConstructionPoint
+{
+	UnitPoint* firstParent;
+	UnitPoint* secondParent;
+	UnitPoint* thirdParent;
+public:
+	Orthocenter(Object* object, UnitPoint* firstParent, UnitPoint* secondParent, UnitPoint* thirdParent);
+	~Orthocenter();
+	void recreate(Equation* equation) override;
+};
+
 class ByTwoPoints : public ConstructionLine
 {
 	Point* firstParent;
@@ -314,9 +327,9 @@ private:
 	//Pattern singleton
 	UnitCircle();
 	static UnitCircle* unitCircle;
-	double getDistance(Vector2f point);
 	CircleShape shape;
 public:
+	double distance(Vector2f point);
 	static UnitCircle* getInstance();
 	bool isNearby(Vector2f position);
 	void draw();
@@ -330,6 +343,7 @@ class Circle : public Object
 	CircleShape shape;
 	void reposition() override;
 public:
+	double distance(Vector2f point);
 	bool isNearby(Vector2f position);
 	Circle(Point* first, Point* second, Point* third, Point* fourth);
 	void draw();
@@ -340,7 +354,6 @@ class Point;
 class Line : public Object
 {
 protected:
-	double distance(Vector2f point);
 	void reposition() override;
 	void Init();
 public:
@@ -351,6 +364,7 @@ public:
 	Line(UnitCircle* first, Point* second);
 	//Parallel
 	Line(Line* first, Point* second);
+	double distance(Vector2f point);
 	bool isNearby(Vector2f position);
 	void draw() override;
 	void drawDescription();
@@ -374,7 +388,6 @@ protected:
 	Point();
 	const double pointSize = unitSeg / 30;
 	CircleShape shape = CircleShape(pointSize);
-	double distance(Vector2f point);
 	void reposition() override;
 	void setName();
 	void Init();
@@ -397,6 +410,9 @@ public:
 	Point(Point* first, Point* second, float ratio);
 	// Rotation on 90 degrees
 	Point(Point* center, Point* preimage, int sign);
+	// Orthocenter
+	Point(UnitPoint* first, UnitPoint* second, UnitPoint* third);
+	double distance(Vector2f point);
 	bool isNearby(Vector2f position) override;
 	void draw() override;
 	std::string getLowerCaseName();

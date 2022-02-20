@@ -26,13 +26,17 @@ extern Button midPointButton;
 extern Button symmetryButton;
 extern Button scalarButton;
 extern Button hideButton;
-extern Button fourPointsOnACircle;
 extern Button clearButton;
 extern Button projectionButton;
 extern Button parallelButton;
 extern Button pointBetweenPoints;
+
+extern Button switchTriangleButton;
+extern Button orthocenterButton;
+
+extern Button switchConstructionButton;
 extern Button proveConstructionButton;
-extern Button switchButton;
+extern Button fourPointsOnACircle;
 
 extern Button debugButton;
 
@@ -65,11 +69,15 @@ void menuInit()
 	mainMenu.pushButton(&clearButton, 0);
 	mainMenu.pushButton(&hideButton, 0);
 	mainMenu.pushButton(&debugButton, 0);
-	mainMenu.pushButton(&switchButton, 0);
+	mainMenu.pushButton(&switchConstructionButton, 0);
+	mainMenu.pushButton(&switchTriangleButton, 0);
 
 	mainMenu.pushButton(&fourPointsOnACircle, 1);
 	mainMenu.pushButton(&proveConstructionButton, 1);
-	mainMenu.pushButton(&switchButton, 1);
+	mainMenu.pushButton(&switchConstructionButton, 1);
+
+	mainMenu.pushButton(&orthocenterButton, 2);
+	mainMenu.pushButton(&switchTriangleButton, 2);
 }
 
 int main()
@@ -79,12 +87,8 @@ int main()
 
 	while (mainWindow.isOpen())
 	{
-		while (!mainWindow.hasFocus())
-		{
-			std::this_thread::sleep_for(std::chrono::nanoseconds(1000));
-		}
 		Event event;
-		if (mainWindow.pollEvent(event))
+		while (mainWindow.pollEvent(event))
 		{
 			Drawer::update(event);
 			if (event.type == Event::Resized)
@@ -110,11 +114,12 @@ int main()
 					view.zoom(1 / 1.2);
 				}
 			}
-			mainWindow.clear(Color::White);
-			mainWindow.setView(view);
-			Drawer::draw();
-			mainWindow.display();
-		}				
+		}
+		mainWindow.clear(Color::White);
+		mainWindow.setView(view);
+		Drawer::draw();
+		mainWindow.display();
+		std::this_thread::sleep_for(std::chrono::microseconds(1));
 	}
 	return 0;
 }
