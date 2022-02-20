@@ -837,9 +837,9 @@ Line* Finder::nearbyLine(Vector2f mousePosition)
 	return nullptr;
 }
 
-std::pair<Line*, Line*> Finder::nearbyLines(Vector2f mousePosition)
+std::vector<Line*> Finder::nearbyLines(Vector2f mousePosition)
 {
-	std::pair<Line*, Line*> lines = { nullptr,nullptr };
+	std::vector<Line*> lines;
 	for (Object* object : Drawer::allVisibleObjects)
 	{
 		Line* line = dynamic_cast<Line*>(object);
@@ -847,35 +847,41 @@ std::pair<Line*, Line*> Finder::nearbyLines(Vector2f mousePosition)
 		{
 			if (line->isNearby(mousePosition) && line->getVisibility())
 			{
-				(std::get<0>(lines) ? lines.second : lines.first) = line;
-				if (std::get<1>(lines)) return lines;
+				lines.push_back(line);
 			}
 		}
 	}
-	return { nullptr,nullptr };
+	return lines;
 }
 
 
 
 Point* Finder::nearbyIntersection(Vector2f mousePosition)
 {
-	std::pair<Line*, Line*> lines = nearbyLines(mousePosition);
-	if (lines.second)
+	std::vector<Line*> lines = nearbyLines(mousePosition);
+	for (auto firstLine : lines)
 	{
-		LineEquation* firstEquation = dynamic_cast<LineEquation*>(lines.first->getEquation());
-		LineEquation* secondEquation = dynamic_cast<LineEquation*>(lines.second->getEquation());
-		Vector2f pointCoord = Vector2f(
-			(firstEquation->B * secondEquation->C - firstEquation->C * secondEquation->B)
-			/ (firstEquation->A * secondEquation->B - firstEquation->B * secondEquation->A),
-			(firstEquation->C * secondEquation->A - firstEquation->A * secondEquation->C)
-			/ (firstEquation->A * secondEquation->B - firstEquation->B * secondEquation->A)
-		);
-		Vector2f mousePixelPosition = Vector2f(mainWindow.mapCoordsToPixel(mousePosition, view));
-		Vector2f coord = Vector2f(mainWindow.mapCoordsToPixel(pointCoord, view));
-		double distance = sqrt(pow((coord.x - mousePixelPosition.x), 2) + pow((coord.y - mousePixelPosition.y), 2));
-		if (distance < epsilon)
+		for (auto secondLine : lines)
 		{
-			return new Point(lines.first, lines.second);
+			if (firstLine == secondLine)
+			{
+				continue;
+			}
+			LineEquation* firstEquation = dynamic_cast<LineEquation*>(firstLine->getEquation());
+			LineEquation* secondEquation = dynamic_cast<LineEquation*>(secondLine->getEquation());
+			Vector2f pointCoord = Vector2f(
+				(firstEquation->B * secondEquation->C - firstEquation->C * secondEquation->B)
+				/ (firstEquation->A * secondEquation->B - firstEquation->B * secondEquation->A),
+				(firstEquation->C * secondEquation->A - firstEquation->A * secondEquation->C)
+				/ (firstEquation->A * secondEquation->B - firstEquation->B * secondEquation->A)
+			);
+			Vector2f mousePixelPosition = Vector2f(mainWindow.mapCoordsToPixel(mousePosition, view));
+			Vector2f coord = Vector2f(mainWindow.mapCoordsToPixel(pointCoord, view));
+			double distance = sqrt(pow((coord.x - mousePixelPosition.x), 2) + pow((coord.y - mousePixelPosition.y), 2));
+			if (distance < epsilon)
+			{
+				return new Point(firstLine, secondLine);
+			}
 		}
 	}
 	return nullptr;
