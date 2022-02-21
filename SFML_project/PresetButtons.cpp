@@ -629,6 +629,29 @@ Button orthocenterButton = Button(&mainWindow,
 		return new Point(points[0], points[1], points[2]);
 	});
 
+Button barycenterButton = Button(&mainWindow,
+	"Textures\\SFML_project\\Test.jpg",
+	MODE_BARYCENTER, []()->Object* {
+		Waiter wait;
+		Finder find;
+		const int size = 3;
+		std::vector<Point*> points;
+		while (points.size() < size)
+		{
+			if (wait.untilClick())
+			{
+				return nullptr;
+			}
+			Vector2f mousePosition = mainWindow.mapPixelToCoords(Mouse::getPosition(mainWindow), view);
+			Point* point = find.nearbyConstructedPoint(mousePosition);
+			if (!point)
+			{
+				continue;
+			}
+			points.push_back(point);
+		}
+		return new Point(points[0], points[1], points[2]);
+	});
 
 Button switchConstructionButton = Button(&mainWindow,
 	"Textures\\SFML_project\\Test.jpg",
@@ -659,6 +682,31 @@ Button fourPointsOnACircle = Button(&mainWindow,
 			points.push_back(point);
 		}
 		new Circle(points[0], points[1], points[2], points[3]);
+		return nullptr;
+	});
+
+Button twoLineSegments = Button(&mainWindow,
+	"Textures\\SFML_project\\Test.jpg",
+	MODE_TWO_LINE_SEGMENTS, []()->Object* {
+		Waiter wait;
+		Finder find;
+		const int fourTimes = 4;
+		std::vector<Point*> points;
+		for (int i = 0; i < fourTimes; ++i)
+		{
+			Point* point = nullptr;
+			while (!point)
+			{
+				if (wait.untilClick())
+				{
+					return nullptr;
+				}
+				Vector2f mousePosition = mainWindow.mapPixelToCoords(Mouse::getPosition(mainWindow), view);
+				point = find.nearbyConstructedPoint(mousePosition);
+			}
+			points.push_back(point);
+		}
+		
 		return nullptr;
 	});
 

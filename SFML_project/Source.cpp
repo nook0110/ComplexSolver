@@ -33,6 +33,7 @@ extern Button pointBetweenPoints;
 
 extern Button switchTriangleButton;
 extern Button orthocenterButton;
+extern Button barycenterButton;
 
 extern Button switchConstructionButton;
 extern Button proveConstructionButton;
@@ -77,6 +78,7 @@ void menuInit()
 	mainMenu.pushButton(&switchConstructionButton, 1);
 
 	mainMenu.pushButton(&orthocenterButton, 2);
+	mainMenu.pushButton(&barycenterButton, 2);
 	mainMenu.pushButton(&switchTriangleButton, 2);
 }
 

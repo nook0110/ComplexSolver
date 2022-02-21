@@ -268,6 +268,17 @@ public:
 	void recreate(Equation* equation) override;
 };
 
+class Barycenter : public ConstructionPoint
+{
+	Point* firstParent;
+	Point* secondParent;
+	Point* thirdParent;
+public:
+	Barycenter(Object* object, Point* firstParent, Point* secondParent, Point* thirdParent);
+	~Barycenter();
+	void recreate(Equation* equation) override;
+};
+
 class ByTwoPoints : public ConstructionLine
 {
 	Point* firstParent;
@@ -350,6 +361,17 @@ public:
 	void drawDescription();
 };
 
+class LineSegment : public Object
+{
+	Vertex line[2];
+	void reposition() override;
+public:
+	double distance(Vector2f point);
+	bool isNearby(Vector2f position);
+	LineSegment(Point* first, Point* second);
+	void draw();
+};
+
 class Point;
 class Line : public Object
 {
@@ -412,6 +434,8 @@ public:
 	Point(Point* center, Point* preimage, int sign);
 	// Orthocenter
 	Point(UnitPoint* first, UnitPoint* second, UnitPoint* third);
+	// Barycenter
+	Point(Point* first, Point* second, Point* third);
 	double distance(Vector2f point);
 	bool isNearby(Vector2f position) override;
 	void draw() override;

@@ -401,6 +401,16 @@ Point::Point(UnitPoint* first, UnitPoint* second, UnitPoint* third)
 	Init();
 }
 
+Point::Point(Point* first, Point* second, Point* third)
+{
+	setName();
+	construction = new Barycenter(this, first, second, third);
+	first->addChild(this);
+	second->addChild(this);
+	third->addChild(this);
+	Init();
+}
+
 void Point::printExpr()
 {
 	ConstructionPoint* cp = dynamic_cast<ConstructionPoint*>(construction);
@@ -921,4 +931,25 @@ void Orthocenter::recreate(Equation* equation)
 	PointEquation* secondEquation = dynamic_cast<PointEquation*>(secondParent->getEquation());
 	PointEquation* thirdEquation = dynamic_cast<PointEquation*>(thirdParent->getEquation());
 	*dynamic_cast<PointEquation*>(equation) = PointEquation(firstEquation->point + secondEquation->point + thirdEquation->point);
+}
+
+Barycenter::Barycenter(Object* object, Point* firstParent, Point* secondParent, Point* thirdParent) : ConstructionPoint(object),
+firstParent(firstParent), secondParent(secondParent), thirdParent(thirdParent)
+{
+}
+
+Barycenter::~Barycenter()
+{
+	firstParent->eraseChild(object);
+	secondParent->eraseChild(object);
+	thirdParent->eraseChild(object);
+}
+
+void Barycenter::recreate(Equation* equation)
+{
+	PointEquation* firstEquation = dynamic_cast<PointEquation*>(firstParent->getEquation());
+	PointEquation* secondEquation = dynamic_cast<PointEquation*>(secondParent->getEquation());
+	PointEquation* thirdEquation = dynamic_cast<PointEquation*>(thirdParent->getEquation());
+	*dynamic_cast<PointEquation*>(equation) = PointEquation((firstEquation->point + secondEquation->point + thirdEquation->point)/3.f);
+
 }
