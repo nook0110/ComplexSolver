@@ -659,7 +659,7 @@ void polyNode::print() const
 		}
 		else
 		{
-			if (coef.real() > 0)
+			if (coef.real() > 0 || coef.imag() != 0)
 			{
 				if (it != sum.begin())
 					std::cout << " + ";
