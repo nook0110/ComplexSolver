@@ -23,8 +23,7 @@ CentralProjection::CentralProjection(UnitPoint* object, UnitCircle* first, Point
 	expr m = first_point_data->coord.get_quasi(second->getLowerCaseName());
 	expr a = second_point_data->coord.get_quasi(third->getLowerCaseName());
 	expr m_conj = m.conj();
-	expr result = (m - a) / (expr(make_scalar(1)) - m_conj * a);
-	coord = result.get_quasi(object->getLowerCaseName());
+	coord = (m - a) / (expr(make_scalar(1)) - m_conj * a);
 }
 
 ByTwoPoints::ByTwoPoints(Object* object, Point* firstParent, Point* secondParent)
@@ -75,8 +74,7 @@ Projection::Projection(Point* object, Point* first, Line* second)
 	expr A = line_data->z_coef;
 	expr B = line_data->z_conj_coef;
 	expr C = line_data->free_coef;
-	expr result = (C - B * m.conj()) / (A * 2);
-	coord = result.get_quasi(object->getLowerCaseName());
+	coord = (C - B * m.conj()) / (A * 2);
 }
 
 OnPlane::OnPlane(Point* object, Vector2f point)

@@ -60,6 +60,10 @@ Color Object::getColor()
 	return visible ? visibleColor : unvisibleColor;
 }
 
+void Object::printExpr()
+{
+}
+
 double Object::distance(Vector2f point)
 {
 	return 0.0;
@@ -197,6 +201,17 @@ double Line::distance(Vector2f point)
 	double distance = abs((A * point.x + B * point.y + C) / sqrt(A * A + B * B));
 	Vector2f delta = Vector2f(mainWindow.mapCoordsToPixel(Vector2f(0, distance), view) - mainWindow.mapCoordsToPixel(Vector2f(0, 0), view));
 	return sqrt(delta.x * delta.x + delta.y * delta.y);
+}
+
+void Line::printExpr()
+{
+	ConstructionLine* cl = dynamic_cast<ConstructionLine*>(construction);
+	(cl->z_coef).print();
+	std::cout << std::endl;
+	(cl->z_conj_coef).print();
+	std::cout << std::endl;
+	(cl->free_coef).print();
+	std::cout << std::endl;
 }
 
 Line::Line(Line* first, Point* second)

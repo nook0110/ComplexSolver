@@ -797,17 +797,17 @@ Button debugButton = Button(&mainWindow,
 		Waiter wait;
 		Finder find;
 		InterruptionChecker checker;
-		Point* point = nullptr;
-		while (!point)
+		Object* object = nullptr;
+		while (!object)
 		{
 			if (wait.untilClick())
 			{
 				return nullptr;
 			}
 			Vector2f mousePosition = mainWindow.mapPixelToCoords(Mouse::getPosition(mainWindow), view);
-			point = find.nearbyConstructedPoint(mousePosition);
+			object = find.nearbyNotUnitCircleObject(mousePosition);
 		}
-		point->printExpr();
+		object->printExpr();
 	});
 
 Object* Finder::nearbyNotUnitCircleObject(Vector2f mousePosition)

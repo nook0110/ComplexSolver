@@ -75,6 +75,9 @@ protected:
 	bool visible = true;
 	Color getColor();
 public:
+	//Debug
+	virtual void printExpr();
+	//
 	virtual double distance(Vector2f point);
 	virtual bool isNearby(Vector2f position) = 0;
 	virtual void draw() = 0;
@@ -379,6 +382,9 @@ protected:
 	void reposition() override;
 	void Init();
 public:
+	//DEBUG
+	void printExpr();
+	//
 	Line();
 	//By two points
 	Line(Point* first, Point* second);
