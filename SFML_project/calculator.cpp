@@ -421,10 +421,10 @@ const std::string calc::monomial::getTEXformat() const
 		if (product.empty())
 			result += "1";
 	}
-	for (const auto &deg : product)
+	for (const auto& deg : product)
 	{
 		bool conjugationMark = deg.first->hasConjugationMark;
-		result += (conjugationMark? "\\overline{" : "") + deg.first->name + (deg.second == 1 ? "" : "^" + std::to_string(deg.second)) + (conjugationMark ? "}" : "");
+		result += (conjugationMark ? "\\overline{" : "") + deg.first->name + (deg.second == 1 ? "" : "^" + std::to_string(deg.second)) + (conjugationMark ? "}" : "");
 	}
 	return result;
 }
@@ -543,7 +543,7 @@ expr_ptr polyNode::divide(op_ptr& secondOp, const bool isDivident)
 
 const bool polyNode::dividedBy(const monomial& divider) const
 {
-	for (const auto &mono : sum)
+	for (const auto& mono : sum)
 	{
 		if (!mono.dividedBy(divider))
 			return false;
@@ -649,8 +649,10 @@ void polyNode::print() const
 	{
 		auto mono = *it;
 		constTy coef = mono.coef;
-		if (coef.imag() != 0)
+		if (coef.real() > 0 || coef.imag() != 0)
 		{
+			if (it != sum.begin())
+				std::cout << " + ";
 			std::cout << " + ";
 			std::cout << "(";
 			std::cout << coef.real();
@@ -675,7 +677,7 @@ void polyNode::print() const
 				std::cout << std::abs(coef.real());
 		}
 		for (auto [term, degree] : mono.product)
-			std::cout << term->name << (term->hasConjugationMark? "~" : "") << (degree > 1 ? "^" + std::to_string(degree) : "");
+			std::cout << term->name << (term->hasConjugationMark ? "~" : "") << (degree > 1 ? "^" + std::to_string(degree) : "");
 	}
 }
 
