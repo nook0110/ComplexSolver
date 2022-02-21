@@ -17,6 +17,7 @@ void Button::updateSprite()
 void Button::setTexture(std::string textureLocation, Vector2i textureStart, Vector2i textureSize)
 {
 	texture.loadFromFile(textureLocation, IntRect(textureStart, textureSize));
+	texture.setSmooth(true);
 	sprite.setTexture(texture);
 	updateSprite();
 }

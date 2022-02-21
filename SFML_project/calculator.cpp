@@ -651,6 +651,7 @@ void polyNode::print() const
 		constTy coef = mono.coef;
 		if (coef.imag() != 0)
 		{
+			std::cout << " + ";
 			std::cout << "(";
 			std::cout << coef.real();
 			std::cout << " + ";
@@ -659,7 +660,7 @@ void polyNode::print() const
 		}
 		else
 		{
-			if (coef.real() > 0)
+			if (coef.real() > 0 || coef.imag() != 0)
 			{
 				if (it != sum.begin())
 					std::cout << " + ";
