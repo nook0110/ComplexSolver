@@ -2,20 +2,31 @@
 
 using namespace calc;
 
-expr_ptr operationNode::conj() const
+expr_ptr operationNode::conj()
 {
 	expr_ptr conj_left = left->conj();
 	expr_ptr conj_right = right->conj();
-	return create(conj_left, conj_right, operation);
+	if (operation == operationType::ADDITION)
+	{
+		return conj_left->add(conj_right);
+	}
+	if (operation == operationType::MULTIPLICATION)
+	{
+		return conj_left->multiply(conj_right);
+	}
+	if (operation == operationType::DIVISION)
+	{
+		return conj_left->divide(conj_right);
+	}
 }
 
-expr_ptr operationNode::add(expr_ptr &second)
+expr_ptr operationNode::add(expr_ptr& second)
 {
 	op_ptr shared_from_this_op = shared_from_base<operationNode>();
 	return second->add(shared_from_this_op);
 }
 
-expr_ptr operationNode::add(poly_ptr &secondPoly)
+expr_ptr operationNode::add(poly_ptr& secondPoly)
 {
 	if (secondPoly->checkZeroEquality())
 		return shared_from_base<operationNode>();
@@ -24,7 +35,7 @@ expr_ptr operationNode::add(poly_ptr &secondPoly)
 	return (secondPoly->add(left))->add(right);
 }
 
-expr_ptr operationNode::add(op_ptr &secondOp)
+expr_ptr operationNode::add(op_ptr& secondOp)
 {
 	if (operation == operationType::ADDITION)
 	{
@@ -55,7 +66,7 @@ expr_ptr operationNode::multiply(constTy coef)
 		return left->multiply(coef)->divide(right);
 }
 
-expr_ptr operationNode::multiply(poly_ptr &secondPoly)
+expr_ptr operationNode::multiply(poly_ptr& secondPoly)
 {
 	if (secondPoly->checkZeroEquality())
 		return polyNode::create();
@@ -66,7 +77,7 @@ expr_ptr operationNode::multiply(poly_ptr &secondPoly)
 	return create(secondPoly, shared_from_base<operationNode>(), operationType::MULTIPLICATION);
 }
 
-expr_ptr operationNode::multiply(op_ptr &secondOp)
+expr_ptr operationNode::multiply(op_ptr& secondOp)
 {
 	if (operation == operationType::DIVISION)
 	{
@@ -99,7 +110,7 @@ expr_ptr operationNode::multiply(op_ptr &secondOp)
 	return create(shared_from_base<operationNode>(), secondOp, operationType::MULTIPLICATION);
 }
 
-expr_ptr operationNode::divide(poly_ptr &secondPoly, const bool isDivident)
+expr_ptr operationNode::divide(poly_ptr& secondPoly, const bool isDivident)
 {
 	if (isDivident)
 	{
@@ -126,7 +137,7 @@ expr_ptr operationNode::divide(poly_ptr &secondPoly, const bool isDivident)
 	}
 }
 
-expr_ptr operationNode::divide(op_ptr &secondOp, const bool isDivident)
+expr_ptr operationNode::divide(op_ptr& secondOp, const bool isDivident)
 {
 	if (isDivident)
 	{
@@ -155,7 +166,7 @@ expr_ptr operationNode::divide(op_ptr &secondOp, const bool isDivident)
 	}
 }
 
-expr_ptr operationNode::expandAddition(poly_ptr &secondPoly)
+expr_ptr operationNode::expandAddition(poly_ptr& secondPoly)
 {
 	if (operation != operationType::DIVISION)
 		return add(secondPoly);
@@ -163,7 +174,7 @@ expr_ptr operationNode::expandAddition(poly_ptr &secondPoly)
 	return (left->add(right_times_secondPoly))->divide(right);
 }
 
-expr_ptr operationNode::expandAddition(op_ptr &secondOp)
+expr_ptr operationNode::expandAddition(op_ptr& secondOp)
 {
 	if (operation != operationType::DIVISION)
 	{
@@ -184,7 +195,7 @@ expr_ptr operationNode::expandAddition(op_ptr &secondOp)
 	return nominator->divide(denominator);
 }
 
-expr_ptr operationNode::expandMultiplication(poly_ptr &secondPoly)
+expr_ptr operationNode::expandMultiplication(poly_ptr& secondPoly)
 {
 	if (operation != operationType::ADDITION)
 	{
@@ -194,7 +205,7 @@ expr_ptr operationNode::expandMultiplication(poly_ptr &secondPoly)
 	return (left->multiply(secondPoly))->add(right_times_secondPoly);
 }
 
-expr_ptr operationNode::expandMultiplication(op_ptr &secondOp)
+expr_ptr operationNode::expandMultiplication(op_ptr& secondOp)
 {
 	if (operation != operationType::ADDITION)
 	{
@@ -227,7 +238,7 @@ const bool operationNode::requiresBracketsPrinting() const
 	return !(operation == operationType::MULTIPLICATION);
 }
 
-const bool term::operator<(const term &other) const
+const bool term::operator<(const term& other) const
 {
 	if (name != other.name)
 		return name < other.name;
@@ -236,35 +247,61 @@ const bool term::operator<(const term &other) const
 	return false;
 }
 
-const bool term::operator==(const term &other) const
+const bool term::operator==(const term& other) const
 {
 	return (name == other.name) && (hasConjugationMark == other.hasConjugationMark);
 }
 
-expr_ptr basicTerm::conj() const
+expr_ptr basicTerm::conj()
 {
 	if (props.isReal)
-		return polyNode::create(monomial(1, new basicTerm(*this)));
+		return polyNode::create(monomial(1, this));
 	if (props.isUnit)
 	{
-		poly_ptr clone_this = polyNode::create(monomial(1, new basicTerm(*this)));
-		return make_scalar(1)->divide(clone_this);
+		poly_ptr poly_of_this = polyNode::create(monomial(1, this));
+		return make_scalar(1)->divide(poly_of_this);
 	}
-	basicTerm *conjugated = new basicTerm(*this);
+	basicTerm* conjugated = new basicTerm(*this);
 	conjugated->invertMark();
 	return polyNode::create(monomial(1, conjugated));
 }
 
-expr_ptr quasiTerm::conj() const
+expr_ptr quasiTerm::conj()
 {
-	expr_ptr conj_hidden = hiddenExpression->conj();
-	return polyNode::create(monomial(1, new quasiTerm(name, conj_hidden)));
+	return polyNode::create(monomial(1, conjugated));
+}
+
+expr_ptr calc::quasiTerm::getExpr()
+{
+	if (expandedForm)
+		return hiddenExpression;
+	else
+	{
+		if (hiddenExpression == nullptr)
+			hiddenExpression = conjugated->hiddenExpression->conj();
+		expandedForm = true;
+		return (hiddenExpression = hiddenExpression->expand());
+	}
+}
+
+expr_ptr calc::monomial::subExpand() const
+{
+	expr_ptr result = make_scalar(coef);
+	for (auto& [term, degree] : product)
+	{
+		expr_ptr hidden_expr = term->getExpr();
+		for (int i = 0; i < degree; ++i)
+		{
+			result = result->multiply(hidden_expr);
+		}
+	}
+	return result;
 }
 
 expr_ptr monomial::conj() const
 {
 	expr_ptr result = make_scalar(std::conj(coef));
-	for (auto const &[term, degree] : product)
+	for (auto const& [term, degree] : product)
 	{
 		expr_ptr conj_term = term->conj();
 		for (int i = 0; i < degree; ++i)
@@ -273,7 +310,7 @@ expr_ptr monomial::conj() const
 	return result;
 }
 
-const bool monomial::operator<(const monomial &other) const
+const bool monomial::operator<(const monomial& other) const
 {
 	auto jt = other.product.begin();
 	for (auto it = product.begin(); it != product.end(); ++it)
@@ -293,21 +330,21 @@ const bool monomial::operator<(const monomial &other) const
 	return false;
 }
 
-const bool monomial::operator==(const monomial &other) const
+const bool monomial::operator==(const monomial& other) const
 {
 	return std::equal(product.begin(), product.end(), other.product.begin(), other.product.end(),
-		[](const auto &a, const auto &b)
-	{ return (*a.first == *b.first) && (a.second == b.second); });
+		[](const auto& a, const auto& b)
+		{ return (*a.first == *b.first) && (a.second == b.second); });
 }
 
-monomial monomial::operator*(const monomial &other) const
+monomial monomial::operator*(const monomial& other) const
 {
 	monomial result = *this;
 	result.coef *= other.coef;
 	if (other.product.empty())
 		return result;
 	auto it = result.product.begin();
-	for (const auto &[term, degree] : other.product)
+	for (const auto& [term, degree] : other.product)
 	{
 		while (it != result.product.end() && *it->first < *term)
 			++it;
@@ -328,12 +365,12 @@ const monomial& monomial::operator*=(const constTy k)
 	return (*this);
 }
 
-const bool monomial::dividedBy(const monomial &divider) const
+const bool monomial::dividedBy(const monomial& divider) const
 {
 	if (divider.product.empty())
 		return true;
 	auto it = product.begin();
-	for (auto const &[term, degree] : divider.product)
+	for (auto const& [term, degree] : divider.product)
 	{
 		while (it != product.end() && *it->first < *term)
 			++it;
@@ -346,13 +383,13 @@ const bool monomial::dividedBy(const monomial &divider) const
 	return true;
 }
 
-monomial monomial::divide(const monomial &divider) const
+monomial monomial::divide(const monomial& divider) const
 {
 	if (divider.product.empty())
 		return *this;
 	monomial result = *this;
 	auto it = result.product.begin();
-	for (const auto &[term, degree] : divider.product)
+	for (const auto& [term, degree] : divider.product)
 	{
 		while (it != result.product.end() && *it->first < *term)
 			++it;
@@ -367,7 +404,32 @@ monomial monomial::divide(const monomial &divider) const
 	return result;
 }
 
-expr_ptr polyNode::conj() const
+const std::string calc::monomial::getTEXformat() const
+{
+	std::string result("");
+	if (coef != 1 && coef != -1)
+	{
+		if (coef.imag() != 0)
+			result += "\\left(";
+		result += std::to_string(coef.real());
+		if (coef.imag() != 0)
+			result += "+" + std::to_string(coef.imag()) + "i" + "\\right)";
+	}
+	else
+	{
+		result += (coef == 1 ? "" : "-");
+		if (product.empty())
+			result += "1";
+	}
+	for (const auto &deg : product)
+	{
+		bool conjugationMark = deg.first->hasConjugationMark;
+		result += (conjugationMark? "\\overline{" : "") + deg.first->name + (deg.second == 1 ? "" : "^" + std::to_string(deg.second)) + (conjugationMark ? "}" : "");
+	}
+	return result;
+}
+
+expr_ptr polyNode::conj()
 {
 	expr_ptr result = create();
 	for (monomial mono : sum)
@@ -378,12 +440,12 @@ expr_ptr polyNode::conj() const
 	return result;
 }
 
-polyNode& polyNode::operator+=(const polyNode &other)
+polyNode& polyNode::operator+=(const polyNode& other)
 {
 	if (other.sum.empty())
 		return (*this);
-	auto it = std::lower_bound(sum.begin(), sum.end(), *other.sum.begin());
-	for (const auto &mono : other.sum)
+	auto it = sum.begin();
+	for (const auto& mono : other.sum)
 	{
 		while (it != sum.end() && (*it) < mono)
 			++it;
@@ -403,25 +465,25 @@ polyNode& polyNode::operator+=(const polyNode &other)
 	return (*this);
 }
 
-polyNode polyNode::operator+(const polyNode &other) const
+polyNode polyNode::operator+(const polyNode& other) const
 {
 	polyNode result = *this;
 	result += other;
 	return result;
 }
 
-polyNode polyNode::operator*(const monomial &other) const
+polyNode polyNode::operator*(const monomial& other) const
 {
 	polyNode result;
-	for (const auto &mono : sum)
+	for (const auto& mono : sum)
 		result.sum.emplace_back(mono * other);
 	return result;
 }
 
-polyNode polyNode::operator*(const polyNode &other) const
+polyNode polyNode::operator*(const polyNode& other) const
 {
 	polyNode result;
-	for (const auto &mono : other.sum)
+	for (const auto& mono : other.sum)
 		result += (*this * mono);
 	return result;
 }
@@ -429,17 +491,17 @@ polyNode polyNode::operator*(const polyNode &other) const
 polyNode polyNode::operator*(const constTy k) const
 {
 	polyNode result(*this);
-	for (auto &mono : result.sum)
+	for (auto& mono : result.sum)
 		mono *= k;
 	return result;
 }
 
-polyNode polyNode::operator-(const polyNode &other) const
+polyNode polyNode::operator-(const polyNode& other) const
 {
 	return (*this) + other * (-1);
 }
 
-expr_ptr polyNode::divide(poly_ptr &secondPoly, const bool isDivident)
+expr_ptr polyNode::divide(poly_ptr& secondPoly, const bool isDivident)
 {
 	if (isDivident)
 	{
@@ -473,15 +535,15 @@ expr_ptr polyNode::divide(poly_ptr &secondPoly, const bool isDivident)
 	}
 }
 
-expr_ptr polyNode::divide(op_ptr &secondOp, const bool isDivident)
+expr_ptr polyNode::divide(op_ptr& secondOp, const bool isDivident)
 {
 	poly_ptr shared_from_this_poly = shared_from_base<polyNode>();
 	return secondOp->divide(shared_from_this_poly, !isDivident);
 }
 
-const bool polyNode::dividedBy(const monomial &divider) const
+const bool polyNode::dividedBy(const monomial& divider) const
 {
-	for (auto mono : sum)
+	for (const auto &mono : sum)
 	{
 		if (!mono.dividedBy(divider))
 			return false;
@@ -489,7 +551,7 @@ const bool polyNode::dividedBy(const monomial &divider) const
 	return true;
 }
 
-expr_ptr polyNode::divide(const monomial &divider) const
+expr_ptr polyNode::divide(const monomial& divider) const
 {
 	expr_ptr result = create();
 	for (auto mono : sum)
@@ -508,6 +570,17 @@ expr_ptr polyNode::divide(const monomial &divider) const
 		return result;
 }
 
+expr_ptr calc::polyNode::expand()
+{
+	expr_ptr result = create();
+	for (auto mono : sum)
+	{
+		expr_ptr expanded_mono = mono.subExpand();
+		result = result->expandAddition(expanded_mono);
+	}
+	return result;
+}
+
 poly_ptr calc::make_term(std::string name)
 {
 	return polyNode::create(monomial(1, new basicTerm(name)));
@@ -521,6 +594,11 @@ poly_ptr calc::make_unit_term(std::string name)
 poly_ptr calc::make_real_term(std::string name)
 {
 	return polyNode::create(monomial(1, new basicTerm(name, { true, false })));
+}
+
+poly_ptr calc::make_quasi_term(std::string name, expr_ptr& expr)
+{
+	return polyNode::create(monomial(1, new quasiTerm(name, expr)));
 }
 
 poly_ptr calc::make_scalar(constTy scalar)
@@ -595,7 +673,41 @@ void polyNode::print() const
 			if ((mono.product.empty()) || (coef.real() != 1) && (coef.real() != -1))
 				std::cout << std::abs(coef.real());
 		}
-		for (auto[term, degree] : mono.product)
-			std::cout << term->name << (degree > 1 ? "^" + std::to_string(degree) : "");
+		for (auto [term, degree] : mono.product)
+			std::cout << term->name << (term->hasConjugationMark? "~" : "") << (degree > 1 ? "^" + std::to_string(degree) : "");
 	}
+}
+
+const std::string operationNode::getTEXformat() const
+{
+	bool left_br = left->requiresBracketsPrinting();
+	bool right_br = right->requiresBracketsPrinting();
+	switch (operation)
+	{
+	case operationType::ADDITION:
+		return left->getTEXformat() + "+" + right->getTEXformat();
+	case operationType::MULTIPLICATION:
+		return (left_br ? "\\left(" : "") + left->getTEXformat() + (left_br ? "\\right)" : "") + (right_br ? "\\left(" : "") + right->getTEXformat() + (right_br ? "\\right)" : "");
+	case operationType::DIVISION:
+		return "\\frac{" + left->getTEXformat() + "}{" + right->getTEXformat() + "}";
+	}
+}
+
+const std::string polyNode::getTEXformat() const
+{
+	if (sum.empty())
+		return "0";
+	std::string result("");
+	for (auto it = sum.begin(); it != sum.end(); ++it)
+	{
+		result += it->getTEXformat();
+		if (it != prev(sum.end()))
+			result += (next(it)->coef.real() < 0 && next(it)->coef.imag() == 0 ? "" : "+");
+	}
+	return result;
+}
+
+expr_ptr calc::basicTerm::getExpr()
+{
+	return polyNode::create(monomial(1, this));
 }

@@ -151,7 +151,7 @@ class IntersectionOfTwoLines : public ConstructionPoint // intersect 2 lines
 	Line* firstParent;
 	Line* secondParent;
 public:
-	IntersectionOfTwoLines(Object* object, Line* firstParent, Line* secondParent);
+	IntersectionOfTwoLines(Point* object, Line* firstParent, Line* secondParent);
 	void recreate(Equation* equation) override;
 	void moveTo(Vector2f coords) override;
 	~IntersectionOfTwoLines() override;
@@ -175,7 +175,7 @@ class CentralProjection : public ConstructionPoint
 	Point* secondParent;
 	UnitPoint* thirdParent;
 public:
-	CentralProjection(Object* object, UnitCircle* first, Point* second, UnitPoint* third);
+	CentralProjection(UnitPoint* object, UnitCircle* first, Point* second, UnitPoint* third);
 	void recreate(Equation* equation) override;
 	void moveTo(Vector2f coords) override;
 	~CentralProjection() override;
@@ -186,7 +186,7 @@ class Projection : public ConstructionPoint
 	Point* firstParent;
 	Line* secondParent;
 public:
-	Projection(Object* object, Point* first, Line* second);
+	Projection(Point* object, Point* first, Line* second);
 	void recreate(Equation* equation) override;
 	void moveTo(Vector2f coords) override;
 	~Projection() override;
@@ -197,9 +197,9 @@ class byTwoPointsFixedRatio : public ConstructionPoint
 private:
 	Point* firstParent;
 	Point* secondParent;
-	const float ratio;
+	const std::pair<int, int> masses;
 public:
-	byTwoPointsFixedRatio(Object* object, Point* firstParent, Point* secondParent, float ratio);
+	byTwoPointsFixedRatio(Object* object, Point* firstParent, Point* secondParent, std::pair<int, int> masses);
 	~byTwoPointsFixedRatio();
 	void recreate(Equation* equation) override;
 };
@@ -429,7 +429,7 @@ public:
 	// Projection on a line
 	Point(Point* point, Line* line);
 	// Point by two points and scalar
-	Point(Point* first, Point* second, float ratio);
+	Point(Point* first, Point* second, std::pair<int,int> masses);
 	// Rotation on 90 degrees
 	Point(Point* center, Point* preimage, int sign);
 	// Orthocenter

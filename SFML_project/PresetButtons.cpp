@@ -518,9 +518,9 @@ Button scalarButton = Button(&mainWindow,
 			}
 			wait.sleep();
 		}
-		float ratio = dialogBox->getDouble();
+		std::pair<int, int> masses = dialogBox->getDouble();
 		delete dialogBox;
-		new Point(points.first, points.second, ratio);
+		new Point(points.first, points.second, masses);
 		return nullptr;
 	});
 

@@ -25,7 +25,7 @@ expr operator/(expr left, expr right)
     return expr(left.ptr->divide(right.ptr));
 }
 
-const bool expr::operator==(const expr &other) const
+const bool expr::operator==(const expr& other) const
 {
     return (*this - other).expand().checkZeroEquality();
 }

@@ -135,7 +135,7 @@ class ScalarBox : public DialogBox
 {
 public:
 	ScalarBox(RenderWindow* window);
-	double getDouble();
+	std::pair<int, int>  getDouble();
 	void cin(Event event) override;
 };
 

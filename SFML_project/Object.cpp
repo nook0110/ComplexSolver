@@ -318,9 +318,10 @@ Vector2f Point::getCoordinate()
 	return shape.getPosition();
 }
 
-Point::Point(Point* first, Point* second, float ratio)
+Point::Point(Point* first, Point* second, std::pair<int, int> masses)
 {
-	construction = new byTwoPointsFixedRatio(this, first, second, ratio);
+	setName();
+	construction = new byTwoPointsFixedRatio(this, first, second, masses);
 	first->addChild(this);
 	second->addChild(this);
 	Init();
@@ -546,7 +547,7 @@ void byTwoPointsFixedRatio::recreate(Equation* equation)
 	PointEquation* secondEquation = dynamic_cast<PointEquation*>(secondParent->getEquation());
 	Vector2f firstCoord = firstEquation->point;
 	Vector2f secondCoord = secondEquation->point;
-	Vector2f pointCoord = (secondCoord * ratio + firstCoord * 1.f) / (ratio + 1.f);
+	Vector2f pointCoord = (secondCoord * (float)masses.first + firstCoord * (float)masses.second) / (float)(masses.first+masses.second);
 	*dynamic_cast<PointEquation*>(equation) = PointEquation(pointCoord);
 }
 
@@ -585,11 +586,6 @@ void PerpendicularBisector::recreate(Equation* equation)
 void Polar::recreate(Equation* equation)
 {
 	return;
-}
-
-Parallel::Parallel(Object* object, Line* first, Point* second)
-	:firstParent(first), secondParent(second), ConstructionLine(object)
-{
 }
 
 Parallel::~Parallel()
@@ -913,11 +909,6 @@ ConstructionCircle::ConstructionCircle(Object* object) : ConstructionData(object
 {
 }
 
-Orthocenter::Orthocenter(Object* object, UnitPoint* firstParent, UnitPoint* secondParent, UnitPoint* thirdParent) : ConstructionPoint(object),
-firstParent(firstParent), secondParent(secondParent), thirdParent(thirdParent)
-{
-}
-
 Orthocenter::~Orthocenter()
 {
 	firstParent->eraseChild(object);
@@ -933,11 +924,6 @@ void Orthocenter::recreate(Equation* equation)
 	*dynamic_cast<PointEquation*>(equation) = PointEquation(firstEquation->point + secondEquation->point + thirdEquation->point);
 }
 
-Barycenter::Barycenter(Object* object, Point* firstParent, Point* secondParent, Point* thirdParent) : ConstructionPoint(object),
-firstParent(firstParent), secondParent(secondParent), thirdParent(thirdParent)
-{
-}
-
 Barycenter::~Barycenter()
 {
 	firstParent->eraseChild(object);
@@ -951,5 +937,4 @@ void Barycenter::recreate(Equation* equation)
 	PointEquation* secondEquation = dynamic_cast<PointEquation*>(secondParent->getEquation());
 	PointEquation* thirdEquation = dynamic_cast<PointEquation*>(thirdParent->getEquation());
 	*dynamic_cast<PointEquation*>(equation) = PointEquation((firstEquation->point + secondEquation->point + thirdEquation->point)/3.f);
-
 }

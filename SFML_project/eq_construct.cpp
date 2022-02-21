@@ -1,6 +1,6 @@
 #include "Object.h"
 
-IntersectionOfTwoLines::IntersectionOfTwoLines(Object* object, Line* first, Line* second)
+IntersectionOfTwoLines::IntersectionOfTwoLines(Point* object, Line* first, Line* second)
 	:firstParent(first), secondParent(second), ConstructionPoint(object)
 {
 	const ConstructionLine* first_line_data = dynamic_cast<ConstructionLine*>(first->construction);
@@ -11,18 +11,20 @@ IntersectionOfTwoLines::IntersectionOfTwoLines(Object* object, Line* first, Line
 	expr B2 = second_line_data->z_conj_coef;
 	expr C1 = first_line_data->free_coef;
 	expr C2 = second_line_data->free_coef;
-	coord = (C1 * B2 - C2 * B1) / (A1 * B2 - A2 * B1);
+	expr result = (C1 * B2 - C2 * B1) / (A1 * B2 - A2 * B1);
+	coord = result.get_quasi(object->getLowerCaseName());
 }
 
-CentralProjection::CentralProjection(Object* object, UnitCircle* first, Point* second, UnitPoint* third)
+CentralProjection::CentralProjection(UnitPoint* object, UnitCircle* first, Point* second, UnitPoint* third)
 	:firstParent(first), secondParent(second), thirdParent(third), ConstructionPoint(object)
 {
-	const ConstructionPoint* first_point_data = dynamic_cast<ConstructionPoint*>(second->construction);
-	const ConstructionPoint* second_point_data = dynamic_cast<ConstructionPoint*>(third->construction);
-	expr m = first_point_data->coord;
-	expr a = second_point_data->coord;
+	ConstructionPoint* first_point_data = dynamic_cast<ConstructionPoint*>(second->construction);
+	ConstructionPoint* second_point_data = dynamic_cast<ConstructionPoint*>(third->construction);
+	expr m = first_point_data->coord.get_quasi(second->getLowerCaseName());
+	expr a = second_point_data->coord.get_quasi(third->getLowerCaseName());
 	expr m_conj = m.conj();
-	coord = (m - a) / (expr(make_scalar(1)) - m_conj * a);
+	expr result = (m - a) / (expr(make_scalar(1)) - m_conj * a);
+	coord = result.get_quasi(object->getLowerCaseName());
 }
 
 ByTwoPoints::ByTwoPoints(Object* object, Point* firstParent, Point* secondParent)
@@ -63,7 +65,7 @@ Tangent::Tangent(Object* object, UnitCircle* firstParent, Point* secondParent)
 	free_coef = a * 2;
 }
 
-Projection::Projection(Object* object, Point* first, Line* second)
+Projection::Projection(Point* object, Point* first, Line* second)
 	:firstParent(first), secondParent(second), ConstructionPoint(object)
 {
 
@@ -73,7 +75,8 @@ Projection::Projection(Object* object, Point* first, Line* second)
 	expr A = line_data->z_coef;
 	expr B = line_data->z_conj_coef;
 	expr C = line_data->free_coef;
-	coord = (C - B * m.conj()) / (A * 2);
+	expr result = (C - B * m.conj()) / (A * 2);
+	coord = result.get_quasi(object->getLowerCaseName());
 }
 
 OnPlane::OnPlane(Point* object, Vector2f point)
@@ -82,14 +85,14 @@ OnPlane::OnPlane(Point* object, Vector2f point)
 	coord = expr(make_term(object->getLowerCaseName()));
 }
 
-byTwoPointsFixedRatio::byTwoPointsFixedRatio(Object* object, Point* firstParent, Point* secondParent, float ratio)
-	:firstParent(firstParent), secondParent(secondParent), ratio(ratio), ConstructionPoint(object)
+byTwoPointsFixedRatio::byTwoPointsFixedRatio(Object* object, Point* firstParent, Point* secondParent, std::pair<int, int> masses)
+	: firstParent(firstParent), secondParent(secondParent), masses(masses), ConstructionPoint(object)
 {
 	const ConstructionPoint* first_point_data = dynamic_cast<ConstructionPoint*>(firstParent->construction);
 	const ConstructionPoint* second_point_data = dynamic_cast<ConstructionPoint*>(secondParent->construction);
 	expr A = first_point_data->coord;
 	expr B = second_point_data->coord;
-	coord = (A * ratio) + (B * (1 - ratio));
+	//coord = (A * ratio) + (B * (1 - ratio));
 }
 
 OnLine::OnLine(Object* object, Point* firstParent, Point* secondParent, float ratio, Line* thirdParent)
@@ -106,7 +109,6 @@ OnLine::OnLine(Object* object, Point* firstParent, Point* secondParent, float ra
 OnCircle::OnCircle(Point* object, UnitCircle* firstParent, float angle)
 	:firstParent(firstParent), angle(angle), ConstructionPoint(object)
 {
-
 	coord = expr(make_unit_term(object->getLowerCaseName()));
 }
 
@@ -148,4 +150,36 @@ Rotation90::Rotation90(Object* object, Point* firstParent, Point* secondParent, 
 	{
 		coord = A * constTy(1, 1) + B * constTy(0, -1);
 	}
+}
+
+Orthocenter::Orthocenter(Object* object, UnitPoint* firstParent, UnitPoint* secondParent, UnitPoint* thirdParent) : ConstructionPoint(object),
+firstParent(firstParent), secondParent(secondParent), thirdParent(thirdParent)
+{
+	const ConstructionPoint* first_point_data = dynamic_cast<ConstructionPoint*>(firstParent->construction);
+	const ConstructionPoint* second_point_data = dynamic_cast<ConstructionPoint*>(secondParent->construction);
+	const ConstructionPoint* third_point_data = dynamic_cast<ConstructionPoint*>(thirdParent->construction);
+	coord = first_point_data->coord + second_point_data->coord + third_point_data->coord;
+}
+
+Barycenter::Barycenter(Object* object, Point* firstParent, Point* secondParent, Point* thirdParent) : ConstructionPoint(object),
+firstParent(firstParent), secondParent(secondParent), thirdParent(thirdParent)
+{
+	const ConstructionPoint* first_point_data = dynamic_cast<ConstructionPoint*>(firstParent->construction);
+	const ConstructionPoint* second_point_data = dynamic_cast<ConstructionPoint*>(secondParent->construction);
+	const ConstructionPoint* third_point_data = dynamic_cast<ConstructionPoint*>(thirdParent->construction);
+	coord = (first_point_data->coord + second_point_data->coord + third_point_data->coord) / expr(make_scalar(3));
+}
+
+Parallel::Parallel(Object* object, Line* first, Point* second)
+	:firstParent(first), secondParent(second), ConstructionLine(object)
+{
+	const ConstructionPoint* point_data = dynamic_cast<ConstructionPoint*>(secondParent->construction);
+	const ConstructionLine* line_data = dynamic_cast<ConstructionLine*>(firstParent->construction);
+	expr m = point_data->coord;
+	expr m_conj = m.conj();
+	expr B = line_data->z_conj_coef;
+	expr B_conj = B.conj();
+	z_coef = m_conj * 2 - m * B_conj;
+	z_conj_coef = B * m_conj - m * 2;
+	free_coef = B_conj * m * m - B * m_conj * m_conj;
 }

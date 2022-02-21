@@ -252,7 +252,7 @@ bool Menu::mouseOnMenu()
 void Menu::pushButton(Button* newButton, int layerPB)
 {
 	window->setView(menuView);
-	if(buttons.size()<=layerPB)
+	if (buttons.size() <= layerPB)
 	{
 		buttons.resize(layerPB + 1);
 	}
@@ -393,18 +393,18 @@ ScalarBox::ScalarBox(RenderWindow* window) :DialogBox(window)
 	formatIn = "Input: p:q";
 }
 
-double ScalarBox::getDouble()
+std::pair<int, int> ScalarBox::getDouble()
 {
 	auto position = textIn.find(":");
 	try
 	{
-		double firstNumber = stod(textIn.substr(0, position));
-		double secondNumber = stod(textIn.substr(position + 1));
-		return firstNumber / secondNumber;
+		int firstNumber = stoi(textIn.substr(0, position));
+		int secondNumber = stoi(textIn.substr(position + 1));
+		return { firstNumber,secondNumber };
 	}
 	catch (std::invalid_argument)
 	{
-		return 1;
+		return { 1,1 };
 	}
 }
 
