@@ -314,7 +314,7 @@ Chord::Chord(UnitPoint* first, UnitPoint* second)
 {
 	first->addChild(this);
 	second->addChild(this);
-	construction = new ByTwoPoints(this, first, second);
+	construction = new ByTwoUnitPoints(this, first, second);
 	equation = new LineEquation(0, 0, 0);
 	reposition();
 	Init();
@@ -569,6 +569,10 @@ void byTwoPointsFixedRatio::recreate(Equation* equation)
 void Pole::recreate(Equation* equation)
 {
 	return;
+}
+
+ByTwoPoints::ByTwoPoints(Object* object) : ConstructionLine(object)
+{
 }
 
 void ByTwoPoints::recreate(Equation* equation)

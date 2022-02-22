@@ -284,8 +284,10 @@ public:
 
 class ByTwoPoints : public ConstructionLine
 {
+protected:
 	Point* firstParent;
 	Point* secondParent;
+	ByTwoPoints(Object* object);
 public:
 	ByTwoPoints(Object* object, Point* firstParent, Point* secondParent);
 	~ByTwoPoints() override;

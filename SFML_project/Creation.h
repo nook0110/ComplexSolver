@@ -40,6 +40,7 @@ private:
 		while (true)
 		{
 			std::this_thread::sleep_for(std::chrono::nanoseconds(1000));
+			checker.checkMode();
 			if (getCurrentMode() != MODE_NOTHING)
 			{
 				try
@@ -50,7 +51,7 @@ private:
 				{
 				}
 			}
-			checker.checkMode();
+			
 		}
 		});
 public:

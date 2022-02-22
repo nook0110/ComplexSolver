@@ -276,7 +276,7 @@ Button midPointButton = Button(&mainWindow,
 				continue;
 			}
 		}
-		Point* point = new Point(points.first, points.second, 1);
+		Point* point = new Point(points.first, points.second, { 1,1 });
 		return point;
 	});
 
@@ -318,7 +318,7 @@ Button symmetryButton = Button(&mainWindow,
 				continue;
 			}
 		}
-		Point* point = new Point(points.first, points.second, (float)-2);
+		Point* point = new Point(points.first, points.second, { -2,1 });
 		return point;
 	});
 
