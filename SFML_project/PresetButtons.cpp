@@ -612,7 +612,7 @@ Button orthocenterButton = Button(&mainWindow,
 		Finder find;
 		const int size = 3;
 		std::vector<UnitPoint*> points;
-		while (points.size()<size)
+		while (points.size() < size)
 		{
 			if (wait.untilClick())
 			{
@@ -706,11 +706,11 @@ Button twoLineSegments = Button(&mainWindow,
 			}
 			points.push_back(point);
 		}
-		
+
 		return nullptr;
 	});
 
-Button ñollinearityOfLines = Button(&mainWindow,
+Button concurrencyOfLines = Button(&mainWindow,
 	"Textures\\SFML_project\\Test.jpg",
 	MODE_THREE_LINES, []()->Object* {
 		Waiter wait;
@@ -739,7 +739,7 @@ Button ñollinearityOfPoints = Button(&mainWindow,
 	MODE_THREE_POINTS, []()->Object* {
 		Waiter wait;
 		Finder find;
-		const int threeTimes = 4;
+		const int threeTimes = 3;
 		std::vector<Point*> points;
 		for (int i = 0; i < threeTimes; ++i)
 		{
@@ -755,6 +755,7 @@ Button ñollinearityOfPoints = Button(&mainWindow,
 			}
 			points.push_back(point);
 		}
+		Prover::proveCollinearity(points[0], points[1], points[2]);
 		return nullptr;
 	});
 
@@ -812,47 +813,86 @@ Button debugButton = Button(&mainWindow,
 
 Object* Finder::nearbyNotUnitCircleObject(Vector2f mousePosition)
 {
-	float lastDistance = INFINITY;
-	Object* nearestObject = nullptr;
+	float lastDistancePoint = INFINITY;
+	float lastDistanceLine = INFINITY;
+	Object* nearestObjectPoint = nullptr;
+	Object* nearestObjectLine = nullptr;
 	for (Object* object : Drawer::allVisibleObjects)
 	{
-		if (object && object->isNearby(mousePosition) && object->getVisibility())
+		if (dynamic_cast<Point*>(object) && object->isNearby(mousePosition) && object->getVisibility())
 		{
-			if (object->distance(mousePosition) < lastDistance)
+			if (object->distance(mousePosition) < lastDistancePoint)
 			{
-				lastDistance = object->distance(mousePosition);
-				nearestObject = object;
+				lastDistancePoint = object->distance(mousePosition);
+				nearestObjectPoint = object;
 			}
 		}
 	}
-	return nearestObject;
+	for (Object* object : Drawer::allVisibleObjects)
+	{
+		if (dynamic_cast<Line*>(object) && object->isNearby(mousePosition) && object->getVisibility())
+		{
+			if (object->distance(mousePosition) < lastDistanceLine)
+			{
+				lastDistanceLine = object->distance(mousePosition);
+				nearestObjectLine = object;
+			}
+		}
+	}
+	if (lastDistanceLine < lastDistancePoint / 2)
+	{
+		return nearestObjectLine;
+	}
+	else
+	{
+		return nearestObjectPoint;
+	}
 }
 
 Object* Finder::nearbyObject(Vector2f mousePosition)
 {
-	float lastDistance = INFINITY;
-	Object* nearestObject = nullptr;
+	float lastDistancePoint = INFINITY;
+	float lastDistanceLine = INFINITY;
+	Object* nearestObjectPoint = nullptr;
+	Object* nearestObjectLine = nullptr;
 	for (Object* object : Drawer::allVisibleObjects)
 	{
-		if (object && object->isNearby(mousePosition))
+		if (dynamic_cast<Point*>(object) && object->isNearby(mousePosition))
 		{
-			if (object->distance(mousePosition) < lastDistance)
+			if (object->distance(mousePosition) < lastDistancePoint)
 			{
-				lastDistance = object->distance(mousePosition);
-				nearestObject = object;
+				lastDistancePoint = object->distance(mousePosition);
+				nearestObjectPoint = object;
+			}
+		}
+	}
+	for (Object* object : Drawer::allVisibleObjects)
+	{
+		if (dynamic_cast<Line*>(object) && object->isNearby(mousePosition))
+		{
+			if (object->distance(mousePosition) < lastDistanceLine)
+			{
+				lastDistanceLine = object->distance(mousePosition);
+				nearestObjectLine = object;
 			}
 		}
 	}
 	UnitCircle* unitCircle = UnitCircle::getInstance();
 	if (unitCircle->isNearby(mousePosition))
 	{
-		if (unitCircle->distance(mousePosition) < lastDistance)
+		if (unitCircle->distance(mousePosition) < lastDistancePoint / 2)
 		{
-			lastDistance = unitCircle->distance(mousePosition);
-			nearestObject = unitCircle;
+			return unitCircle;
 		}
 	}
-	return nearestObject;
+	if (lastDistanceLine < lastDistancePoint / 2)
+	{
+		return nearestObjectLine;
+	}
+	else
+	{
+		return nearestObjectPoint;
+	}
 }
 
 Point* Finder::nearbyConstructedPoint(Vector2f mousePosition)

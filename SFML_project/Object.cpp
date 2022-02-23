@@ -364,6 +364,7 @@ void Point::moveTo(Vector2f coords)
 void Point::Init()
 {
 	font.loadFromFile("Textures\\SFML_project\\Fonts\\arial.ttf");
+	nameText.setFillColor(textColor);
 	equation = new PointEquation(Vector2f(0, 0));
 	shape.setOrigin(pointSize, pointSize);
 	shape.setFillColor(Color::Black);
@@ -486,6 +487,10 @@ ByFourPoints::ByFourPoints(Object* object, Point* first, Point* second, Point* t
 	ConstructionData::object = object;
 }
 
+OnPlane::OnPlane(Object* object) : ConstructionPoint(object)
+{
+}
+
 void OnPlane::recreate(Equation* equation)
 {
 	*dynamic_cast<PointEquation*>(equation) = PointEquation(point);
@@ -498,6 +503,12 @@ void OnPlane::moveTo(Vector2f coords)
 
 OnPlane::~OnPlane()
 {
+}
+
+Center::Center(Point* object) : OnPlane(object)
+{
+	point = Vector2f(0, 0);
+	coord = expr(make_scalar(0));
 }
 
 void IntersectionOfTwoLines::recreate(Equation* equation)
@@ -562,7 +573,7 @@ void byTwoPointsFixedRatio::recreate(Equation* equation)
 	PointEquation* secondEquation = dynamic_cast<PointEquation*>(secondParent->getEquation());
 	Vector2f firstCoord = firstEquation->point;
 	Vector2f secondCoord = secondEquation->point;
-	Vector2f pointCoord = (secondCoord * (float)masses.first + firstCoord * (float)masses.second) / (float)(masses.first+masses.second);
+	Vector2f pointCoord = (secondCoord * (float)masses.first + firstCoord * (float)masses.second) / (float)(masses.first + masses.second);
 	*dynamic_cast<PointEquation*>(equation) = PointEquation(pointCoord);
 }
 
@@ -739,7 +750,7 @@ CenterPoint::CenterPoint() : Point()
 	font.loadFromFile("Textures\\SFML_project\\Fonts\\arial.ttf");
 	nameText = Text(pointName, font, textSize);
 	nameText.setFillColor(Color::Black);
-	construction = new OnPlane(this, Vector2f(0, 0));
+	construction = new Center(this);
 	equation = new PointEquation(Vector2f(0, 0));
 	shape.setOrigin(pointSize, pointSize);
 	shape.setFillColor(Color::Black);
@@ -955,5 +966,5 @@ void Barycenter::recreate(Equation* equation)
 	PointEquation* firstEquation = dynamic_cast<PointEquation*>(firstParent->getEquation());
 	PointEquation* secondEquation = dynamic_cast<PointEquation*>(secondParent->getEquation());
 	PointEquation* thirdEquation = dynamic_cast<PointEquation*>(thirdParent->getEquation());
-	*dynamic_cast<PointEquation*>(equation) = PointEquation((firstEquation->point + secondEquation->point + thirdEquation->point)/3.f);
+	*dynamic_cast<PointEquation*>(equation) = PointEquation((firstEquation->point + secondEquation->point + thirdEquation->point) / 3.f);
 }

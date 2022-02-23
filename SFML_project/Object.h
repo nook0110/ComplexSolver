@@ -141,12 +141,20 @@ public:
 
 class OnPlane : public ConstructionPoint
 {
+protected:
 	Vector2f point;
+	OnPlane(Object* object);
 public:
 	OnPlane(Point* object, Vector2f point);
 	void recreate(Equation* equation) override;
 	void moveTo(Vector2f coords) override;
 	~OnPlane();
+};
+
+class Center : public OnPlane
+{
+public:
+	Center(Point* object);
 };
 
 class IntersectionOfTwoLines : public ConstructionPoint // intersect 2 lines
@@ -413,7 +421,8 @@ class Point : public Object
 protected:
 	std::string pointName;
 	Font font;
-	unsigned int textSize = 30;
+	unsigned int textSize = 20;
+	Color textColor = Color(0, 0, 255);
 	Text nameText;
 	Point();
 	const double pointSize = unitSeg / 30;

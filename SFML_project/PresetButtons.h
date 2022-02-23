@@ -1,7 +1,7 @@
 #pragma once
 #include "gui.h"
 #include "Creation.h"
-
+#include "Prover.h"
 //Preset of Buttons with functions
 extern FloatRect mainWindowRect;
 class UnitCircle;
