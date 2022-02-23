@@ -90,7 +90,7 @@ byTwoPointsFixedRatio::byTwoPointsFixedRatio(Object* object, Point* firstParent,
 	const ConstructionPoint* second_point_data = dynamic_cast<ConstructionPoint*>(secondParent->construction);
 	expr A = first_point_data->coord;
 	expr B = second_point_data->coord;
-	coord = ((A * masses.first) + (B * masses.second)) / expr(make_scalar(masses.first + masses.second));
+	coord = ((A * masses.second) + (B * masses.first)) / expr(make_scalar(masses.first + masses.second));
 }
 
 OnLine::OnLine(Object* object, Point* firstParent, Point* secondParent, float ratio, Line* thirdParent)

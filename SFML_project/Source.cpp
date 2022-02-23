@@ -36,6 +36,7 @@ extern Button orthocenterButton;
 extern Button barycenterButton;
 
 extern Button switchConstructionButton;
+extern Button concurrencyOfLines;
 extern Button ñollinearityOfPoints;
 extern Button proveConstructionButton;
 extern Button fourPointsOnACircle;
@@ -76,6 +77,7 @@ void menuInit()
 
 	//mainMenu.pushButton(&fourPointsOnACircle, 1);
 	//mainMenu.pushButton(&proveConstructionButton, 1);
+	mainMenu.pushButton(&concurrencyOfLines, 1);
 	mainMenu.pushButton(&ñollinearityOfPoints, 1);
 	mainMenu.pushButton(&switchConstructionButton, 1);
 

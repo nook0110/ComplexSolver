@@ -9,5 +9,4 @@ class Prover
 public:
 	static void proveCollinearity(Point* first, Point* second, Point* third);
 	static void proveConcurrency(Line* first, Line* second, Line* third);
-
 };

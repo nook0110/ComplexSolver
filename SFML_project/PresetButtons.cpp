@@ -731,6 +731,7 @@ Button concurrencyOfLines = Button(&mainWindow,
 			}
 			lines.push_back(line);
 		}
+		Prover::proveConcurrency(lines[0], lines[1], lines[2]);
 		return nullptr;
 	});
 
