@@ -265,12 +265,32 @@ void Line::draw()
 			y2 = -(x2 * lineEq.A + lineEq.C) / lineEq.B;
 		}
 	}
-	Vertex line[] =
+
+	if (dotted)
 	{
-		Vertex(Vector2f(x1, y1), getColor()),
-		Vertex(Vector2f(x2, y2), getColor())
-	};
-	mainWindow.draw(line, 2, Lines);
+		const int stripes = 50;
+		Vertex line[stripes + 1];
+		for (int i = 0; i <= stripes; i++)
+		{
+			line[i] = Vertex(Vector2f((x2 - x1) * i / stripes + x1, (y2 - y1) * i / stripes + y1), getColor());
+		}
+		mainWindow.draw(line, stripes+1, Lines);
+	}
+	else
+	{
+		Vertex line[] =
+		{
+			Vertex(Vector2f(x1, y1), getColor()),
+			Vertex(Vector2f(x2, y2), getColor())
+		};
+		mainWindow.draw(line, 2, Lines);
+	}
+
+}
+
+void Line::setDotted(bool dotted)
+{
+	Line::dotted = dotted;
 }
 
 void Line::drawDescription()

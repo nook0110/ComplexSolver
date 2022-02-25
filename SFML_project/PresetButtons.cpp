@@ -756,6 +756,8 @@ Button ñollinearityOfPoints = Button(&mainWindow,
 			}
 			points.push_back(point);
 		}
+		auto line = new Line(points[0], points[1]);
+		line->setDotted(true);
 		Prover::proveCollinearity(points[0], points[1], points[2]);
 		return nullptr;
 	});

@@ -1,5 +1,6 @@
 #include "gui.h"
 #include "Creation.h"
+#include "Prover.h"
 
 #include <iostream>
 #include <iomanip>
@@ -86,17 +87,15 @@ void menuInit()
 	mainMenu.pushButton(&switchTriangleButton, 2);
 }
 
-int main()
+void constructingTheDrawing()
 {
-	preInit();
-	menuInit();
-
-	while (mainWindow.isOpen())
+	while (mainWindow.isOpen() && !Prover::getFinished())
 	{
 		Event event;
 		while (mainWindow.pollEvent(event))
 		{
 			Drawer::update(event);
+			Drawer::updateMenu(event);
 			if (event.type == Event::Resized)
 			{
 				// update the view to the new size of the mainWindow
@@ -124,9 +123,66 @@ int main()
 		mainWindow.clear(Color::White);
 		mainWindow.setView(view);
 		Drawer::draw();
+		Drawer::drawMenu();
 		mainWindow.display();
 		std::this_thread::sleep_for(std::chrono::microseconds(1));
 	}
+}
+
+void provingTheProblem()
+{
+	mainWindowRect = FloatRect(0.f, 0.f, 1.0f, 1.0f);
+	view.setViewport(mainWindowRect);
+	moveButton.press();
+	Creation::getInstance()->CurrentMethod = moveButton.getObjectCreationMethod();
+	mainMenu.setViewport(FloatRect());
+
+	while (mainWindow.isOpen())
+	{
+		Event event;
+		while (mainWindow.pollEvent(event))
+		{
+			Drawer::update(event);
+			if (event.type == Event::Resized)
+			{
+				// update the view to the new size of the mainWindow
+				FloatRect visibleArea(view.getCenter().x - view.getSize().x / 2, view.getCenter().y - view.getSize().y / 2, event.size.width, event.size.height);
+				view = View(visibleArea);
+				view.setViewport(mainWindowRect);
+			}
+			if (event.type == Event::Closed || (event.type == Event::KeyPressed) && (event.key.code == Keyboard::Escape))
+			{
+				mainWindow.close();
+			}
+			if (event.type == Event::MouseWheelScrolled)
+			{
+				if (event.mouseWheelScroll.delta < 0)
+				{
+					view.zoom(1.2);
+				}
+				else
+				{
+					view.zoom(1 / 1.2);
+				}
+			}
+		}
+		mainWindow.clear(Color::White);
+		mainWindow.setView(view);
+		Drawer::draw();
+		mainWindow.display();
+		std::this_thread::sleep_for(std::chrono::microseconds(1));
+	}
+}
+
+int main()
+{
+	preInit();
+	menuInit();
+
+	constructingTheDrawing();
+
+	provingTheProblem();
+
 	return 0;
 }
 

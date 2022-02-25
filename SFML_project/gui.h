@@ -80,7 +80,7 @@ private:
 	RenderWindow* window;
 	const double shiftRatio = 0.1;
 	Vector2i buttonTable;
-	const FloatRect viewport = FloatRect(0.f, 0.f, 1.0f, mainWindowRect.top);
+	FloatRect viewport = FloatRect(0.f, 0.f, 1.0f, mainWindowRect.top);
 	const Color color = Color(128, 128, 128, 255);
 	const Vector2f position = Vector2f(0, 0);
 	int layer = 0;
@@ -89,6 +89,7 @@ private:
 	double adjustSize(double size, Vector2f menuSize, int count);
 	void updateButtons();
 public:
+	void setViewport(FloatRect viewport);
 	Menu(RenderWindow* window);
 	void update(Event);
 	bool mouseOnMenu();

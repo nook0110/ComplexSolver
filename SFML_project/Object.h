@@ -391,6 +391,7 @@ class Line : public Object
 protected:
 	void reposition() override;
 	void Init();
+	bool dotted;
 public:
 	//DEBUG
 	void printExpr();
@@ -406,6 +407,7 @@ public:
 	bool isNearby(Vector2f position);
 	void draw() override;
 	void drawDescription();
+	void setDotted(bool dotted);
 };
 
 class UnitPoint;

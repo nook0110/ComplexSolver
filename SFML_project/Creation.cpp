@@ -103,8 +103,17 @@ void Drawer::drawDialogBox()
 	}
 }
 
-void Drawer::drawProveObject()
+void Drawer::updateMenu(Event event)
 {
+	switch (event.type)
+	{
+	case Event::Resized:
+		resizeMenu(event);
+		break;
+	case Event::MouseButtonPressed:
+	case Event::MouseButtonReleased:
+		updateMenu();
+	}
 }
 
 void Drawer::resizeMenu(Event event)
@@ -146,15 +155,10 @@ void Drawer::resizeDialogBox(Event event)
 
 void Drawer::update(Event event)
 {
-	
+
 	switch (event.type)
 	{
-	case Event::MouseButtonPressed:
-	case Event::MouseButtonReleased:
-		updateMenu();
-		break;
 	case Event::Resized:
-		resizeMenu(event);
 		resizeTextBoxes(event);
 		resizeDialogBox(event);
 		break;
@@ -172,5 +176,4 @@ void Drawer::draw()
 	drawObjects();
 	drawTextBoxes();
 	drawDialogBox();
-	drawMenu();
 }

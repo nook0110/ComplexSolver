@@ -226,6 +226,15 @@ void Menu::updateButtons()
 
 }
 
+void Menu::setViewport(FloatRect viewport)
+{
+	Menu::viewport = viewport;
+	menuView.setViewport(viewport);
+	menuView.setCenter(menuView.getSize() / 2.f + position);
+	background.setSize(menuView.getSize());
+	background.setPosition(position);
+}
+
 Menu::Menu(RenderWindow* window)
 	:window(window)
 {

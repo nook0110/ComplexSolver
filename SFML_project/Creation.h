@@ -66,10 +66,8 @@ class DialogBox;
 class Drawer
 {
 	static void drawObjects();
-	static void drawMenu();
 	static void drawTextBoxes();
 	static void drawDialogBox();
-	static void drawProveObject();
 	static void resizeMenu(Event event);
 	static void updateMenu();
 	static void resizeTextBoxes(Event event);
@@ -80,6 +78,8 @@ public:
 	static std::list<Parametr*> allParametrs;
 	static std::list<TextBox*> allTextBoxes;
 	static DialogBox* dialogBox;
+	static void updateMenu(Event event);
 	static void update(Event event);
 	static void draw();
+	static void drawMenu();
 };

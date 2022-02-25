@@ -43,11 +43,15 @@ bool proveConcurrency(expr A1, expr B1, expr C1, expr A2, expr B2, expr C2, expr
 	return det.expand().checkZeroEquality();
 }
 
-bool Prover::started, Prover::theorem;
+bool Prover::started, Prover::theorem, Prover::finished;
 std::thread Prover::provingThread;
 
 void Prover::proveCollinearity(Point* first, Point* second, Point* third)
 {
+	if (started)
+	{
+		throw "Already proving";
+	}
 	started = true;
 
 	ConstructionPoint* first_point_data = dynamic_cast<ConstructionPoint*>(first->construction);
@@ -59,9 +63,25 @@ void Prover::proveCollinearity(Point* first, Point* second, Point* third)
 	provingThread = std::thread(
 		[=]() {
 			Prover::theorem = ::proveCollinearity(A, B, C);
-			std::cout << theorem;
+			finished = true;
+			std::cout << theorem << std::endl;
 		});
 	provingThread.detach();
+}
+
+bool Prover::getStarted()
+{
+	return started;
+}
+
+bool Prover::getFinished()
+{
+	return finished;
+}
+
+bool Prover::getTheorem()
+{
+	return theorem;
 }
 
 void Prover::proveConcurrency(Line* first, Line* second, Line* third)
@@ -83,7 +103,8 @@ void Prover::proveConcurrency(Line* first, Line* second, Line* third)
 	provingThread = std::thread(
 		[=]() {
 			Prover::theorem = ::proveConcurrency(zFirst, zConjFirst, freeFirst, zSecond, zConjSecond, freeSecond, zThird, zConjThird, freeThird);
-			std::cout << theorem;
+			std::cout << theorem << std::endl;
+			finished = true;
 		});
 	provingThread.detach();
 }
