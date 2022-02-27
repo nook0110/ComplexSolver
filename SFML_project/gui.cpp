@@ -344,7 +344,7 @@ DialogBox::DialogBox(RenderWindow* window)
 		throw std::runtime_error("Second DialogBox is not supported");
 	}
 	Drawer::dialogBox = this;
-	font.loadFromFile("Textures\\SFML_project\\Fonts\\arial.ttf");
+	font.loadFromFile("Textures\\Font\\font.ttf");
 	dialogBox.setFillColor(color);
 	shadow.setFillColor(shadowColor);
 	FloatRect visibleArea(dialogBoxView.getCenter().x - dialogBoxView.getSize().x / 2, dialogBoxView.getCenter().y - dialogBoxView.getSize().y / 2, window->getSize().x * viewport.width, window->getSize().y * viewport.height);

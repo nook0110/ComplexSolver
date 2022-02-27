@@ -69,17 +69,17 @@ double Object::distance(Vector2f point)
 	return 0.0;
 }
 
-void Object::changeVisibility(bool visibility)
+void Object::setVisibility(bool visibility)
 {
 	visible = visibility;
 }
 
-void Object::changeVisibility()
+void Object::setVisibility()
 {
 	visible = !visible;
 }
 
-void Object::changeColor(Color color)
+void Object::setColor(Color color)
 {
 	visibleColor = color;
 }
@@ -383,7 +383,7 @@ void Point::moveTo(Vector2f coords)
 
 void Point::Init()
 {
-	font.loadFromFile("Textures\\SFML_project\\Fonts\\arial.ttf");
+	font.loadFromFile("Textures\\Font\\font.ttf");
 	nameText.setFillColor(textColor);
 	equation = new PointEquation(Vector2f(0, 0));
 	shape.setOrigin(pointSize, pointSize);
@@ -767,7 +767,7 @@ void OnCircle::recreate(Equation* equation)
 CenterPoint::CenterPoint() : Point()
 {
 	pointName = "O";
-	font.loadFromFile("Textures\\SFML_project\\Fonts\\arial.ttf");
+	font.loadFromFile("Textures\\Font\\font.ttf");
 	nameText = Text(pointName, font, textSize);
 	nameText.setFillColor(Color::Black);
 	construction = new Center(this);

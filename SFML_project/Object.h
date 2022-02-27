@@ -82,9 +82,9 @@ public:
 	virtual bool isNearby(Vector2f position) = 0;
 	virtual void draw() = 0;
 	virtual void drawDescription() = 0;
-	void changeVisibility(bool newVisibility);
-	void changeVisibility();
-	void changeColor(Color color);
+	void setVisibility(bool newVisibility);
+	void setVisibility();
+	void setColor(Color color);
 	bool getVisibility();
 	bool isOnCircle();
 };
