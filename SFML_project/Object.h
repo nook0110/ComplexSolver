@@ -90,9 +90,11 @@ public:
 	bool isOnCircle();
 protected:
 	Description* description;
+	std::string equationPath;
 	virtual std::string makeTeX();
 public:
-	virtual void drawDescription() = 0;
+	virtual std::string getLowerCaseName();
+	void switchDescription(Vector2f position);
 };
 
 class Object;
@@ -363,7 +365,7 @@ public:
 	static UnitCircle* getInstance();
 	bool isNearby(Vector2f position);
 	void draw();
-	void drawDescription();
+	void switchDescription();
 };
 
 //Circle can only be constructed to prove the problem
@@ -377,7 +379,7 @@ public:
 	bool isNearby(Vector2f position);
 	Circle(Point* first, Point* second, Point* third, Point* fourth);
 	void draw();
-	void drawDescription();
+	void switchDescription();
 };
 
 class LineSegment : public Object
@@ -412,8 +414,9 @@ public:
 	double distance(Vector2f point);
 	bool isNearby(Vector2f position);
 	void draw() override;
-	void drawDescription();
+	void switchDescription();
 	void setDotted(bool dotted);
+	std::string makeTeX();
 };
 
 class UnitPoint;
@@ -466,7 +469,6 @@ public:
 	void draw() override;
 	std::string getLowerCaseName();
 	std::string makeTeX() override;
-	void drawDescription() override;
 };
 
 

@@ -108,6 +108,29 @@ std::string Object::makeTeX()
 	return std::string();
 }
 
+std::string Object::getLowerCaseName()
+{
+	return std::to_string(int(this));
+}
+
+void Object::switchDescription(Vector2f position)
+{
+	if (!description)
+	{
+		if (equationPath.empty())
+		{
+			equationPath = Printer::makeTexture(makeTeX(), getLowerCaseName());
+		}
+		description = new Description(equationPath);
+		description->moveTo(position);
+	}
+	else
+	{
+		delete description;
+		description = nullptr;
+	}
+}
+
 UnitCircle* UnitCircle::unitCircle = nullptr;
 UnitCircle::UnitCircle()
 {
@@ -151,7 +174,7 @@ void UnitCircle::draw()
 	mainWindow.draw(shape);
 }
 
-void UnitCircle::drawDescription()
+void UnitCircle::switchDescription()
 {
 }
 
@@ -160,7 +183,7 @@ void Circle::draw()
 	mainWindow.draw(shape);
 }
 
-void Circle::drawDescription()
+void Circle::switchDescription()
 {
 }
 
@@ -302,7 +325,17 @@ void Line::setDotted(bool dotted)
 	Line::dotted = dotted;
 }
 
-void Line::drawDescription()
+std::string Line::makeTeX()
+{
+	ConstructionLine* constr = dynamic_cast<ConstructionLine*>(construction);
+	std::string TeX;
+	TeX += constr->z_coef.getTEXformat() + "$$ \n $$";
+	TeX += constr->z_conj_coef.getTEXformat() + "$$ \n $$";
+	TeX += constr->free_coef.getTEXformat();
+	return TeX;
+}
+
+void Line::switchDescription()
 {
 }
 
@@ -496,21 +529,11 @@ void Point::draw()
 	shape.setFillColor(getColor());
 	mainWindow.draw(shape);
 	mainWindow.draw(nameText);
-	drawDescription();
 }
 
 std::string Point::makeTeX()
 {
 	return dynamic_cast<ConstructionPoint*>(construction)->coord.getTEXformat();
-}
-
-void Point::drawDescription()
-{
-	if (!description)
-	{
-		description = new Description(Printer::makeTexture(makeTeX(),getLowerCaseName()));
-		description->moveTo(shape.getPosition() + Vector2f(0,textSize));
-	}
 }
 
 std::string Point::getLowerCaseName()

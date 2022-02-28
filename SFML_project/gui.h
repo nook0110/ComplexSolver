@@ -164,15 +164,17 @@ public:
 
 class Description
 {
-	Texture texture;
 	Sprite sprite;
+	Texture texture;
 	RectangleShape background;
-	Vector2f position;
-	Vector2f textureSize;
+	Vector2f position = Vector2f();
+	Vector2f size;
 	const Vector2f backgroundDelta = Vector2f(1, 1);
 public:
 	Description(std::string filePath);
 	~Description();
+	bool contains(Vector2f point);
 	void moveTo(Vector2f position);
+	Vector2f getDelta(Vector2f position);
 	void draw();
 };

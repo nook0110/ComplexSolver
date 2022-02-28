@@ -17,14 +17,29 @@ Button moveButton = Button(&mainWindow,
 		{
 			return nullptr;
 		}
+		Clock clock;
 		Vector2f startPosition = view.getCenter();
-		Vector2f startMousePosition(Vector2f(Mouse::getPosition(mainWindow)));
+		Vector2i startMousePosition(Mouse::getPosition(mainWindow));
+		Description* descr = find.nearbyDescription(mainWindow.mapPixelToCoords(Mouse::getPosition(mainWindow), view));
+		if (descr)
+		{
+			Vector2f deltaDescr = descr->getDelta(mainWindow.mapPixelToCoords(Mouse::getPosition(mainWindow), view));
+			while (Mouse::isButtonPressed(Mouse::Button::Left))
+			{
+				if (!interruptionChecker.checkInterruption())
+					return nullptr;
+				descr->moveTo(mainWindow.mapPixelToCoords(Mouse::getPosition(mainWindow), view) - deltaDescr);
+				wait.sleep();
+			}
+			return nullptr;
+		}
 		Point* point = find.nearbyConstructedPoint(mainWindow.mapPixelToCoords(Mouse::getPosition(mainWindow), view));
+		Object* object = find.nearbyNotUnitCircleObject(mainWindow.mapPixelToCoords(Mouse::getPosition(mainWindow), view));
 		while (Mouse::isButtonPressed(Mouse::Button::Left))
 		{
 			if (!interruptionChecker.checkInterruption())
 				return nullptr;
-			Vector2f delta = Vector2f(Mouse::getPosition(mainWindow)) - startMousePosition;
+			Vector2f delta = Vector2f(Mouse::getPosition(mainWindow) - startMousePosition);
 			Vector2f Scale;
 			Scale.x = view.getSize().x / mainWindow.getSize().x;
 			Scale.y = view.getSize().y / mainWindow.getSize().y;
@@ -39,6 +54,15 @@ Button moveButton = Button(&mainWindow,
 				view.setCenter(startPosition - delta);
 			}
 			wait.sleep();
+		}
+		if (object)
+		{
+			const int clickTime = 200;
+			Vector2i delta = Mouse::getPosition(mainWindow) - startMousePosition;
+			if (sqrt(delta.x * delta.x + delta.y * delta.y) < epsilon && clock.getElapsedTime().asMilliseconds() < clickTime)
+			{
+				object->switchDescription(mainWindow.mapPixelToCoords(Mouse::getPosition(mainWindow), view));
+			}
 		}
 		return nullptr;
 	});
@@ -814,6 +838,18 @@ Button debugButton = Button(&mainWindow,
 		object->printExpr();
 	});
 
+Description* Finder::nearbyDescription(Vector2f mousePosition)
+{
+	for (Description* descr : Drawer::allDescriptions)
+	{
+		if (descr->contains(mousePosition))
+		{
+			return descr;
+		}
+	}
+	return nullptr;
+}
+
 Object* Finder::nearbyNotUnitCircleObject(Vector2f mousePosition)
 {
 	float lastDistancePoint = INFINITY;
@@ -842,7 +878,7 @@ Object* Finder::nearbyNotUnitCircleObject(Vector2f mousePosition)
 			}
 		}
 	}
-	if (lastDistanceLine < lastDistancePoint / 2)
+	if (lastDistanceLine < lastDistancePoint / 5)
 	{
 		return nearestObjectLine;
 	}

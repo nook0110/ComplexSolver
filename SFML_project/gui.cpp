@@ -503,7 +503,7 @@ Description::Description(std::string filePath)
 	sprite.setScale(
 		size.x / sprite.getLocalBounds().width,
 		size.y / sprite.getLocalBounds().height);
-	Drawer::allDescriptions.push_back(this);
+	Drawer::allDescriptions.push_front(this);
 }
 
 Description::~Description()
@@ -511,11 +511,21 @@ Description::~Description()
 	Drawer::allDescriptions.remove(this);
 }
 
+bool Description::contains(Vector2f point)
+{
+	return background.getGlobalBounds().contains(point);
+}
+
 void Description::moveTo(Vector2f position)
 {
 	Description::position = position;
 	sprite.setPosition(position);
 	background.setPosition(position);
+}
+
+Vector2f Description::getDelta(Vector2f position)
+{
+	return position - background.getPosition();
 }
 
 void Description::draw()
