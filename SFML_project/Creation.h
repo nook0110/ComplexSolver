@@ -51,7 +51,7 @@ private:
 				{
 				}
 			}
-			
+
 		}
 		});
 public:
@@ -60,13 +60,13 @@ public:
 };
 
 class Object;
-class Parametr;
+class Description;
 class TextBox;
 class DialogBox;
 class Drawer
 {
 	static void drawObjects();
-	static void drawTextBoxes();
+	static void drawDescriptions();
 	static void drawDialogBox();
 	static void resizeMenu(Event event);
 	static void updateMenu();
@@ -75,8 +75,7 @@ class Drawer
 public:
 	Drawer() = delete;
 	static std::list<Object*> allVisibleObjects;
-	static std::list<Parametr*> allParametrs;
-	static std::list<TextBox*> allTextBoxes;
+	static std::list<Description*> allDescriptions;
 	static DialogBox* dialogBox;
 	static void updateMenu(Event event);
 	static void update(Event event);

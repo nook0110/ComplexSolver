@@ -87,11 +87,11 @@ void Drawer::drawMenu()
 	mainMenu.draw();
 }
 
-void Drawer::drawTextBoxes()
+void Drawer::drawDescriptions()
 {
-	for (auto textBox : Drawer::allTextBoxes)
+	for (auto description : Drawer::allDescriptions)
 	{
-		textBox->draw();
+		description->draw();
 	}
 }
 
@@ -173,7 +173,8 @@ void Drawer::update(Event event)
 
 void Drawer::draw()
 {
+
 	drawObjects();
-	drawTextBoxes();
+	drawDescriptions();
 	drawDialogBox();
 }

@@ -509,7 +509,7 @@ Button scalarButton = Button(&mainWindow,
 				continue;
 			}
 		}
-		ScalarBox* dialogBox = new ScalarBox(&mainWindow);
+		ScalarBox* dialogBox = new ScalarBox();
 		while (!dialogBox->isFinished())
 		{
 			if (!checker.checkInterruption())

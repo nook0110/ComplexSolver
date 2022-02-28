@@ -4,6 +4,7 @@
 #include "gui.h"
 #include "algebraic.h"
 #include "Creation.h"
+#include "Printer.h"
 
 #include <iostream>
 //The "heart" of the programm. This is file is about objects.
@@ -46,6 +47,7 @@ struct PointEquation : public Equation
 	PointEquation(Vector2f point);
 };
 
+class Description;
 class ConstructionData;
 //Objects - things that appear on the screen, such as UnitCircle, Circle, Points, Lines
 class Object
@@ -81,12 +83,16 @@ public:
 	virtual double distance(Vector2f point);
 	virtual bool isNearby(Vector2f position) = 0;
 	virtual void draw() = 0;
-	virtual void drawDescription() = 0;
 	void setVisibility(bool newVisibility);
 	void setVisibility();
 	void setColor(Color color);
 	bool getVisibility();
 	bool isOnCircle();
+protected:
+	Description* description;
+	virtual std::string makeTeX();
+public:
+	virtual void drawDescription() = 0;
 };
 
 class Object;
@@ -459,6 +465,7 @@ public:
 	bool isNearby(Vector2f position) override;
 	void draw() override;
 	std::string getLowerCaseName();
+	std::string makeTeX() override;
 	void drawDescription() override;
 };
 

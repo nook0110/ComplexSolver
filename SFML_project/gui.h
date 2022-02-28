@@ -104,7 +104,6 @@ public:
 class DialogBox
 {
 protected:
-	RenderWindow* window;
 	View dialogBoxView;
 	Color color = Color(128, 128, 128);
 	Color shadowColor = Color(32, 32, 32);
@@ -123,7 +122,7 @@ protected:
 	std::string formatIn;
 	bool finished = false;
 public:
-	DialogBox(RenderWindow* window);
+	DialogBox();
 	~DialogBox();
 	void update(Event event);
 	virtual void cin(Event event);
@@ -135,7 +134,7 @@ public:
 class ScalarBox : public DialogBox
 {
 public:
-	ScalarBox(RenderWindow* window);
+	ScalarBox();
 	std::pair<int, int>  getDouble();
 	void cin(Event event) override;
 };
@@ -143,7 +142,7 @@ public:
 class NameBox : public DialogBox
 {
 public:
-	NameBox(RenderWindow* window);
+	NameBox();
 	void cin(Event event) override;
 	std::string getName();
 };
@@ -160,5 +159,20 @@ class TextBox
 	std::string text;
 public:
 	void setText(std::string text);
+	void draw();
+};
+
+class Description
+{
+	Texture texture;
+	Sprite sprite;
+	RectangleShape background;
+	Vector2f position;
+	Vector2f textureSize;
+	const Vector2f backgroundDelta = Vector2f(1, 1);
+public:
+	Description(std::string filePath);
+	~Description();
+	void moveTo(Vector2f position);
 	void draw();
 };

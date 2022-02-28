@@ -1,8 +1,7 @@
 #include "Prover.h"
+
 bool Prover::started, Prover::theorem, Prover::finished;
 std::thread Prover::provingThread;
-std::ofstream Prover::fileTEX;
-std::ofstream Prover::fileDVI;
 
 
 expr determinant(expr& A1, expr& B1, expr& C1, expr& A2, expr& B2, expr& C2, expr& A3, expr& B3, expr& C3)
@@ -33,7 +32,6 @@ bool proveCollinearity(expr A, expr B, expr C)
 	expr detC = A * B_conj - A_conj * B;
 	expr det = detA + detB + detC;
 	det.print();
-	Prover::makeFiles(det.getTEXformat());
 	std::cout << std::endl;
 	expr expanded = det.expand();
 	expanded.print();
@@ -52,21 +50,6 @@ bool proveConcurrency(expr A1, expr B1, expr C1, expr A2, expr B2, expr C2, expr
 bool Prover::getStarted()
 {
 	return started;
-}
-
-void Prover::makeFiles(std::string texText)
-{
-	fileTEX = std::ofstream("Prove.tex");
-	fileTEX << "\\documentclass{article} \n"
-		<< "\\usepackage[utf8]{inputenc} \n"
-		<< "\\usepackage{amsmath,scalerel} \n"
-		<< "\\usepackage{graphicx} \n"
-		<< "\\begin{document} \n";
-	fileTEX << "\\scalebox{50}{$" << texText << "$}";
-	fileTEX << "\n \\end{document}";
-	fileTEX.close();
-	system("latex Prove.tex");
-	system("dvipng Prove.dvi -D 700 -T tight");
 }
 
 bool Prover::getFinished()

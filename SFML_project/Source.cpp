@@ -1,6 +1,7 @@
 #include "gui.h"
 #include "Creation.h"
 #include "Prover.h"
+#include "Printer.h"
 
 #include <iostream>
 #include <iomanip>
@@ -51,6 +52,10 @@ void preInit()
 	view.setViewport(mainWindowRect);
 	view.move(-500, -500);
 	mainWindow.setFramerateLimit(60);
+	system("rd /s /q Textures\\TeX");
+	system("md Textures\\TeX");
+	system("rd /s /q Textures\\Equations");
+	system("md Textures\\Equations");
 }
 
 void menuInit()
@@ -176,6 +181,7 @@ void provingTheProblem()
 
 int main()
 {
+
 	preInit();
 	menuInit();
 

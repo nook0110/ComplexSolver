@@ -335,9 +335,8 @@ void Menu::draw()
 }
 
 DialogBox* Drawer::dialogBox;
-std::list<TextBox*> Drawer::allTextBoxes;
-DialogBox::DialogBox(RenderWindow* window)
-	:window(window)
+std::list<Description*> Drawer::allDescriptions;
+DialogBox::DialogBox()
 {
 	if (Drawer::dialogBox)
 	{
@@ -347,14 +346,14 @@ DialogBox::DialogBox(RenderWindow* window)
 	font.loadFromFile("Textures\\Font\\font.ttf");
 	dialogBox.setFillColor(color);
 	shadow.setFillColor(shadowColor);
-	FloatRect visibleArea(dialogBoxView.getCenter().x - dialogBoxView.getSize().x / 2, dialogBoxView.getCenter().y - dialogBoxView.getSize().y / 2, window->getSize().x * viewport.width, window->getSize().y * viewport.height);
+	FloatRect visibleArea(dialogBoxView.getCenter().x - dialogBoxView.getSize().x / 2, dialogBoxView.getCenter().y - dialogBoxView.getSize().y / 2, mainWindow.getSize().x * viewport.width, mainWindow.getSize().y * viewport.height);
 	dialogBoxView = View(visibleArea);
 }
 
 void DialogBox::update(Event event)
 {
 	FloatRect visibleArea(dialogBoxView.getCenter().x - dialogBoxView.getSize().x / 2, dialogBoxView.getCenter().y - dialogBoxView.getSize().y / 2, event.size.width * viewport.width, event.size.height * viewport.height);
-	window->setView(dialogBoxView = View(visibleArea));
+	mainWindow.setView(dialogBoxView = View(visibleArea));
 }
 
 void DialogBox::cin(Event event)
@@ -364,14 +363,14 @@ void DialogBox::cin(Event event)
 
 void DialogBox::draw()
 {
-	window->setView(dialogBoxView);
+	mainWindow.setView(dialogBoxView);
 	Vector2f position = dialogBoxView.getCenter() - sizeDialogBox / 2.f;
 	dialogBox.setPosition(position);
 	textBox.setPosition(position + textBoxOffset);
 	shadow.setPosition(position + shadowOffset);
-	window->draw(shadow);
-	window->draw(dialogBox);
-	window->draw(textBox);
+	mainWindow.draw(shadow);
+	mainWindow.draw(dialogBox);
+	mainWindow.draw(textBox);
 	Text text;
 	if (textIn.empty())
 	{
@@ -384,7 +383,7 @@ void DialogBox::draw()
 		text.setFillColor(Color::Black);
 	}
 	text.setPosition(position + textBoxOffset + textOffset);
-	window->draw(text);
+	mainWindow.draw(text);
 
 }
 
@@ -398,7 +397,7 @@ DialogBox::~DialogBox()
 	Drawer::dialogBox = nullptr;
 }
 
-ScalarBox::ScalarBox(RenderWindow* window) :DialogBox(window)
+ScalarBox::ScalarBox() :DialogBox()
 {
 	formatIn = "Input: p:q";
 }
@@ -445,7 +444,7 @@ void ScalarBox::cin(Event event)
 	}
 }
 
-NameBox::NameBox(RenderWindow* window) : DialogBox(window)
+NameBox::NameBox() : DialogBox()
 {
 	formatIn = "Enter name...";
 }
@@ -489,4 +488,38 @@ void TextBox::setText(std::string text)
 
 void TextBox::draw()
 {
+}
+
+Description::Description(std::string filePath)
+{
+	texture.loadFromFile(filePath);
+	texture.setSmooth(true);
+	sprite.setTexture(texture);
+	Vector2f size = Vector2f(texture.getSize()) / 3.f;
+	background.setOrigin(backgroundDelta);
+	background.setSize(size + backgroundDelta*2.f);
+	background.setFillColor(Color::Black);
+	sprite.setScale(1 / sprite.getScale().x, 1 / sprite.getScale().y); // Scaling Sprite to 1*1;
+	sprite.setScale(
+		size.x / sprite.getLocalBounds().width,
+		size.y / sprite.getLocalBounds().height);
+	Drawer::allDescriptions.push_back(this);
+}
+
+Description::~Description()
+{
+	Drawer::allDescriptions.remove(this);
+}
+
+void Description::moveTo(Vector2f position)
+{
+	Description::position = position;
+	sprite.setPosition(position);
+	background.setPosition(position);
+}
+
+void Description::draw()
+{
+	mainWindow.draw(background);
+	mainWindow.draw(sprite);
 }

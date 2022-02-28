@@ -14,6 +14,10 @@ Object::~Object()
 {
 	erase();
 	delete construction;
+	if (description)
+	{
+		delete description;
+	}
 	deleteChildren();
 }
 
@@ -97,6 +101,11 @@ void Object::erase()
 bool Object::isOnCircle()
 {
 	return dynamic_cast<OnCircle*>(construction);
+}
+
+std::string Object::makeTeX()
+{
+	return std::string();
 }
 
 UnitCircle* UnitCircle::unitCircle = nullptr;
@@ -471,7 +480,7 @@ bool Point::isNearby(Vector2f position)
 
 void Point::setName()
 {
-	NameBox nameBox(&mainWindow);
+	NameBox nameBox;
 	while (!nameBox.isFinished())
 	{
 		std::this_thread::sleep_for(std::chrono::nanoseconds(1000));
@@ -487,10 +496,21 @@ void Point::draw()
 	shape.setFillColor(getColor());
 	mainWindow.draw(shape);
 	mainWindow.draw(nameText);
+	drawDescription();
+}
+
+std::string Point::makeTeX()
+{
+	return dynamic_cast<ConstructionPoint*>(construction)->coord.getTEXformat();
 }
 
 void Point::drawDescription()
 {
+	if (!description)
+	{
+		description = new Description(Printer::makeTexture(makeTeX(),getLowerCaseName()));
+		description->moveTo(shape.getPosition() + Vector2f(0,textSize));
+	}
 }
 
 std::string Point::getLowerCaseName()
