@@ -1,10 +1,7 @@
 #include "gui.h"
 
 
-extern RenderWindow mainWindow;
-extern View view;
 
-extern MODES Mousemode;
 
 void Button::updateSprite()
 {

@@ -7,6 +7,7 @@
 class Menu;
 extern Menu mainMenu;
 extern RenderWindow mainWindow;
+extern std::mutex objectDestructionMutex;
 
 class Object;
 //Checks if mode has been changed

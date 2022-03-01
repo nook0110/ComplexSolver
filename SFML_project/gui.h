@@ -7,7 +7,10 @@ using namespace sf;
 
 extern Event event;
 extern FloatRect mainWindowRect;
+extern RenderWindow mainWindow;
+extern View view;
 
+extern MODES Mousemode;
 
 class Object;
 //Button is a clickable object on the screen.

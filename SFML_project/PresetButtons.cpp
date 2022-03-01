@@ -1,10 +1,6 @@
 #include "PresetButtons.h"
 using namespace sf;
 
-extern RenderWindow mainWindow;//
-extern View view;//
-extern MODES Mousemode;//
-extern Menu mainMenu;
 
 std::list<Object*> Drawer::allVisibleObjects;
 
@@ -584,8 +580,10 @@ Button deleteButton = Button(&mainWindow,
 		Object* object = find.nearbyNotUnitCircleObject(mousePosition);
 		if (object)
 		{
+			objectDestructionMutex.lock();
 			delete object;
 			object = nullptr;
+			objectDestructionMutex.unlock();
 		}
 		return nullptr;
 	});
@@ -612,12 +610,14 @@ Button clearButton = Button(&mainWindow,
 	"Textures\\Button_textures\\ClearButton.jpg",
 	MODE_CLEAR, []()->Object* {
 		Waiter wait;
+		objectDestructionMutex.lock();
 		while (Drawer::allVisibleObjects.size() > 1)
 		{
 			auto object = *prev(Drawer::allVisibleObjects.end());
 			delete object;
 			object = nullptr;
 		}
+		objectDestructionMutex.unlock();
 		wait.sleep();
 		return nullptr;
 	});

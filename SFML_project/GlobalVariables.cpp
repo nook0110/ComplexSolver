@@ -8,3 +8,5 @@ double const epsilon = 30; //In pixels
 FloatRect mainWindowRect(0.f, 0.3f, 1.0f, 1.0f);
 Menu mainMenu(&mainWindow);
 MODES Mousemode = MODE_NOTHING;
+std::mutex objectDestructionMutex;
+

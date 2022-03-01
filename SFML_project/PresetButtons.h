@@ -4,6 +4,8 @@
 #include "Prover.h"
 //Preset of Buttons with functions
 extern FloatRect mainWindowRect;
+
+
 class UnitCircle;
 class InterruptionChecker
 {

@@ -427,6 +427,7 @@ void Point::Init()
 {
 	font.loadFromFile("Textures\\Font\\font.ttf");
 	nameText.setFillColor(textColor);
+	nameText.setScale(textScale);
 	equation = new PointEquation(Vector2f(0, 0));
 	shape.setOrigin(pointSize, pointSize);
 	shape.setFillColor(Color::Black);
@@ -520,7 +521,6 @@ void Point::setName()
 	}
 	pointName = nameBox.getName();
 	nameText = Text(pointName, font, textSize);
-	nameText.setFillColor(Color::Black);
 }
 
 void Point::draw()
@@ -812,12 +812,13 @@ CenterPoint::CenterPoint() : Point()
 	pointName = "O";
 	font.loadFromFile("Textures\\Font\\font.ttf");
 	nameText = Text(pointName, font, textSize);
-	nameText.setFillColor(Color::Black);
+	nameText.setFillColor(textColor);
 	construction = new Center(this);
 	equation = new PointEquation(Vector2f(0, 0));
 	shape.setOrigin(pointSize, pointSize);
 	shape.setFillColor(Color::Black);
 	Drawer::allVisibleObjects.push_front(this);
+	nameText.setScale(textScale);
 }
 
 void CenterPoint::reposition()

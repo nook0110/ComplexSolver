@@ -16,6 +16,7 @@ extern double const unitSeg;
 extern std::thread Creator;
 extern MODES Mousemode;
 extern RenderWindow mainWindow;
+extern View view;
 class LineEquation;
 class PointEquation;
 
@@ -432,8 +433,9 @@ class Point : public Object
 protected:
 	std::string pointName;
 	Font font;
-	unsigned int textSize = 20;
-	Color textColor = Color(0, 0, 255);
+	unsigned int textSize = 100;
+	Vector2f textScale = Vector2f(0.2f, 0.2f);
+	Color textColor = Color::Black;
 	Text nameText;
 	Point();
 	const double pointSize = unitSeg / 30;

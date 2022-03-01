@@ -33,9 +33,6 @@
     <ClCompile Include="gui.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="GlobalVariables.cpp">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
     <ClCompile Include="eq_construct.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
@@ -49,6 +46,9 @@
       <Filter>Исходные файлы</Filter>
     </ClCompile>
     <ClCompile Include="Printer.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="GlobalVariables.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>

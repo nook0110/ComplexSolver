@@ -1,5 +1,6 @@
 #include "Creation.h"
 
+
 MODES Checker::getLast()
 {
 	return last;
@@ -173,8 +174,9 @@ void Drawer::update(Event event)
 
 void Drawer::draw()
 {
-
+	objectDestructionMutex.lock();
 	drawObjects();
+	objectDestructionMutex.unlock();
 	drawDescriptions();
 	drawDialogBox();
 }
