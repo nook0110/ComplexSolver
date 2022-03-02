@@ -141,11 +141,6 @@ void Drawer::updateMenu()
 	}
 }
 
-void Drawer::resizeTextBoxes(Event event)
-{
-
-}
-
 void Drawer::resizeDialogBox(Event event)
 {
 	if (dialogBox)
@@ -160,7 +155,6 @@ void Drawer::update(Event event)
 	switch (event.type)
 	{
 	case Event::Resized:
-		resizeTextBoxes(event);
 		resizeDialogBox(event);
 		break;
 	case Event::TextEntered:

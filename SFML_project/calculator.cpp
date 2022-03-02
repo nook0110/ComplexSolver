@@ -49,6 +49,15 @@ expr_ptr operationNode::add(op_ptr& secondOp)
 	{
 		return create(secondOp, shared_from_base<operationNode>(), operationType::ADDITION);
 	}
+	if (operation == operationType::DIVISION && secondOp->operation == operationType::DIVISION)
+	{
+		expr_ptr diff = right->substract(secondOp->right);
+		if (diff->checkZeroEquality())
+		{
+			expr_ptr nom = left->add(secondOp->left);
+			return nom->divide(right);
+		}
+	}
 	return create(shared_from_base<operationNode>(), secondOp, operationType::ADDITION);
 }
 
@@ -424,7 +433,14 @@ const std::string calc::monomial::getTEXformat() const
 	for (const auto& deg : product)
 	{
 		bool conjugationMark = deg.first->hasConjugationMark;
-		result += (conjugationMark ? "\\overline{" : "") + deg.first->name + (deg.second == 1 ? "" : "^" + std::to_string(deg.second)) + (conjugationMark ? "}" : "");
+		std::string name_index;
+		if (deg.first->name.size() == 1)
+			name_index = deg.first->name;
+		else
+		{
+			name_index = deg.first->name.substr(0, 1) + "_{" + deg.first->name.substr(1) + "}";
+		}
+		result += (conjugationMark ? "\\overline{" : "") + name_index + (deg.second == 1 ? "" : "^" + std::to_string(deg.second)) + (conjugationMark ? "}" : "");
 	}
 	return result;
 }

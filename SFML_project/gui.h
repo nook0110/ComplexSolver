@@ -3,6 +3,9 @@
 #include "WrapMouse.h"
 #include "Creation.h"
 #include<iostream>
+
+//File about GUI(graphical user interface): Menu, Buttons, Dialog Boxes, Descriptions
+
 using namespace sf;
 
 extern Event event;
@@ -94,6 +97,7 @@ private:
 public:
 	void setViewport(FloatRect viewport);
 	Menu(RenderWindow* window);
+	// Resize menu
 	void update(Event);
 	bool mouseOnMenu();
 	void pushButton(Button* newButton, int layerPB);
@@ -127,21 +131,27 @@ protected:
 public:
 	DialogBox();
 	~DialogBox();
+	// Resize DialogBox
 	void update(Event event);
+	// Cin into the box
 	virtual void cin(Event event);
 	void draw();
+	// Returns if "Enter" was entered
 	bool isFinished();
 
 };
 
+// A box to input to numbers: "p:q"
 class ScalarBox : public DialogBox
 {
 public:
 	ScalarBox();
+	//Returns two numbers p and q
 	std::pair<int, int>  getDouble();
 	void cin(Event event) override;
 };
 
+// A box to name Point
 class NameBox : public DialogBox
 {
 public:
@@ -165,6 +175,7 @@ public:
 	void draw();
 };
 
+// A LaTeX description of an Object
 class Description
 {
 	Sprite sprite;
@@ -178,6 +189,7 @@ public:
 	~Description();
 	bool contains(Vector2f point);
 	void moveTo(Vector2f position);
+	//Return delta of a (Left-Upper) Corner and Position
 	Vector2f getDelta(Vector2f position);
 	void draw();
 };

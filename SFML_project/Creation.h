@@ -4,6 +4,9 @@
 #include <thread>
 #include "Object.h"
 #include "gui.h" 
+
+//Creation objects and drawing them
+
 class Menu;
 extern Menu mainMenu;
 extern RenderWindow mainWindow;
@@ -21,9 +24,6 @@ public:
 };
 
 //Changes the thread with thread that creates another object
-//Use operator () to run thread or check if thread is needed to be changed
-
-
 class Creation
 {
 	Creation();
@@ -64,6 +64,7 @@ class Object;
 class Description;
 class TextBox;
 class DialogBox;
+//Draws everything on the screen and updates it
 class Drawer
 {
 	static void drawObjects();
@@ -71,15 +72,21 @@ class Drawer
 	static void drawDialogBox();
 	static void resizeMenu(Event event);
 	static void updateMenu();
-	static void resizeTextBoxes(Event event);
 	static void resizeDialogBox(Event event);
 public:
 	Drawer() = delete;
+	//List of all objects
 	static std::list<Object*> allVisibleObjects;
+	//List of all descriptions
 	static std::list<Description*> allDescriptions;
+	//Dialog box (Only 1 cfn be on the screen);
 	static DialogBox* dialogBox;
+	//Updates menu(Resize, Clicl);
 	static void updateMenu(Event event);
+	//Updates dialog box (Resize and cin);
 	static void update(Event event);
+	//Draws all objects
 	static void draw();
+	//Draw menu
 	static void drawMenu();
 };

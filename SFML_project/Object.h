@@ -7,7 +7,8 @@
 #include "Printer.h"
 
 #include <iostream>
-//The "heart" of the programm. This is file is about objects.
+
+//The "heart" of the programm. This file is about objects.
 
 using namespace sf;
 
@@ -56,6 +57,7 @@ class Object
 private:
 	std::list<Object*> children;
 protected:
+	//Update children position
 	void reposeChildren();
 	Equation* equation;
 private:
@@ -63,6 +65,7 @@ private:
 public:
 	void eraseChild(Object* child);
 	void addChild(Object* child);
+	//Delete all nullptr-s in Children list
 	void clearChildren();
 	Equation* getEquation();
 	virtual ~Object();
@@ -91,6 +94,7 @@ public:
 	bool isOnCircle();
 protected:
 	Description* description;
+	//If empty - No File created
 	std::string equationPath;
 	virtual std::string makeTeX();
 public:
@@ -468,6 +472,7 @@ public:
 	Point(Point* first, Point* second, Point* third);
 	double distance(Vector2f point);
 	bool isNearby(Vector2f position) override;
+	bool contains(Vector2f position);
 	void draw() override;
 	std::string getLowerCaseName();
 	std::string makeTeX() override;

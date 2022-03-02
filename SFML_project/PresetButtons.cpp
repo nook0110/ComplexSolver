@@ -878,7 +878,11 @@ Object* Finder::nearbyNotUnitCircleObject(Vector2f mousePosition)
 			}
 		}
 	}
-	if (lastDistanceLine < lastDistancePoint / 5)
+	if (nearestObjectPoint && dynamic_cast<Point*>(nearestObjectPoint)->contains(mousePosition))
+	{
+		return nearestObjectPoint;
+	}
+	if (lastDistanceLine < lastDistancePoint)
 	{
 		return nearestObjectLine;
 	}
@@ -919,12 +923,12 @@ Object* Finder::nearbyObject(Vector2f mousePosition)
 	UnitCircle* unitCircle = UnitCircle::getInstance();
 	if (unitCircle->isNearby(mousePosition))
 	{
-		if (unitCircle->distance(mousePosition) < lastDistancePoint / 2)
+		if (unitCircle->distance(mousePosition) < lastDistancePoint)
 		{
 			return unitCircle;
 		}
 	}
-	if (lastDistanceLine < lastDistancePoint / 2)
+	if (lastDistanceLine < lastDistancePoint)
 	{
 		return nearestObjectLine;
 	}

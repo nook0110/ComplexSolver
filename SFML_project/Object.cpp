@@ -512,6 +512,11 @@ bool Point::isNearby(Vector2f position)
 	return distance(position) < epsilon;
 }
 
+bool Point::contains(Vector2f position)
+{
+	return shape.getGlobalBounds().contains(position);
+}
+
 void Point::setName()
 {
 	NameBox nameBox;
