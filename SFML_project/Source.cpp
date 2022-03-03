@@ -33,6 +33,8 @@ extern Button projectionButton;
 extern Button parallelButton;
 extern Button pointBetweenPoints;
 
+extern Button switchButton;
+
 extern Button switchTriangleButton;
 extern Button orthocenterButton;
 extern Button barycenterButton;
@@ -85,11 +87,11 @@ void menuInit()
 	//mainMenu.pushButton(&proveConstructionButton, 1);
 	mainMenu.pushButton(&concurrencyOfLines, 1);
 	mainMenu.pushButton(&ñollinearityOfPoints, 1);
-	mainMenu.pushButton(&switchConstructionButton, 1);
+	mainMenu.pushButton(&switchButton, 1);
 
 	mainMenu.pushButton(&orthocenterButton, 2);
 	mainMenu.pushButton(&barycenterButton, 2);
-	mainMenu.pushButton(&switchTriangleButton, 2);
+	mainMenu.pushButton(&switchButton, 2);
 }
 
 void constructingTheDrawing()

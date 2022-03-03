@@ -5,7 +5,7 @@ using namespace sf;
 std::list<Object*> Drawer::allVisibleObjects;
 
 Button moveButton = Button(&mainWindow,
-	"Textures\\Button_textures\\MoveButton.jpg", MODE_MOVE, []()->Object* {
+	"Textures\\Button_textures\\Move.png", MODE_MOVE, []()->Object* {
 		Waiter wait;
 		InterruptionChecker interruptionChecker;
 		Finder find;
@@ -343,7 +343,7 @@ Button symmetryButton = Button(&mainWindow,
 	});
 
 Button rotateLeftButton = Button(&mainWindow,
-	"Textures\\Button_textures\\Test.jpg",
+	"Textures\\Button_textures\\RotateLeft.png",
 	MODE_ROTATION_LEFT, []()->Object* {
 		Waiter wait;
 		Finder find;
@@ -385,7 +385,7 @@ Button rotateLeftButton = Button(&mainWindow,
 	});
 
 Button rotateRightButton = Button(&mainWindow,
-	"Textures\\Button_textures\\Test.jpg",
+	"Textures\\Button_textures\\RotateRight.png",
 	MODE_ROTATION_RIGHT, []()->Object* {
 		Waiter wait;
 		Finder find;
@@ -545,7 +545,7 @@ Button scalarButton = Button(&mainWindow,
 	});
 
 Button tangentButton = Button(&mainWindow,
-	"Textures\\Button_textures\\TangentButton.jpg",
+	"Textures\\Button_textures\\Tangent.png",
 	MODE_TANGENT, []()->Object* {
 		Waiter wait;
 		Finder find;
@@ -568,7 +568,7 @@ Button tangentButton = Button(&mainWindow,
 	});
 
 Button deleteButton = Button(&mainWindow,
-	"Textures\\Button_textures\\DeleteButton.jpg",
+	"Textures\\Button_textures\\Delete.png",
 	MODE_DELETE, []()->Object* {
 		Waiter wait;
 		Finder find;
@@ -589,7 +589,7 @@ Button deleteButton = Button(&mainWindow,
 	});
 
 Button hideButton = Button(&mainWindow,
-	"Textures\\Button_textures\\HideButton.jpg",
+	"Textures\\Button_textures\\Hide.png",
 	MODE_HIDE, []()->Object* {
 		Waiter wait;
 		Finder find;
@@ -607,7 +607,7 @@ Button hideButton = Button(&mainWindow,
 	});
 
 Button clearButton = Button(&mainWindow,
-	"Textures\\Button_textures\\ClearButton.jpg",
+	"Textures\\Button_textures\\Clear.png",
 	MODE_CLEAR, []()->Object* {
 		Waiter wait;
 		objectDestructionMutex.lock();
@@ -621,16 +621,23 @@ Button clearButton = Button(&mainWindow,
 		wait.sleep();
 		return nullptr;
 	});
+Button switchButton = Button(&mainWindow,
+	"Textures\\Button_textures\\Switch.png",
+	MODE_SWITCH, []()->Object* {
+		mainMenu.switchLayer(0);
+		return nullptr;
+	});
+
 
 Button switchTriangleButton = Button(&mainWindow,
-	"Textures\\Button_textures\\Test.jpg",
+	"Textures\\Button_textures\\SwitchTriangle.png",
 	MODE_SWITCH, []()->Object* {
 		mainMenu.switchLayer(2);
 		return nullptr;
 	});
 
 Button orthocenterButton = Button(&mainWindow,
-	"Textures\\Button_textures\\Test.jpg",
+	"Textures\\Button_textures\\Orthocenter.png",
 	MODE_ORTHOCENTER, []()->Object* {
 		Waiter wait;
 		Finder find;
@@ -654,7 +661,7 @@ Button orthocenterButton = Button(&mainWindow,
 	});
 
 Button barycenterButton = Button(&mainWindow,
-	"Textures\\Button_textures\\Test.jpg",
+	"Textures\\Button_textures\\Barycenter.png",
 	MODE_BARYCENTER, []()->Object* {
 		Waiter wait;
 		Finder find;
@@ -678,14 +685,14 @@ Button barycenterButton = Button(&mainWindow,
 	});
 
 Button switchConstructionButton = Button(&mainWindow,
-	"Textures\\Button_textures\\Test.jpg",
+	"Textures\\Button_textures\\SwitchConstruction.png",
 	MODE_SWITCH, []()->Object* {
 		mainMenu.switchLayer(1);
 		return nullptr;
 	});
 
 Button fourPointsOnACircle = Button(&mainWindow,
-	"Textures\\Button_textures\\Test.jpg",
+	"Textures\\Button_textures\\Test.png",
 	MODE_FOUR_POINTS, []()->Object* {
 		Waiter wait;
 		Finder find;
@@ -710,7 +717,7 @@ Button fourPointsOnACircle = Button(&mainWindow,
 	});
 
 Button twoLineSegments = Button(&mainWindow,
-	"Textures\\Button_textures\\Test.jpg",
+	"Textures\\Button_textures\\Test.png",
 	MODE_TWO_LINE_SEGMENTS, []()->Object* {
 		Waiter wait;
 		Finder find;
@@ -735,7 +742,7 @@ Button twoLineSegments = Button(&mainWindow,
 	});
 
 Button concurrencyOfLines = Button(&mainWindow,
-	"Textures\\Button_textures\\Test.jpg",
+	"Textures\\Button_textures\\Test.png",
 	MODE_THREE_LINES, []()->Object* {
 		Waiter wait;
 		Finder find;
@@ -760,7 +767,7 @@ Button concurrencyOfLines = Button(&mainWindow,
 	});
 
 Button ñollinearityOfPoints = Button(&mainWindow,
-	"Textures\\Button_textures\\Test.jpg",
+	"Textures\\Button_textures\\Collinearity.png",
 	MODE_THREE_POINTS, []()->Object* {
 		Waiter wait;
 		Finder find;
@@ -787,7 +794,7 @@ Button ñollinearityOfPoints = Button(&mainWindow,
 	});
 
 Button proveConstructionButton = Button(&mainWindow,
-	"Textures\\Button_textures\\Test.jpg",
+	"Textures\\Button_textures\\Test.png",
 	MODE_PROVE_CONSTRUCTION, []()->Object* {
 		Waiter wait;
 		Finder find;
@@ -820,7 +827,7 @@ Button proveConstructionButton = Button(&mainWindow,
 	});
 
 Button debugButton = Button(&mainWindow,
-	"Textures\\Button_textures\\Test.jpg",
+	"Textures\\Button_textures\\Test.png",
 	MODE_PROVE_CONSTRUCTION, []()->Object* {
 		Waiter wait;
 		Finder find;

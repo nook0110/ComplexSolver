@@ -300,7 +300,7 @@ void Line::draw()
 
 	if (dotted)
 	{
-		const int stripes = 50;
+		const int stripes = 75;
 		Vertex line[stripes + 1];
 		for (int i = 0; i <= stripes; i++)
 		{
