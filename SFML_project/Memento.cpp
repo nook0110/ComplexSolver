@@ -53,7 +53,7 @@ void Memento::nextMemento()
 	switch (mem->getChange())
 	{
 	case CHANGES::ADDITION:
-		obj->add();
+		Drawer::allVisibleObjects.push_back(obj);
 		break;
 	case CHANGES::DELETION:
 		obj->del();
