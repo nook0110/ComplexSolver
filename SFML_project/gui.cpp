@@ -441,6 +441,24 @@ void ScalarBox::cin(Event event)
 	}
 }
 
+std::map<std::string, bool> NameBox::names;
+
+std::string NameBox::newName(std::string name)
+{
+	auto lowCaseName = name;
+	std::transform(lowCaseName.begin(), lowCaseName.end(), lowCaseName.begin(),
+		[](unsigned char c) { return std::tolower(c); });
+	if (names.count(lowCaseName))
+	{
+		return newName(name + "1");
+	}
+	else
+	{
+		names[lowCaseName] = 1;
+		return name;
+	}
+}
+
 NameBox::NameBox() : DialogBox()
 {
 	formatIn = "Enter name...";
@@ -475,7 +493,7 @@ void NameBox::cin(Event event)
 
 std::string NameBox::getName()
 {
-	return textIn;
+	return newName(textIn);
 }
 
 void TextBox::setText(std::string text)
@@ -487,7 +505,8 @@ void TextBox::draw()
 {
 }
 
-Description::Description(std::string filePath)
+Description::Description(std::string filePath, std::string name)
+	:name(name)
 {
 	texture.loadFromFile(filePath);
 	texture.setSmooth(true);
@@ -506,6 +525,7 @@ Description::Description(std::string filePath)
 Description::~Description()
 {
 	Drawer::allDescriptions.remove(this);
+	deleteFiles(name);
 }
 
 bool Description::contains(Vector2f point)

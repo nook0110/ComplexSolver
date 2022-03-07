@@ -580,10 +580,7 @@ Button deleteButton = Button(&mainWindow,
 		Object* object = find.nearbyNotUnitCircleObject(mousePosition);
 		if (object)
 		{
-			objectDestructionMutex.lock();
-			delete object;
-			object = nullptr;
-			objectDestructionMutex.unlock();
+			Drawer::delObject(object);
 		}
 		return nullptr;
 	});
@@ -610,14 +607,11 @@ Button clearButton = Button(&mainWindow,
 	"Textures\\Button_textures\\Clear.png",
 	MODE_CLEAR, []()->Object* {
 		Waiter wait;
-		objectDestructionMutex.lock();
 		while (Drawer::allVisibleObjects.size() > 1)
 		{
 			auto object = *prev(Drawer::allVisibleObjects.end());
-			delete object;
-			object = nullptr;
+			Drawer::delObject(object);
 		}
-		objectDestructionMutex.unlock();
 		wait.sleep();
 		return nullptr;
 	});
@@ -726,7 +720,7 @@ Button twoLineSegments = Button(&mainWindow,
 		for (int i = 0; i < fourTimes; ++i)
 		{
 			Point* point = nullptr;
-			while (!point)
+			while (!point) 
 			{
 				if (wait.untilClick())
 				{
@@ -742,7 +736,7 @@ Button twoLineSegments = Button(&mainWindow,
 	});
 
 Button concurrencyOfLines = Button(&mainWindow,
-	"Textures\\Button_textures\\Test.png",
+	"Textures\\Button_textures\\Concurrency.png",
 	MODE_THREE_LINES, []()->Object* {
 		Waiter wait;
 		Finder find;
@@ -926,6 +920,10 @@ Object* Finder::nearbyObject(Vector2f mousePosition)
 				nearestObjectLine = object;
 			}
 		}
+	}
+	if (nearestObjectPoint && dynamic_cast<Point*>(nearestObjectPoint)->contains(mousePosition))
+	{
+		return nearestObjectPoint;
 	}
 	UnitCircle* unitCircle = UnitCircle::getInstance();
 	if (unitCircle->isNearby(mousePosition))

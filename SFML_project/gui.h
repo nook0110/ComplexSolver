@@ -3,6 +3,7 @@
 #include "WrapMouse.h"
 #include "Creation.h"
 #include<iostream>
+#include <map>
 
 //File about GUI(graphical user interface): Menu, Buttons, Dialog Boxes, Descriptions
 
@@ -154,7 +155,9 @@ public:
 // A box to name Point
 class NameBox : public DialogBox
 {
+	std::string newName(std::string name);
 public:
+	static std::map<std::string, bool> names;
 	NameBox();
 	void cin(Event event) override;
 	std::string getName();
@@ -184,8 +187,9 @@ class Description
 	Vector2f position = Vector2f();
 	Vector2f size;
 	const Vector2f backgroundDelta = Vector2f(1, 1);
+	std::string name;
 public:
-	Description(std::string filePath);
+	Description(std::string filePath, std::string name);
 	~Description();
 	bool contains(Vector2f point);
 	void moveTo(Vector2f position);

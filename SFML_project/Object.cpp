@@ -119,9 +119,9 @@ void Object::switchDescription(Vector2f position)
 	{
 		if (equationPath.empty())
 		{
-			equationPath = Printer::makeTexture(makeTeX(), getLowerCaseName());
+			equationPath = makeTexture(makeTeX(), getLowerCaseName());
 		}
-		description = new Description(equationPath);
+		description = new Description(equationPath, getLowerCaseName());
 		description->moveTo(position);
 	}
 	else
@@ -129,6 +129,26 @@ void Object::switchDescription(Vector2f position)
 		delete description;
 		description = nullptr;
 	}
+}
+
+void Object::add()
+{
+	if (Drawer::VisibleObjectsContains(this))
+		return;
+	Drawer::allVisibleObjects.push_back(this);
+	for (auto child : children)
+		child->add();
+}
+
+void Object::del()
+{
+	if (description)
+	{
+		delete description;
+	}
+	Drawer::allVisibleObjects.remove(this);
+	for (auto child : children)
+		child->del();
 }
 
 UnitCircle* UnitCircle::unitCircle = nullptr;
@@ -221,7 +241,7 @@ Circle::Circle(Point* first, Point* second, Point* third, Point* fourth)
 	shape.setOutlineColor(getColor());
 	shape.setFillColor(Color(0, 0, 0, 0));
 	reposition();
-	Drawer::allVisibleObjects.push_back(this);
+	Drawer::addObject(this);
 }
 
 double Line::distance(Vector2f point)
@@ -346,7 +366,7 @@ void Line::reposition()
 
 void Line::Init()
 {
-	Drawer::allVisibleObjects.push_back(this);
+	Drawer::addObject(this);
 }
 
 Line::Line()
@@ -371,6 +391,14 @@ Line::Line(Point* first, Point* second)
 	reposition();
 	Init();
 }
+
+//LineSegment::LineSegment(Point* first, Point* second)
+//{
+//	first->addChild(this);
+//	second->addChild(this);
+//	//construction = new Segment(first, second)
+//	//reposition();
+//}
 
 Chord::Chord(UnitPoint* first, UnitPoint* second)
 {
@@ -404,6 +432,11 @@ Point::Point(Point* first, Point* second, std::pair<int, int> masses)
 	Init();
 }
 
+Point::~Point()
+{
+	NameBox::names.erase(getLowerCaseName());
+}
+
 void Point::reposition()
 {
 	construction->recreate(equation);
@@ -432,7 +465,7 @@ void Point::Init()
 	shape.setOrigin(pointSize, pointSize);
 	shape.setFillColor(Color::Black);
 	reposition();
-	Drawer::allVisibleObjects.push_back(this);
+	Drawer::addObject(this);
 }
 
 Point::Point(Vector2f position)
@@ -822,7 +855,7 @@ CenterPoint::CenterPoint() : Point()
 	equation = new PointEquation(Vector2f(0, 0));
 	shape.setOrigin(pointSize, pointSize);
 	shape.setFillColor(Color::Black);
-	Drawer::allVisibleObjects.push_front(this);
+	Drawer::addObject(this);
 	nameText.setScale(textScale);
 }
 

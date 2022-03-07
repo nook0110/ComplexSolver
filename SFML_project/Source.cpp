@@ -126,6 +126,20 @@ void constructingTheDrawing()
 					view.zoom(1 / 1.2);
 				}
 			}
+
+
+
+			if (event.type == Event::KeyPressed)
+			{
+				if (event.key.code == Keyboard::Z && event.key.control)
+				{
+					Memento::previousMemento();
+				}
+				if (event.key.code == Keyboard::Y && event.key.control)
+				{
+					Memento::nextMemento();
+				}
+			}
 		}
 		mainWindow.clear(Color::White);
 		mainWindow.setView(view);

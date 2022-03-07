@@ -10,6 +10,7 @@
 
 //The "heart" of the programm. This file is about objects.
 
+
 using namespace sf;
 
 extern double const epsilon;
@@ -100,6 +101,10 @@ protected:
 public:
 	virtual std::string getLowerCaseName();
 	void switchDescription(Vector2f position);
+
+public:
+	void add();
+	void del();
 };
 
 class Object;
@@ -387,16 +392,16 @@ public:
 	void switchDescription();
 };
 
-class LineSegment : public Object
-{
-	Vertex line[2];
-	void reposition() override;
-public:
-	double distance(Vector2f point);
-	bool isNearby(Vector2f position);
-	LineSegment(Point* first, Point* second);
-	void draw();
-};
+//class LineSegment : public Object
+//{
+//	Vertex line[2];
+//	void reposition() override;
+//public:
+//	double distance(Vector2f point);
+//	bool isNearby(Vector2f position);
+//	LineSegment(Point* first, Point* second);
+//	void draw();
+//};
 
 class Point;
 class Line : public Object
@@ -437,8 +442,8 @@ class Point : public Object
 protected:
 	std::string pointName;
 	Font font;
-	unsigned int textSize = 100;
-	Vector2f textScale = Vector2f(0.2f, 0.2f);
+	unsigned int textSize = 60;
+	Vector2f textScale = Vector2f(0.33f, 0.33f);
 	Color textColor = Color::Black;
 	Text nameText;
 	Point();
@@ -453,7 +458,7 @@ public:
 	//
 	Vector2f getCoordinate();
 	virtual void moveTo(Vector2f coords);
-
+	~Point();
 	// On a plane
 	Point(Vector2f position);
 	// Intersection of two lines

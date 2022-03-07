@@ -162,6 +162,7 @@
     <ClCompile Include="calculator.cpp" />
     <ClCompile Include="eq_construct.cpp" />
     <ClCompile Include="gui.cpp" />
+    <ClCompile Include="Memento.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="Printer.cpp" />
     <ClCompile Include="Prover.cpp" />
@@ -176,6 +177,7 @@
     <ClInclude Include="calculator.h" />
     <ClInclude Include="gui.h" />
     <ClInclude Include="Creation.h" />
+    <ClInclude Include="Memento.h" />
     <ClInclude Include="PresetButtons.h" />
     <ClInclude Include="Printer.h" />
     <ClInclude Include="Prover.h" />

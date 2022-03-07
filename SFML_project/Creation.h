@@ -4,6 +4,7 @@
 #include <thread>
 #include "Object.h"
 #include "gui.h" 
+#include "Memento.h"
 
 //Creation objects and drawing them
 
@@ -77,6 +78,9 @@ public:
 	Drawer() = delete;
 	//List of all objects
 	static std::list<Object*> allVisibleObjects;
+	static bool VisibleObjectsContains(Object* ptr);
+	static void delObject(Object* object);
+	static void addObject(Object* object);
 	//List of all descriptions
 	static std::list<Description*> allDescriptions;
 	//Dialog box (Only 1 cfn be on the screen);

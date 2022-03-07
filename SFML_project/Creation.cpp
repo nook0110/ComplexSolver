@@ -149,6 +149,30 @@ void Drawer::resizeDialogBox(Event event)
 	}
 }
 
+bool Drawer::VisibleObjectsContains(Object* ptr)
+{
+	for (auto obj : allVisibleObjects)
+	{
+		if (obj == ptr)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+void Drawer::delObject(Object* object)
+{
+	new Memento(object, CHANGES::DELETION);
+	object->del();
+}
+
+void Drawer::addObject(Object* object)
+{
+	new Memento(object, CHANGES::ADDITION);
+	object->add();
+}
+
 void Drawer::update(Event event)
 {
 
