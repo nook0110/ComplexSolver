@@ -2,17 +2,18 @@
 std::list<Memento*> Memento::mementos;
 std::list<Memento*>::iterator Memento::it;
 
-Memento::Memento(Object* object, CHANGES change)
-	:object(object), change(change)
+Memento::Memento(Object* object)
+	:object(object)
 {
 	while (!mementos.empty() && prev(mementos.end()) != it)
 	{
 		auto delIt = prev(mementos.end());
 		Memento* mem = (*delIt);
 		objectDestructionMutex.lock();
-		if (mem->getChange() == CHANGES::ADDITION)
+		if (dynamic_cast<MementoDeletion*>(mem))
 		{
 			delete mem->getObject();
+			delete mem;
 		}
 		objectDestructionMutex.unlock();
 		mementos.pop_back();
@@ -29,15 +30,7 @@ void Memento::previousMemento()
 	}
 	Memento* mem = (*it);
 	Object* obj = mem->getObject();
-	switch (mem->getChange())
-	{
-	case CHANGES::ADDITION:
-		obj->del();
-		break;
-	case CHANGES::DELETION:
-		obj->add();
-		break;
-	}
+	mem->undoMemento();
 	it--;
 }
 
@@ -50,23 +43,42 @@ void Memento::nextMemento()
 	it++;
 	Memento* mem = (*it);
 	Object* obj = mem->getObject();
-	switch (mem->getChange())
-	{
-	case CHANGES::ADDITION:
-		Drawer::allVisibleObjects.push_back(obj);
-		break;
-	case CHANGES::DELETION:
-		obj->del();
-		break;
-	}
-}
-
-CHANGES Memento::getChange()
-{
-	return change;
+	mem->doMemento();
 }
 
 Object* Memento::getObject()
 {
 	return object;
+}
+
+MementoDeletion::MementoDeletion(Object* object) : Memento(object)
+{
+}
+
+void MementoDeletion::doMemento()
+{
+	NameBox::names[object->getLowerCaseName()] = false;
+	object->del();
+}
+
+void MementoDeletion::undoMemento()
+{
+	NameBox::names[object->getLowerCaseName()] = true;
+	object->add();
+}
+
+MementoAddition::MementoAddition(Object* object) : Memento(object)
+{
+}
+
+void MementoAddition::doMemento()
+{
+	NameBox::names[object->getLowerCaseName()] = true;
+	Drawer::allVisibleObjects.push_back(object);
+}
+
+void MementoAddition::undoMemento()
+{
+	NameBox::names[object->getLowerCaseName()] = false;
+	object->del();
 }

@@ -163,13 +163,13 @@ bool Drawer::VisibleObjectsContains(Object* ptr)
 
 void Drawer::delObject(Object* object)
 {
-	new Memento(object, CHANGES::DELETION);
+	new MementoDeletion(object);
 	object->del();
 }
 
 void Drawer::addObject(Object* object)
 {
-	new Memento(object, CHANGES::ADDITION);
+	new MementoAddition(object);
 	object->add();
 }
 

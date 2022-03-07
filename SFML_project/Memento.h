@@ -3,22 +3,35 @@
 #include <list>
 extern std::mutex objectDestructionMutex;
 
-enum CHANGES
-{
-	ADDITION,
-	DELETION
-};
+
 class Object;
 class Memento
 {
+protected:
 	static std::list<Memento*> mementos;
 	static std::list<Memento*>::iterator it;
-	CHANGES change;
 	Object* object;
+	virtual void doMemento() = 0;
+	virtual void undoMemento() = 0;
 public:
-	Memento(Object* object, CHANGES change);
+	Memento(Object* object);
 	static void previousMemento();
 	static void nextMemento();
-	CHANGES getChange();
 	Object* getObject();
+};
+
+class MementoDeletion : public Memento
+{
+	virtual void doMemento();
+	virtual void undoMemento();
+public:
+	MementoDeletion(Object* object);
+};
+
+class MementoAddition : public Memento
+{
+	virtual void doMemento();
+	virtual void undoMemento();
+public:
+	MementoAddition(Object* object);
 };

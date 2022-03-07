@@ -448,7 +448,7 @@ std::string NameBox::newName(std::string name)
 	auto lowCaseName = name;
 	std::transform(lowCaseName.begin(), lowCaseName.end(), lowCaseName.begin(),
 		[](unsigned char c) { return std::tolower(c); });
-	if (names.count(lowCaseName))
+	if (names[lowCaseName])
 	{
 		return newName(name + "1");
 	}
