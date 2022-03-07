@@ -129,6 +129,8 @@ protected:
 	std::string textIn;
 	std::string formatIn;
 	bool finished = false;
+
+	std::mutex deletion;
 public:
 	DialogBox();
 	~DialogBox();

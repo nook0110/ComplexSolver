@@ -607,11 +607,7 @@ Button clearButton = Button(&mainWindow,
 	"Textures\\Button_textures\\Clear.png",
 	MODE_CLEAR, []()->Object* {
 		Waiter wait;
-		while (Drawer::allVisibleObjects.size() > 1)
-		{
-			auto object = *prev(Drawer::allVisibleObjects.end());
-			Drawer::delObject(object);
-		}
+		Memento::clear();
 		wait.sleep();
 		return nullptr;
 	});

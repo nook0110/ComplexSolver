@@ -146,6 +146,7 @@ void Object::del()
 	{
 		delete description;
 	}
+	NameBox::names[getLowerCaseName()] = false;
 	Drawer::allVisibleObjects.remove(this);
 	for (auto child : children)
 		child->del();
@@ -855,7 +856,7 @@ CenterPoint::CenterPoint() : Point()
 	equation = new PointEquation(Vector2f(0, 0));
 	shape.setOrigin(pointSize, pointSize);
 	shape.setFillColor(Color::Black);
-	Drawer::addObject(this);
+	Drawer::allVisibleObjects.push_front(this);
 	nameText.setScale(textScale);
 }
 

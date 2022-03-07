@@ -17,6 +17,7 @@ public:
 	Memento(Object* object);
 	static void previousMemento();
 	static void nextMemento();
+	static void clear();
 	Object* getObject();
 };
 

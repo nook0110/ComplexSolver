@@ -360,6 +360,7 @@ void DialogBox::cin(Event event)
 
 void DialogBox::draw()
 {
+	deletion.lock();
 	mainWindow.setView(dialogBoxView);
 	Vector2f position = dialogBoxView.getCenter() - sizeDialogBox / 2.f;
 	dialogBox.setPosition(position);
@@ -381,7 +382,7 @@ void DialogBox::draw()
 	}
 	text.setPosition(position + textBoxOffset + textOffset);
 	mainWindow.draw(text);
-
+	deletion.unlock();
 }
 
 bool DialogBox::isFinished()
@@ -391,7 +392,9 @@ bool DialogBox::isFinished()
 
 DialogBox::~DialogBox()
 {
+	deletion.lock();
 	Drawer::dialogBox = nullptr;
+	deletion.unlock();
 }
 
 ScalarBox::ScalarBox() :DialogBox()
