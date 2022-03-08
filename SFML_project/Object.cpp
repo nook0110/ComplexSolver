@@ -21,10 +21,6 @@ Object::~Object()
 	deleteChildren();
 }
 
-void Object::reposition()
-{
-}
-
 void Object::reposeChildren()
 {
 	reposition();
@@ -66,11 +62,6 @@ Color Object::getColor()
 
 void Object::printExpr()
 {
-}
-
-double Object::distance(Vector2f point)
-{
-	return 0.0;
 }
 
 void Object::setVisibility(bool visibility)
@@ -370,8 +361,6 @@ void Line::Init()
 	Drawer::addObject(this);
 }
 
-Line::Line()
-{}
 
 Line::Line(UnitCircle* first, Point* second)
 {
@@ -651,10 +640,6 @@ void CentralProjection::recreate(Equation* equation)
 	*dynamic_cast<PointEquation*>(equation) = PointEquation(projection + delta);
 }
 
-void CentralProjection::moveTo(Vector2f coords)
-{
-}
-
 CentralProjection::~CentralProjection()
 {
 	firstParent->eraseChild(object);
@@ -757,22 +742,11 @@ ConstructionPoint::ConstructionPoint(Object* object) : ConstructionData(object)
 {
 }
 
-void ConstructionPoint::moveTo(Vector2f coords)
-{
-}
-
 ConstructionData::ConstructionData(Object* object)
 	:object(object)
 {
 }
 
-void ConstructionData::recreate(Equation*)
-{
-}
-
-ConstructionData::~ConstructionData()
-{
-}
 
 LineEquation::LineEquation(double A, double B, double C)
 	:A(A), B(B), C(C)
@@ -928,10 +902,6 @@ void Projection::recreate(Equation* equation)
 	PointEquation* pointEquation = dynamic_cast<PointEquation*>(firstParent->getEquation());
 	Vector2f position = projectionOnLine(*lineEquation, *pointEquation);
 	*dynamic_cast<PointEquation*>(equation) = PointEquation(position);
-}
-
-void Projection::moveTo(Vector2f coords)
-{
 }
 
 Projection::~Projection()

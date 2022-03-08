@@ -78,14 +78,14 @@ private:
 public:
 	ConstructionData* construction;
 protected:
-	virtual void reposition();
+	virtual void reposition() = 0;
 	bool visible = true;
 	Color getColor();
 public:
 	//Debug
 	virtual void printExpr();
 	//
-	virtual double distance(Vector2f point);
+	virtual double distance(Vector2f point) = 0;
 	virtual bool isNearby(Vector2f position) = 0;
 	virtual void draw() = 0;
 	void setVisibility(bool newVisibility);
@@ -121,8 +121,8 @@ protected:
 public:
 	//Return equation of the objects 
 	//The equation can be changed if parents were moved
-	virtual void recreate(Equation* equation);
-	virtual ~ConstructionData();
+	virtual void recreate(Equation* equation) = 0;
+	virtual ~ConstructionData() {};
 };
 
 class ConstructionCircle : public ConstructionData
@@ -146,7 +146,7 @@ protected:
 	ConstructionPoint(Object* object);
 public:
 	expr coord;
-	virtual void moveTo(Vector2f coords);
+	virtual void moveTo(Vector2f coords) = 0;
 };
 
 class ConstructionLine : public ConstructionData
@@ -193,6 +193,7 @@ class Rotation90 : public ConstructionPoint
 	int sign;
 public:
 	Rotation90(Object* object, Point* firstParent, Point* secondParent, int sign);
+	void moveTo(Vector2f coords) {};
 	void recreate(Equation* equation) override;
 	~Rotation90();
 };
@@ -206,7 +207,7 @@ class CentralProjection : public ConstructionPoint
 public:
 	CentralProjection(UnitPoint* object, UnitCircle* first, Point* second, UnitPoint* third);
 	void recreate(Equation* equation) override;
-	void moveTo(Vector2f coords) override;
+	void moveTo(Vector2f coords) {};
 	~CentralProjection() override;
 };
 
@@ -217,7 +218,7 @@ class Projection : public ConstructionPoint
 public:
 	Projection(Point* object, Point* first, Line* second);
 	void recreate(Equation* equation) override;
-	void moveTo(Vector2f coords) override;
+	void moveTo(Vector2f coords) {};
 	~Projection() override;
 };
 
@@ -230,6 +231,7 @@ private:
 public:
 	byTwoPointsFixedRatio(Object* object, Point* firstParent, Point* secondParent, std::pair<int, int> masses);
 	~byTwoPointsFixedRatio();
+	void moveTo(Vector2f coords) {};
 	void recreate(Equation* equation) override;
 };
 
@@ -266,6 +268,7 @@ class IntersectionParallelChord : public ConstructionPoint
 public:
 	IntersectionParallelChord(Object* object, UnitCircle* unitCircle, Chord* firstParent, UnitPoint* secondParent);
 	~IntersectionParallelChord();
+	void moveTo(Vector2f coords) {};
 	void recreate(Equation* equation) override;
 };
 
@@ -277,6 +280,7 @@ class IntersectionPerpendicularChord : public ConstructionPoint
 public:
 	IntersectionPerpendicularChord(Object* object, UnitCircle* unitCircle, UnitPoint* firstParent, Chord* secondParent);
 	~IntersectionPerpendicularChord();
+	void moveTo(Vector2f coords) {};
 	void recreate(Equation* equation) override;
 };
 
@@ -284,6 +288,7 @@ class Pole : public ConstructionPoint
 {
 	Line* parent;
 	void recreate(Equation* equation) override;
+	void moveTo(Vector2f coords) {};
 };
 
 class Orthocenter : public ConstructionPoint
@@ -294,6 +299,7 @@ class Orthocenter : public ConstructionPoint
 public:
 	Orthocenter(Object* object, UnitPoint* firstParent, UnitPoint* secondParent, UnitPoint* thirdParent);
 	~Orthocenter();
+	void moveTo(Vector2f coords) {};
 	void recreate(Equation* equation) override;
 };
 
@@ -305,6 +311,7 @@ class Barycenter : public ConstructionPoint
 public:
 	Barycenter(Object* object, Point* firstParent, Point* secondParent, Point* thirdParent);
 	~Barycenter();
+	void moveTo(Vector2f coords) {};
 	void recreate(Equation* equation) override;
 };
 
@@ -373,6 +380,7 @@ private:
 public:
 	double distance(Vector2f point);
 	static UnitCircle* getInstance();
+	void reposition() {};
 	bool isNearby(Vector2f position);
 	void draw();
 	void switchDescription();
@@ -414,7 +422,7 @@ public:
 	//DEBUG
 	void printExpr();
 	//
-	Line();
+	Line() {};
 	//By two points
 	Line(Point* first, Point* second);
 	//Tangent
@@ -468,7 +476,7 @@ public:
 	// Projection on a line
 	Point(Point* point, Line* line);
 	// Point by two points and scalar
-	Point(Point* first, Point* second, std::pair<int,int> masses);
+	Point(Point* first, Point* second, std::pair<int, int> masses);
 	// Rotation on 90 degrees
 	Point(Point* center, Point* preimage, int sign);
 	// Orthocenter
