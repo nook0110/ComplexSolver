@@ -96,7 +96,7 @@ void menuInit()
 
 void constructingTheDrawing()
 {
-	while (mainWindow.isOpen() && !Prover::getFinished())
+	while (mainWindow.isOpen() && !Prover::getStarted())
 	{
 		Event event;
 		while (mainWindow.pollEvent(event))

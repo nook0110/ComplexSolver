@@ -56,13 +56,17 @@ void Memento::previousMemento()
 
 void Memento::nextMemento()
 {
-	if (it == prev(mementos.end()) || it == mementos.end())
+	if (it == mementos.end())
+	{
+		return;
+	}
+	Memento* mem = (*it);
+	mem->doMemento();
+	if (it == prev(mementos.end()))
 	{
 		return;
 	}
 	it++;
-	Memento* mem = (*it);
-	mem->doMemento();
 }
 
 Object* Memento::getObject()
