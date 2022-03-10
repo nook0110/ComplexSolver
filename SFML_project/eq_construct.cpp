@@ -22,7 +22,7 @@ IntersectionOfTwoLines::IntersectionOfTwoLines(Point* object, Line* first, Line*
 		expr C2 = second_line_data->free_coef;
 		result = (C1 * B2 - C2 * B1) / (A1 * B2 - A2 * B1);
 	}
-	coord = result.get_quasi(object->getLowerCaseName());
+	coord = result; // .get_quasi(object->getLowerCaseName());
 }
 
 CentralProjection::CentralProjection(UnitPoint* object, UnitCircle* first, Point* second, UnitPoint* third)
@@ -84,7 +84,7 @@ Projection::Projection(Point* object, Point* first, Line* second)
 	expr A = line_data->z_coef;
 	expr B = line_data->z_conj_coef;
 	expr C = line_data->free_coef;
-	coord = (C - B * m.conj()) / (A * 2);
+	coord = (C - B * m.conj() + m * A) / (A * 2);
 }
 
 OnPlane::OnPlane(Point* object, Vector2f point)
@@ -100,7 +100,7 @@ byTwoPointsFixedRatio::byTwoPointsFixedRatio(Object* object, Point* firstParent,
 	const ConstructionPoint* second_point_data = dynamic_cast<ConstructionPoint*>(secondParent->construction);
 	expr A = first_point_data->coord;
 	expr B = second_point_data->coord;
-	coord = ((A * masses.first) + (B * masses.second)) / expr(make_scalar(masses.first + masses.second));
+	coord = ((A * masses.second) + (B * masses.first)) / expr(make_scalar(masses.first + masses.second));
 }
 
 OnLine::OnLine(Object* object, Point* firstParent, Point* secondParent, float ratio, Line* thirdParent)
