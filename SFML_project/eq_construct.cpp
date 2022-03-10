@@ -22,7 +22,7 @@ IntersectionOfTwoLines::IntersectionOfTwoLines(Point* object, Line* first, Line*
 		expr C2 = second_line_data->free_coef;
 		result = (C1 * B2 - C2 * B1) / (A1 * B2 - A2 * B1);
 	}
-	coord = result; // .get_quasi(object->getLowerCaseName());
+	coord = result.get_quasi(object->getLowerCaseName());
 }
 
 CentralProjection::CentralProjection(UnitPoint* object, UnitCircle* first, Point* second, UnitPoint* third)
@@ -47,7 +47,7 @@ ByTwoPoints::ByTwoPoints(Object* object, Point* firstParent, Point* secondParent
 	expr b_conj = b.conj();
 	z_coef = a_conj - b_conj;
 	z_conj_coef = b - a;
-	free_coef = a * b_conj - a_conj * b;
+	free_coef = a_conj * b - a * b_conj;
 }
 
 ByTwoUnitPoints::ByTwoUnitPoints(Object* object, UnitPoint* firstParent, UnitPoint* secondParent) : ByTwoPoints(object, firstParent, secondParent)

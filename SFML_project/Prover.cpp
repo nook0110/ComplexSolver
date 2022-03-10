@@ -4,7 +4,7 @@ bool Prover::started, Prover::theorem, Prover::finished;
 std::thread Prover::provingThread;
 
 
-expr determinant(expr A1, expr B1, expr C1, expr A2, expr B2, expr C2, expr A3, expr B3, expr C3)
+expr determinant(expr& A1, expr& B1, expr& C1, expr& A2, expr& B2, expr& C2, expr& A3, expr& B3, expr& C3)
 {
 	/*
 		A1 B1 C1
@@ -42,10 +42,9 @@ bool proveCollinearity(expr A, expr B, expr C)
 bool proveConcurrency(expr A1, expr B1, expr C1, expr A2, expr B2, expr C2, expr A3, expr B3, expr C3)
 {
 	expr det = determinant(A1, B1, C1, A2, B2, C2, A3, B3, C3);
-	expr expanded = det.expand();
-	expanded.print();
+	det.print();
 	std::cout << std::endl;
-	return expanded.checkZeroEquality();
+	return det.expand().checkZeroEquality();
 }
 
 bool proveInscription(expr A, expr B, expr C, expr D)
