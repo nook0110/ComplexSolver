@@ -44,6 +44,12 @@ struct LineEquation : public Equation
 	LineEquation(double A, double B, double C);
 };
 
+//struct SegmentEquation : public Equation
+//{
+//	Vector2f pointFirst, pointSecond;
+	
+//};
+
 struct PointEquation : public Equation
 {
 	Vector2f point;
@@ -359,9 +365,9 @@ public:
 
 class Tangent : public ConstructionLine
 {
+public:
 	UnitCircle* firstParent;
 	Point* secondParent;
-public:
 	Tangent(Object* object, UnitCircle* firstParent, Point* secondParent);
 	~Tangent();
 	void recreate(Equation* equation) override;
@@ -450,7 +456,7 @@ class Point : public Object
 protected:
 	std::string pointName;
 	Font font;
-	unsigned int textSize = 60;
+	unsigned int textSize = 90;
 	Vector2f textScale = Vector2f(0.33f, 0.33f);
 	Color textColor = Color::Black;
 	Text nameText;

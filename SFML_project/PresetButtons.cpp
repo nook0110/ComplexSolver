@@ -681,8 +681,8 @@ Button switchConstructionButton = Button(&mainWindow,
 		return nullptr;
 	});
 
-Button fourPointsOnACircle = Button(&mainWindow,
-	"Textures\\Button_textures\\Test.png",
+Button inscription = Button(&mainWindow,
+	"Textures\\Button_textures\\Inscription.png",
 	MODE_FOUR_POINTS, []()->Object* {
 		Waiter wait;
 		Finder find;
@@ -703,6 +703,7 @@ Button fourPointsOnACircle = Button(&mainWindow,
 			points.push_back(point);
 		}
 		new Circle(points[0], points[1], points[2], points[3]);
+		Prover::proveInscription(points[0], points[1], points[2], points[3]);
 		return nullptr;
 	});
 

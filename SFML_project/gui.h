@@ -99,7 +99,7 @@ public:
 	void setViewport(FloatRect viewport);
 	Menu(RenderWindow* window);
 	// Resize menu
-	void update(Event);
+	void update(Event event);
 	bool mouseOnMenu();
 	void pushButton(Button* newButton, int layerPB);
 	bool checkMouse();

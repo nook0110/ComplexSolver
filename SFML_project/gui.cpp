@@ -516,7 +516,7 @@ Description::Description(std::string filePath, std::string name)
 	sprite.setTexture(texture);
 	Vector2f size = Vector2f(texture.getSize()) / 3.f;
 	background.setOrigin(backgroundDelta);
-	background.setSize(size + backgroundDelta*2.f);
+	background.setSize(size + backgroundDelta * 2.f);
 	background.setFillColor(Color::Black);
 	sprite.setScale(1 / sprite.getScale().x, 1 / sprite.getScale().y); // Scaling Sprite to 1*1;
 	sprite.setScale(
@@ -528,7 +528,6 @@ Description::Description(std::string filePath, std::string name)
 Description::~Description()
 {
 	Drawer::allDescriptions.remove(this);
-	deleteFiles(name);
 }
 
 bool Description::contains(Vector2f point)

@@ -19,6 +19,7 @@ Object::~Object()
 		delete description;
 	}
 	deleteChildren();
+	deleteFiles(getLowerCaseName());
 }
 
 void Object::reposeChildren()
@@ -235,6 +236,12 @@ Circle::Circle(Point* first, Point* second, Point* third, Point* fourth)
 	reposition();
 	Drawer::addObject(this);
 }
+
+//void LineSegment::reposition()
+//{
+	//construction->recreate(equation);
+	//SegmentEquation* segmentEquation = dynamic_cast<SegmentEquation*>(equation);
+//}
 
 double Line::distance(Vector2f point)
 {

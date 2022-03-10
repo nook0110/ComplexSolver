@@ -43,7 +43,7 @@ extern Button switchConstructionButton;
 extern Button concurrencyOfLines;
 extern Button ñollinearityOfPoints;
 extern Button proveConstructionButton;
-extern Button fourPointsOnACircle;
+extern Button inscription;
 
 extern Button debugButton;
 
@@ -79,14 +79,14 @@ void menuInit()
 	mainMenu.pushButton(&symmetryButton, 0);
 	mainMenu.pushButton(&clearButton, 0);
 	mainMenu.pushButton(&hideButton, 0);
-	mainMenu.pushButton(&debugButton, 0);
+	//mainMenu.pushButton(&debugButton, 0);
 	mainMenu.pushButton(&switchConstructionButton, 0);
 	mainMenu.pushButton(&switchTriangleButton, 0);
 
-	//mainMenu.pushButton(&fourPointsOnACircle, 1);
 	//mainMenu.pushButton(&proveConstructionButton, 1);
 	mainMenu.pushButton(&concurrencyOfLines, 1);
 	mainMenu.pushButton(&ñollinearityOfPoints, 1);
+	mainMenu.pushButton(&inscription, 1);
 	mainMenu.pushButton(&switchButton, 1);
 
 	mainMenu.pushButton(&orthocenterButton, 2);

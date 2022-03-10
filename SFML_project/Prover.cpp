@@ -47,9 +47,52 @@ bool proveConcurrency(expr A1, expr B1, expr C1, expr A2, expr B2, expr C2, expr
 	return det.expand().checkZeroEquality();
 }
 
+bool proveInscription(expr A, expr B, expr C, expr D)
+{
+	/*
+		cross-ratio
+		(A - B) / (C - B)
+		----------------
+		(A - D) / (C - D)
+		must be real (zero imaginary part)
+	*/
+	expr crossRatio = ((A - B) / (C - B)) / ((A - D) / (C - D));
+	crossRatio.print();
+	std::cout << std::endl;
+	std::cout << crossRatio.getTEXformat() << std::endl;
+	return (crossRatio - crossRatio.conj()).expand().checkZeroEquality();
+}
+
 bool Prover::getStarted()
 {
 	return started;
+}
+
+void Prover::proveInscription(Point* first, Point* second, Point* third, Point* fourth)
+{
+	if (started)
+	{
+		throw "Already proving";
+	}
+	started = true;
+
+	ConstructionPoint* first_point_data = dynamic_cast<ConstructionPoint*>(first->construction);
+	ConstructionPoint* second_point_data = dynamic_cast<ConstructionPoint*>(second->construction);
+	ConstructionPoint* third_point_data = dynamic_cast<ConstructionPoint*>(third->construction);
+	ConstructionPoint* fourth_point_data = dynamic_cast<ConstructionPoint*>(fourth->construction);
+
+	expr A = first_point_data->coord;
+	expr B = second_point_data->coord;
+	expr C = third_point_data->coord;
+	expr D = fourth_point_data->coord;
+
+	provingThread = std::thread(
+		[=]() {
+			Prover::theorem = ::proveInscription(A, B, C, D);
+			finished = true;
+			std::cout << theorem << std::endl;
+		});
+	provingThread.detach();
 }
 
 bool Prover::getFinished()

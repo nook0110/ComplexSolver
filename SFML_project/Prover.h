@@ -9,6 +9,7 @@ class Prover
 public:
 	static void proveCollinearity(Point* first, Point* second, Point* third);
 	static void proveConcurrency(Line* first, Line* second, Line* third);
+	static void proveInscription(Point* first, Point* second, Point* third, Point* fourth);
 	// Returns if provingThread (Proving the theorem) started
 	static bool getStarted();
 	// Returns if provingThread (Proving the theorem) finished
