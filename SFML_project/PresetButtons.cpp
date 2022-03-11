@@ -218,7 +218,7 @@ Button centralProjectionButton = Button(&mainWindow,
 				secondPoint = find.nearbyNewPointOnCircle(mousePosition);
 			}
 		}
-		Point* point = new UnitPoint(UnitCircle::getInstance(), firstPoint, secondPoint);
+		UnitPoint* point = new UnitPoint(UnitCircle::getInstance(), firstPoint, secondPoint);
 		return point;
 	});
 
@@ -712,9 +712,9 @@ Button twoLineSegments = Button(&mainWindow,
 	MODE_TWO_LINE_SEGMENTS, []()->Object* {
 		Waiter wait;
 		Finder find;
-		const int fourTimes = 4;
+		const int twoTimes = 2;
 		std::vector<Point*> points;
-		for (int i = 0; i < fourTimes; ++i)
+		for (int i = 0; i < twoTimes; ++i)
 		{
 			Point* point = nullptr;
 			while (!point) 
@@ -728,7 +728,22 @@ Button twoLineSegments = Button(&mainWindow,
 			}
 			points.push_back(point);
 		}
-
+		new LineSegment(points[0], points[1]);
+		for (int i = 0; i < twoTimes; ++i)
+		{
+			Point* point = nullptr;
+			while (!point)
+			{
+				if (wait.untilClick())
+				{
+					return nullptr;
+				}
+				Vector2f mousePosition = mainWindow.mapPixelToCoords(Mouse::getPosition(mainWindow), view);
+				point = find.nearbyConstructedPoint(mousePosition);
+			}
+			points.push_back(point);
+		}
+		new LineSegment(points[2], points[3]);
 		return nullptr;
 	});
 
@@ -986,7 +1001,7 @@ Point* Finder::nearbyNewPoint(Vector2f mousePosition)
 		return point;
 	}
 	UnitCircle* unitCircle = UnitCircle::getInstance();
-	if (unitCircle->isNearby(mousePosition))
+	if (unitCircle->isNearby(mousePosition) && unitCircle->getVisibility())
 	{
 		return new UnitPoint(unitCircle, mousePosition);
 	}

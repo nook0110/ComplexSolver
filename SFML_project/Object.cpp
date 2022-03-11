@@ -92,7 +92,7 @@ void Object::erase()
 
 bool Object::isOnCircle()
 {
-	return dynamic_cast<OnCircle*>(construction);
+	return dynamic_cast<UnitPoint*>(this);
 }
 
 std::string Object::makeTeX()
@@ -237,12 +237,6 @@ Circle::Circle(Point* first, Point* second, Point* third, Point* fourth)
 	Drawer::addObject(this);
 }
 
-//void LineSegment::reposition()
-//{
-	//construction->recreate(equation);
-	//SegmentEquation* segmentEquation = dynamic_cast<SegmentEquation*>(equation);
-//}
-
 double Line::distance(Vector2f point)
 {
 	LineEquation* lineEquation = dynamic_cast<LineEquation*>(getEquation());
@@ -325,7 +319,7 @@ void Line::draw()
 		{
 			line[i] = Vertex(Vector2f((x2 - x1) * i / stripes + x1, (y2 - y1) * i / stripes + y1), getColor());
 		}
-		mainWindow.draw(line, stripes+1, Lines);
+		mainWindow.draw(line, stripes + 1, Lines);
 	}
 	else
 	{
@@ -389,13 +383,30 @@ Line::Line(Point* first, Point* second)
 	Init();
 }
 
-//LineSegment::LineSegment(Point* first, Point* second)
-//{
-//	first->addChild(this);
-//	second->addChild(this);
-//	//construction = new Segment(first, second)
-//	//reposition();
-//}
+LineSegment::LineSegment(Point* first, Point* second)
+{
+	first->addChild(this);
+	second->addChild(this);
+	equation = new SegmentEquation(Vector2f(),Vector2f());
+	construction = new ByTwoEnds(this, first, second);
+	line[0].color = getColor();
+	line[1].color = getColor();
+	reposition();
+	Drawer::addObject(this);
+}
+
+void LineSegment::reposition()
+{
+	construction->recreate(equation);
+	SegmentEquation* segmentEquation = dynamic_cast<SegmentEquation*>(equation);
+	line[0].position = segmentEquation->pointFirst;
+	line[1].position = segmentEquation->pointSecond;
+}
+
+void LineSegment::draw()
+{
+	mainWindow.draw(line, 2, Lines);
+}
 
 Chord::Chord(UnitPoint* first, UnitPoint* second)
 {
@@ -467,6 +478,7 @@ void Point::Init()
 
 Point::Point(Vector2f position)
 {
+	setColor(movableColor);
 	setName();
 	construction = new OnPlane(this, position);
 	Init();
@@ -483,6 +495,7 @@ Point::Point(Line* first, Line* second)
 
 Point::Point(Line* line, Point* first, Point* second, Vector2f position)
 {
+	setColor(movableColor);
 	setName();
 	construction = new OnLine(this, first, second, 0, line);
 	first->addChild(this);
@@ -549,6 +562,8 @@ bool Point::contains(Vector2f position)
 
 void Point::setName()
 {
+	auto current = Mousemode;
+	Mousemode = MODE_NAMING;
 	NameBox nameBox;
 	while (!nameBox.isFinished())
 	{
@@ -556,6 +571,7 @@ void Point::setName()
 	}
 	pointName = nameBox.getName();
 	nameText = Text(pointName, font, textSize);
+	Mousemode = current;
 }
 
 void Point::draw()
@@ -750,13 +766,18 @@ ConstructionPoint::ConstructionPoint(Object* object) : ConstructionData(object)
 }
 
 ConstructionData::ConstructionData(Object* object)
-	:object(object)
+	: object(object)
 {
 }
 
 
 LineEquation::LineEquation(double A, double B, double C)
-	:A(A), B(B), C(C)
+	: A(A), B(B), C(C)
+{
+}
+
+SegmentEquation::SegmentEquation(Vector2f pointFirst, Vector2f pointSecond)
+	: pointFirst(pointFirst), pointSecond(pointSecond)
 {
 }
 
@@ -1013,6 +1034,28 @@ Rotation90::~Rotation90()
 
 ConstructionLine::ConstructionLine(Object* object) : ConstructionData(object)
 {
+}
+
+ConstructionSegment::ConstructionSegment(Object* object) : ConstructionData(object)
+{
+}
+
+ByTwoEnds::ByTwoEnds(Object* object, Point* first, Point* second)
+	: ConstructionSegment(object), firstParent(first), secondParent(second)
+{
+}
+
+void ByTwoEnds::recreate(Equation* equation)
+{
+	PointEquation* firstEquation = dynamic_cast<PointEquation*>(firstParent->getEquation());
+	PointEquation* secondEquation = dynamic_cast<PointEquation*>(secondParent->getEquation());
+	*dynamic_cast<SegmentEquation*>(equation) = SegmentEquation(firstEquation->point, secondEquation->point);
+}
+
+ByTwoEnds::~ByTwoEnds()
+{
+	firstParent->eraseChild(object);
+	secondParent->eraseChild(object);
 }
 
 ConstructionCircle::ConstructionCircle(Object* object) : ConstructionData(object)

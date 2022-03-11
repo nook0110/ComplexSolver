@@ -11,6 +11,9 @@ using namespace sf;
 enum MODES
 {
 	MODE_NOTHING = 0,
+	MODE_NAMING,
+	MODE_MEMENTING,
+
 	MODE_DELETE,
 	MODE_CLEAR,
 	MODE_MOVE,

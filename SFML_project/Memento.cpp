@@ -41,14 +41,23 @@ void Memento::clear()
 
 void Memento::previousMemento()
 {
+	if (Mousemode == MODES::MODE_NAMING)
+	{
+		return;
+	}
+	auto current = Mousemode;
+	Mousemode = MODES::MODE_MEMENTING;
+	std::this_thread::sleep_for(std::chrono::nanoseconds(10000));
 	if (it == mementos.end())
 	{
+		Mousemode = current;
 		return;
 	}
 	Memento* mem = (*it);
 	mem->undoMemento();
 	if (it == mementos.begin())
 	{
+		Mousemode = current;
 		return;
 	}
 	it--;

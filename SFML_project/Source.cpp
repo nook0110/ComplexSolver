@@ -43,6 +43,7 @@ extern Button switchConstructionButton;
 extern Button concurrencyOfLines;
 extern Button ñollinearityOfPoints;
 extern Button proveConstructionButton;
+extern Button twoLineSegments;
 extern Button inscription;
 
 extern Button debugButton;
@@ -86,6 +87,7 @@ void menuInit()
 	//mainMenu.pushButton(&proveConstructionButton, 1);
 	mainMenu.pushButton(&concurrencyOfLines, 1);
 	mainMenu.pushButton(&ñollinearityOfPoints, 1);
+	mainMenu.pushButton(&twoLineSegments, 1);
 	mainMenu.pushButton(&inscription, 1);
 	mainMenu.pushButton(&switchButton, 1);
 

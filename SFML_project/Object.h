@@ -44,11 +44,11 @@ struct LineEquation : public Equation
 	LineEquation(double A, double B, double C);
 };
 
-//struct SegmentEquation : public Equation
-//{
-//	Vector2f pointFirst, pointSecond;
-	
-//};
+struct SegmentEquation : public Equation
+{
+	Vector2f pointFirst, pointSecond;
+	SegmentEquation(Vector2f pointFirst, Vector2f pointSecond);
+};
 
 struct PointEquation : public Equation
 {
@@ -129,6 +129,21 @@ public:
 	//The equation can be changed if parents were moved
 	virtual void recreate(Equation* equation) = 0;
 	virtual ~ConstructionData() {};
+};
+
+class ConstructionSegment : public ConstructionData
+{
+protected:
+	ConstructionSegment(Object* object);
+};
+
+class ByTwoEnds : public ConstructionSegment
+{
+	Point* firstParent, * secondParent;
+public:
+	ByTwoEnds(Object* object, Point* first, Point* second);
+	void recreate(Equation* equation) override;
+	~ByTwoEnds();
 };
 
 class ConstructionCircle : public ConstructionData
@@ -406,16 +421,16 @@ public:
 	void switchDescription();
 };
 
-//class LineSegment : public Object
-//{
-//	Vertex line[2];
-//	void reposition() override;
-//public:
-//	double distance(Vector2f point);
-//	bool isNearby(Vector2f position);
-//	LineSegment(Point* first, Point* second);
-//	void draw();
-//};
+class LineSegment : public Object
+{
+	Vertex line[2];
+	void reposition() override;
+public:
+	LineSegment(Point* first, Point* second);
+	double distance(Vector2f point) { return 0; };
+	bool isNearby(Vector2f position) { return false; };
+	void draw();
+};
 
 class Point;
 class Line : public Object
@@ -454,6 +469,7 @@ public:
 class Point : public Object
 {
 protected:
+	Color movableColor = Color(0, 204, 255);
 	std::string pointName;
 	Font font;
 	unsigned int textSize = 90;

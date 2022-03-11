@@ -517,7 +517,9 @@ Description::Description(std::string filePath, std::string name)
 	Vector2f size = Vector2f(texture.getSize()) / 3.f;
 	background.setOrigin(backgroundDelta);
 	background.setSize(size + backgroundDelta * 2.f);
-	background.setFillColor(Color::Black);
+	background.setFillColor(Color::White);
+	background.setOutlineColor(Color::Black);
+	background.setOutlineThickness(outlineThikness);;
 	sprite.setScale(1 / sprite.getScale().x, 1 / sprite.getScale().y); // Scaling Sprite to 1*1;
 	sprite.setScale(
 		size.x / sprite.getLocalBounds().width,

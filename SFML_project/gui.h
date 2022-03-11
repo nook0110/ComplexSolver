@@ -188,7 +188,8 @@ class Description
 	RectangleShape background;
 	Vector2f position = Vector2f();
 	Vector2f size;
-	const Vector2f backgroundDelta = Vector2f(1, 1);
+	const Vector2f backgroundDelta = Vector2f(5, 5);
+	const float outlineThikness= 1;
 	std::string name;
 public:
 	Description(std::string filePath, std::string name);
