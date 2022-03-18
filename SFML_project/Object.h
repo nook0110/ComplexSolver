@@ -5,6 +5,8 @@
 #include "algebraic.h"
 #include "Creation.h"
 #include "Printer.h"
+#define _USE_MATH_DEFINES
+#include <math.h>
 
 #include <iostream>
 
@@ -79,13 +81,14 @@ public:
 
 private:
 	Color visibleColor = Color::Black;
-	const Color unvisibleColor = Color::Blue;
+	const Color unvisibleColor = Color(0, 0, 255, 128);
 	void erase();
 public:
 	ConstructionData* construction;
 protected:
 	virtual void reposition() = 0;
 	bool visible = true;
+public:
 	Color getColor();
 public:
 	//Debug
@@ -111,6 +114,12 @@ public:
 public:
 	void add();
 	void del();
+
+protected:
+	bool highlighted = false;
+public:
+	virtual void highlight() { highlighted = true; };
+	virtual void unhighlight() { highlighted = false; };
 };
 
 class Object;
@@ -124,6 +133,7 @@ class ConstructionData
 protected:
 	Object* object;
 	ConstructionData(Object* object);
+	std::string TeXFormula;
 public:
 	//Return equation of the objects 
 	//The equation can be changed if parents were moved
@@ -435,6 +445,7 @@ public:
 class Point;
 class Line : public Object
 {
+	Vertex line[2];
 protected:
 	void reposition() override;
 	void Init();
@@ -456,6 +467,10 @@ public:
 	void switchDescription();
 	void setDotted(bool dotted);
 	std::string makeTeX();
+private:
+	float outlineThikness = 5;
+	Color hihglightedColor = Color(64, 64, 64, 64);
+public:
 };
 
 class UnitPoint;
@@ -469,7 +484,7 @@ public:
 class Point : public Object
 {
 protected:
-	Color movableColor = Color(0, 204, 255);
+	Color movableColor = Color(0, 128, 255);
 	std::string pointName;
 	Font font;
 	unsigned int textSize = 90;
@@ -511,6 +526,12 @@ public:
 	void draw() override;
 	std::string getLowerCaseName();
 	std::string makeTeX() override;
+private:
+	float outlineThikness = 5;
+	Color hihglightedColor = Color(64, 64, 64, 64);
+public:
+	void highlight();
+	void unhighlight();
 };
 
 

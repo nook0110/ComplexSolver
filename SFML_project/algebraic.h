@@ -23,6 +23,11 @@ public:
         poly_ptr quasi = make_quasi_term(new_name, ptr);
         return expr(quasi);
     }
+    expr get_quasi_known_conj(const std::string& new_name, expr conj)
+    {
+        poly_ptr quasi = make_quasi_pair(new_name, ptr, conj.ptr);
+        return expr(quasi);
+    }
 
     friend expr operator+(expr left, expr right);
     friend expr operator-(expr left, expr right);

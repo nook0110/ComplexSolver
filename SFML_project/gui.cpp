@@ -189,7 +189,8 @@ double Menu::adjustSize(double size, Vector2f menuSize, int count)
 
 void Menu::updateButtons()
 {
-	Vector2f menuSize = menuView.getSize();
+	window->setView(normalView);
+	Vector2f menuSize = normalView.getSize();
 	//c-buttons.size(), s-size, x-menuSize.x, y-menuSize.y
 	//(x/s-1)(y/s-1)>c
 	//(c-1)s^2+(x+y)*s-xy=0
@@ -206,9 +207,11 @@ void Menu::updateButtons()
 		size = std::min(menuSize.x, menuSize.y) / 2;
 	}
 	size = adjustSize(size, menuSize, buttons[layer].size());
+	
+	buttonTable.x = (menuSize.x) / (size);
+	buttonTable.y = ceil((float)buttons[layer].size() / (float)buttonTable.x);
+	resize(size * buttonTable.y + shiftRatio*size);
 	size /= (1 + shiftRatio);
-	buttonTable.x = (menuSize.x) / (size * (1 + shiftRatio));
-	buttonTable.y = (menuSize.y) / (size * (1 + shiftRatio));
 	double shiftSize = size * shiftRatio;
 
 	for (int i = 0; i < buttons[layer].size(); i++)
@@ -223,6 +226,15 @@ void Menu::updateButtons()
 
 }
 
+void Menu::resize(double newSize)
+{
+	double ratio = newSize / menuView.getSize().y;
+	mainWindowRect.top = ratio*normalViewport.height;
+	view.setViewport(mainWindowRect);
+	background.setSize(Vector2f(menuView.getSize().x, newSize));
+	background.setPosition(position);
+}
+
 void Menu::setViewport(FloatRect viewport)
 {
 	Menu::viewport = viewport;
@@ -235,7 +247,11 @@ void Menu::setViewport(FloatRect viewport)
 Menu::Menu(RenderWindow* window)
 	:window(window)
 {
-	buttons.resize(2);
+	buttons.resize(3);
+	normalView = window->getDefaultView();
+	normalView.setSize(normalView.getSize().x* normalViewport.width, normalView.getSize().y* normalViewport.height);
+	normalView.setCenter(normalView.getCenter().x * normalViewport.width, normalView.getCenter().y * normalViewport.height);
+	normalView.setViewport(normalViewport);
 	menuView = window->getDefaultView();
 	menuView.setSize(menuView.getSize().x * viewport.width, menuView.getSize().y * viewport.height);
 	menuView.setCenter(menuView.getCenter().x * viewport.width, menuView.getCenter().y * viewport.height);
@@ -245,6 +261,9 @@ Menu::Menu(RenderWindow* window)
 void Menu::update(Event event)
 {
 	FloatRect visibleArea(menuView.getCenter().x - menuView.getSize().x / 2, menuView.getCenter().y - menuView.getSize().y / 2, event.size.width * viewport.width, event.size.height * viewport.height);
+	FloatRect normalVisibleArea = FloatRect(menuView.getCenter().x - menuView.getSize().x / 2, menuView.getCenter().y - menuView.getSize().y / 2, event.size.width * normalViewport.width, event.size.height * normalViewport.height);
+	
+	normalView = View(normalVisibleArea);
 	window->setView(View(visibleArea));
 	menuView = View(visibleArea);
 	updateButtons();
@@ -321,8 +340,6 @@ void Menu::draw()
 {
 	menuView.setViewport(viewport);
 	menuView.setCenter(menuView.getSize() / 2.f + position);
-	background.setSize(menuView.getSize());
-	background.setPosition(position);
 	window->setView(menuView);
 	window->draw(background);
 	for (auto& button : buttons[layer])

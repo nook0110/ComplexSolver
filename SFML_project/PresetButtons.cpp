@@ -44,6 +44,7 @@ Button moveButton = Button(&mainWindow,
 			if (point)
 			{
 				point->moveTo(mainWindow.mapPixelToCoords(Mouse::getPosition(mainWindow), view));
+				Highlighter::highlight(point);
 			}
 			else
 			{
@@ -60,6 +61,7 @@ Button moveButton = Button(&mainWindow,
 				object->switchDescription(mainWindow.mapPixelToCoords(Mouse::getPosition(mainWindow), view));
 			}
 		}
+		Highlighter::unhighlight();
 		return nullptr;
 	});
 
@@ -101,6 +103,7 @@ Button lineButton = Button(&mainWindow,
 			{
 				point = find.nearbyNewPoint(mousePosition);
 			}
+			Highlighter::highlight(point);
 			if (std::get<0>(points))
 			{
 				if (point != std::get<0>(points))
@@ -129,6 +132,7 @@ Button lineButton = Button(&mainWindow,
 		{
 			line = new Line(points.first, points.second);
 		}
+		Highlighter::unhighlight();
 		return line;
 	});
 
@@ -151,6 +155,7 @@ Button pointBetweenPoints = Button(&mainWindow,
 			{
 				point = find.nearbyNewPoint(mousePosition);
 			}
+			Highlighter::highlight(point);
 			if (std::get<0>(points))
 			{
 				if (point != std::get<0>(points))
@@ -186,6 +191,7 @@ Button pointBetweenPoints = Button(&mainWindow,
 		Vector2f mousePosition = mainWindow.mapPixelToCoords(Mouse::getPosition(mainWindow), view);
 
 		Point* point = new Point(line, points.first, points.second, mousePosition);
+		Highlighter::unhighlight();
 		return point;
 	});
 
@@ -204,6 +210,7 @@ Button centralProjectionButton = Button(&mainWindow,
 		{
 			firstPoint = find.nearbyNewPoint(mousePosition);
 		}
+		Highlighter::highlight(firstPoint);
 		UnitPoint* secondPoint = nullptr;
 		while (!secondPoint)
 		{
@@ -219,6 +226,7 @@ Button centralProjectionButton = Button(&mainWindow,
 			}
 		}
 		UnitPoint* point = new UnitPoint(UnitCircle::getInstance(), firstPoint, secondPoint);
+		Highlighter::unhighlight();
 		return point;
 	});
 
@@ -238,6 +246,7 @@ Button perpendicularButton = Button(&mainWindow,
 		{
 			point = find.nearbyNewPoint(mousePosition);
 		}
+		Highlighter::highlight(point);
 		Line* line = nullptr;
 		while (!line)
 		{
@@ -319,6 +328,7 @@ Button symmetryButton = Button(&mainWindow,
 			{
 				point = find.nearbyNewPoint(mousePosition);
 			}
+			Highlighter::highlight(point);
 			if (std::get<0>(points))
 			{
 				if (point != std::get<0>(points))
@@ -339,6 +349,7 @@ Button symmetryButton = Button(&mainWindow,
 			}
 		}
 		Point* point = new Point(points.first, points.second, { -2,1 });
+		Highlighter::unhighlight();
 		return point;
 	});
 
@@ -361,6 +372,7 @@ Button rotateLeftButton = Button(&mainWindow,
 			{
 				point = find.nearbyNewPoint(mousePosition);
 			}
+			Highlighter::highlight(point);
 			if (std::get<0>(points))
 			{
 				if (point != std::get<0>(points))
@@ -381,6 +393,7 @@ Button rotateLeftButton = Button(&mainWindow,
 			}
 		}
 		Point* point = new Point(points.first, points.second, -1);
+		Highlighter::unhighlight();
 		return point;
 	});
 
@@ -403,6 +416,7 @@ Button rotateRightButton = Button(&mainWindow,
 			{
 				point = find.nearbyNewPoint(mousePosition);
 			}
+			Highlighter::highlight(point);
 			if (std::get<0>(points))
 			{
 				if (point != std::get<0>(points))
@@ -423,6 +437,7 @@ Button rotateRightButton = Button(&mainWindow,
 			}
 		}
 		Point* point = new Point(points.first, points.second, 1);
+		Highlighter::unhighlight();
 		return point;
 	});
 
@@ -442,6 +457,7 @@ Button projectionButton = Button(&mainWindow,
 		{
 			point = find.nearbyNewPoint(mousePosition);
 		}
+		Highlighter::highlight(point);
 		Line* line = nullptr;
 		while (!line)
 		{
@@ -453,6 +469,7 @@ Button projectionButton = Button(&mainWindow,
 			line = find.nearbyLine(mousePosition);
 			wait.sleep();
 		}
+		Highlighter::unhighlight();
 		return new Point(point, line);
 	});
 
@@ -472,6 +489,7 @@ Button parallelButton = Button(&mainWindow,
 			Vector2f mousePosition = mainWindow.mapPixelToCoords(Mouse::getPosition(mainWindow), view);
 			line = find.nearbyLine(mousePosition);
 		}
+		Highlighter::highlight(line);
 		if (wait.untilClick())
 		{
 			return nullptr;
@@ -482,6 +500,7 @@ Button parallelButton = Button(&mainWindow,
 		{
 			point = find.nearbyNewPoint(mousePosition);
 		}
+		Highlighter::unhighlight();
 		if (dynamic_cast<Chord*>(line) && dynamic_cast<UnitPoint*>(point))
 		{
 			UnitPoint* unitPoint = new UnitPoint(UnitCircle::getInstance(), dynamic_cast<Chord*>(line), dynamic_cast<UnitPoint*>(point));
@@ -510,6 +529,7 @@ Button scalarButton = Button(&mainWindow,
 			{
 				point = find.nearbyNewPoint(mousePosition);
 			}
+			Highlighter::highlight(point);
 			if (std::get<0>(points))
 			{
 				if (point != std::get<0>(points))
@@ -541,6 +561,7 @@ Button scalarButton = Button(&mainWindow,
 		std::pair<int, int> masses = dialogBox->getDouble();
 		delete dialogBox;
 		new Point(points.first, points.second, masses);
+		Highlighter::unhighlight();
 		return nullptr;
 	});
 
@@ -622,7 +643,7 @@ Button switchButton = Button(&mainWindow,
 Button switchTriangleButton = Button(&mainWindow,
 	"Textures\\Button_textures\\SwitchTriangle.png",
 	MODE_SWITCH, []()->Object* {
-		mainMenu.switchLayer(2);
+		mainMenu.switchLayer(3);
 		return nullptr;
 	});
 
@@ -646,7 +667,9 @@ Button orthocenterButton = Button(&mainWindow,
 				continue;
 			}
 			points.push_back(point);
+			Highlighter::highlight(point);
 		}
+		Highlighter::unhighlight();
 		return new Point(points[0], points[1], points[2]);
 	});
 
@@ -670,7 +693,9 @@ Button barycenterButton = Button(&mainWindow,
 				continue;
 			}
 			points.push_back(point);
+			Highlighter::highlight(point);
 		}
+		Highlighter::unhighlight();
 		return new Point(points[0], points[1], points[2]);
 	});
 
@@ -701,9 +726,11 @@ Button inscription = Button(&mainWindow,
 				point = find.nearbyConstructedPoint(mousePosition);
 			}
 			points.push_back(point);
+			Highlighter::highlight(point);
 		}
 		new Circle(points[0], points[1], points[2], points[3]);
 		Prover::proveInscription(points[0], points[1], points[2], points[3]);
+		Highlighter::unhighlight();
 		return nullptr;
 	});
 
@@ -727,7 +754,9 @@ Button twoLineSegments = Button(&mainWindow,
 				point = find.nearbyConstructedPoint(mousePosition);
 			}
 			points.push_back(point);
+			Highlighter::highlight(point);
 		}
+		Highlighter::unhighlight();
 		new LineSegment(points[0], points[1]);
 		for (int i = 0; i < twoTimes; ++i)
 		{
@@ -742,8 +771,10 @@ Button twoLineSegments = Button(&mainWindow,
 				point = find.nearbyConstructedPoint(mousePosition);
 			}
 			points.push_back(point);
+			Highlighter::highlight(point);
 		}
 		new LineSegment(points[2], points[3]);
+		Highlighter::unhighlight();
 		return nullptr;
 	});
 
@@ -767,8 +798,10 @@ Button concurrencyOfLines = Button(&mainWindow,
 				line = find.nearbyLine(mousePosition);
 			}
 			lines.push_back(line);
+			Highlighter::highlight(line);
 		}
 		Prover::proveConcurrency(lines[0], lines[1], lines[2]);
+		Highlighter::unhighlight();
 		return nullptr;
 	});
 
@@ -792,10 +825,12 @@ Button ñollinearityOfPoints = Button(&mainWindow,
 				point = find.nearbyConstructedPoint(mousePosition);
 			}
 			points.push_back(point);
+			Highlighter::highlight(point);
 		}
 		auto line = new Line(points[0], points[1]);
 		line->setDotted(true);
 		Prover::proveCollinearity(points[0], points[1], points[2]);
+		Highlighter::unhighlight();
 		return nullptr;
 	});
 
@@ -805,7 +840,7 @@ Button proveConstructionButton = Button(&mainWindow,
 		Waiter wait;
 		Finder find;
 		InterruptionChecker checker;
-		Object* firstObject = nullptr;
+		Point* firstObject = nullptr;
 		while (!firstObject)
 		{
 			if (wait.untilClick())
@@ -813,9 +848,10 @@ Button proveConstructionButton = Button(&mainWindow,
 				return nullptr;
 			}
 			Vector2f mousePosition = mainWindow.mapPixelToCoords(Mouse::getPosition(mainWindow), view);
-			firstObject = find.nearbyNotUnitCircleObject(mousePosition);
+			firstObject = find.nearbyConstructedPoint(mousePosition);
 		}
-		mainMenu.switchLayer(0);
+		Highlighter::highlight(firstObject);
+		mainMenu.switchLayer(2);
 		Object* secondObject = nullptr;
 		while (checker.checkInterruption())
 		{
@@ -823,7 +859,7 @@ Button proveConstructionButton = Button(&mainWindow,
 		}
 		while (!secondObject)
 		{
-			if (Mousemode == MODE_NOTHING || Mousemode == MODE_PROVE_CONSTRUCTION)
+			if (Mousemode == MODE_SWITCH)
 			{
 				return nullptr;
 			}
@@ -1104,7 +1140,12 @@ InterruptionChecker::InterruptionChecker()
 
 bool InterruptionChecker::checkInterruption()
 {
-	return checker.checkMode();
+	if (checker.checkMode())
+	{
+		return true;
+	}
+	Highlighter::unhighlight();
+	return false;
 }
 
 bool Waiter::mouseOnTheScreen()
@@ -1139,4 +1180,26 @@ bool Waiter::untilClick()
 		sleep();
 	}
 	return false;
+}
+
+std::list<Object*> Highlighter::highlighted;
+
+void Highlighter::highlight(Object* object)
+{
+	highlighted.push_back(object);
+	highlighted.unique();
+	object->highlight();
+}
+
+void Highlighter::unhighlight()
+{
+	if (highlighted.empty())
+	{
+		return;
+	}
+	for (auto obj : highlighted)
+	{
+		obj->unhighlight();
+	}
+	highlighted.clear();
 }

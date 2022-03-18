@@ -212,6 +212,16 @@ namespace calc
 			hiddenExpression = _hiddenExpression;
 		}
 
+		quasiTerm(const std::string _name, expr_ptr& _hiddenExpression, expr_ptr& _hiddenConj) // guaranteed _hiddenExpression->conj() == _hiddenConj
+			: term(_name)
+		{
+			conjugated = new quasiTerm(*this);
+			conjugated->hiddenExpression = _hiddenConj;
+			conjugated->invertMark();
+			conjugated->conjugated = this;
+			hiddenExpression = _hiddenExpression;
+		}
+
 	private:
 		bool expandedForm = false;
 		expr_ptr hiddenExpression = nullptr;
@@ -377,5 +387,6 @@ namespace calc
 	poly_ptr make_unit_term(std::string name);
 	poly_ptr make_real_term(std::string name);
 	poly_ptr make_quasi_term(std::string name, expr_ptr& expr);
+	poly_ptr make_quasi_pair(std::string name, expr_ptr& expr, expr_ptr& conj);
 	poly_ptr make_scalar(constTy scalar);
 }

@@ -6,6 +6,7 @@ IntersectionOfTwoLines::IntersectionOfTwoLines(Point* object, Line* first, Line*
 	ConstructionLine* first_line_data = dynamic_cast<ConstructionLine*>(first->construction);
 	ConstructionLine* second_line_data = dynamic_cast<ConstructionLine*>(second->construction);
 	expr result;
+	expr conj_result;
 	auto first_tangent_data = dynamic_cast<Tangent*>(first_line_data);
 	auto second_tangent_data = dynamic_cast<Tangent*>(second_line_data);
 	if (first_tangent_data && second_tangent_data)
@@ -13,6 +14,8 @@ IntersectionOfTwoLines::IntersectionOfTwoLines(Point* object, Line* first, Line*
 		expr A = static_cast<ConstructionPoint*>(first_tangent_data->secondParent->construction)->coord;
 		expr B = static_cast<ConstructionPoint*>(second_tangent_data->secondParent->construction)->coord;
 		result = (A * B * 2) / (A + B);
+		conj_result = expr(make_scalar(2)) / (A + B);
+		coord = result.get_quasi_known_conj(object->getLowerCaseName(), conj_result);
 	}
 	else
 	{
@@ -22,9 +25,11 @@ IntersectionOfTwoLines::IntersectionOfTwoLines(Point* object, Line* first, Line*
 		expr B2 = second_line_data->z_conj_coef;
 		expr C1 = first_line_data->free_coef;
 		expr C2 = second_line_data->free_coef;
-		result = (C1 * B2 - C2 * B1) / (A1 * B2 - A2 * B1);
+		expr denom = A1 * B2 - A2 * B1;
+		result = (C1 * B2 - C2 * B1) / denom;
+		conj_result = (A1 * C2 - A2 * C1) / denom;
+		coord = result.get_quasi_known_conj(object->getLowerCaseName(), conj_result);
 	}
-	coord = result; //.get_quasi(object->getLowerCaseName());
 }
 
 CentralProjection::CentralProjection(UnitPoint* object, UnitCircle* first, Point* second, UnitPoint* third)
@@ -66,6 +71,9 @@ ByTwoUnitPoints::ByTwoUnitPoints(Object* object, UnitPoint* firstParent, UnitPoi
 Tangent::Tangent(Object* object, UnitCircle* firstParent, Point* secondParent)
 	:firstParent(firstParent), secondParent(secondParent), ConstructionLine(object)
 {
+	if (!secondParent->isOnCircle())
+		throw std::invalid_argument("Point isnt on circle?!");
+
 	const ConstructionPoint* point_data = static_cast<ConstructionPoint*>(secondParent->construction);
 	expr a = point_data->coord;
 	z_coef = expr(make_scalar(1));

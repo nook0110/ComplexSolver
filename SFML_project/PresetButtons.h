@@ -42,3 +42,11 @@ public:
 	Point* nearbyIntersection(Vector2f mousePosition);
 	UnitCircle* nearbyUnitCircle(Vector2f mousePosition);
 };
+
+class Highlighter
+{
+	static std::list<Object*> highlighted;
+public:
+	static void highlight(Object* object);
+	static void unhighlight();
+};

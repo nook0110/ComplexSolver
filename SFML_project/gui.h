@@ -2,7 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include "WrapMouse.h"
 #include "Creation.h"
-#include<iostream>
+#include <iostream>
 #include <map>
 
 //File about GUI(graphical user interface): Menu, Buttons, Dialog Boxes, Descriptions
@@ -25,7 +25,7 @@ class Button
 private:
 
 	const Color unpressedColor = Color(255, 255, 255, 255);
-	const Color pressedColor = Color(64, 64, 64, 255);
+	const Color pressedColor = Color(128, 128, 128, 255);
 
 	Vector2f position;
 	Vector2f size;
@@ -88,13 +88,17 @@ private:
 	const double shiftRatio = 0.1;
 	Vector2i buttonTable;
 	FloatRect viewport = FloatRect(0.f, 0.f, 1.0f, mainWindowRect.top);
-	const Color color = Color(128, 128, 128, 255);
+	const FloatRect normalViewport = FloatRect(0.f, 0.f, 1.0f, mainWindowRect.top);
+	View normalView;
+	const Color color = Color(160, 160, 160, 255);
 	const Vector2f position = Vector2f(0, 0);
 	int layer = 0;
 	std::vector<std::vector<Button*>> buttons;
 	RectangleShape background;
 	double adjustSize(double size, Vector2f menuSize, int count);
 	void updateButtons();
+
+	void resize(double newSize);
 public:
 	void setViewport(FloatRect viewport);
 	Menu(RenderWindow* window);

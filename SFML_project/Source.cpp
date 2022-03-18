@@ -89,11 +89,28 @@ void menuInit()
 	mainMenu.pushButton(&ñollinearityOfPoints, 1);
 	mainMenu.pushButton(&twoLineSegments, 1);
 	mainMenu.pushButton(&inscription, 1);
+	mainMenu.pushButton(&proveConstructionButton, 1);
+		mainMenu.pushButton(&moveButton, 2);
+		mainMenu.pushButton(&pointButton, 2);
+		mainMenu.pushButton(&centralProjectionButton, 2);
+		mainMenu.pushButton(&projectionButton, 2);
+		mainMenu.pushButton(&rotateLeftButton, 2);
+		mainMenu.pushButton(&rotateRightButton, 2);
+		mainMenu.pushButton(&scalarButton, 2);
+		mainMenu.pushButton(&symmetryButton, 2);
+		mainMenu.pushButton(&switchButton, 2);
 	mainMenu.pushButton(&switchButton, 1);
 
-	mainMenu.pushButton(&orthocenterButton, 2);
-	mainMenu.pushButton(&barycenterButton, 2);
-	mainMenu.pushButton(&switchButton, 2);
+	mainMenu.pushButton(&orthocenterButton, 3);
+	mainMenu.pushButton(&barycenterButton, 3);
+	mainMenu.pushButton(&switchButton, 3);
+
+	
+}
+
+void presets()
+{
+
 }
 
 void constructingTheDrawing()
@@ -115,7 +132,7 @@ void constructingTheDrawing()
 			}
 			if (event.type == Event::Closed || (event.type == Event::KeyPressed) && (event.key.code == Keyboard::Escape))
 			{
-				mainWindow.close();
+				exit(0);
 			}
 			if (event.type == Event::MouseWheelScrolled)
 			{

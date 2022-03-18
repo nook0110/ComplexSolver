@@ -314,24 +314,37 @@ void Line::draw()
 	if (dotted)
 	{
 		const int stripes = 75;
-		Vertex line[stripes + 1];
+		Vertex lines[stripes + 1];
 		for (int i = 0; i <= stripes; i++)
 		{
-			line[i] = Vertex(Vector2f((x2 - x1) * i / stripes + x1, (y2 - y1) * i / stripes + y1), getColor());
+			lines[i] = Vertex(Vector2f((x2 - x1) * i / stripes + x1, (y2 - y1) * i / stripes + y1), getColor());
 		}
-		mainWindow.draw(line, stripes + 1, Lines);
+		mainWindow.draw(lines, stripes + 1, Lines);
 	}
 	else
 	{
-		Vertex line[] =
-		{
-			Vertex(Vector2f(x1, y1), getColor()),
-			Vertex(Vector2f(x2, y2), getColor())
-		};
+		line[0] = Vertex(Vector2f(x1, y1), getColor());
+		line[1] = Vertex(Vector2f(x2, y2), getColor());
 		mainWindow.draw(line, 2, Lines);
 	}
 
+	if (highlighted)
+	{
+		Vector2f delta = Vector2f(x2 - x1, y2 - y1);
+		float lineLength = sqrt(delta.x * delta.x + delta.y * delta.y);
+		RectangleShape outline(Vector2f(lineLength, outlineThikness*2));
+		outline.setOrigin(Vector2f(0, outlineThikness));
+		float angle = atan2(delta.y, delta.x);
+		const float radToDegRatio = 180 / M_PI;
+		outline.setRotation(angle * radToDegRatio);
+		outline.move(Vector2f(x1, y1));
+		outline.setFillColor(hihglightedColor);
+		mainWindow.draw(outline);
+	}
+
 }
+
+
 
 void Line::setDotted(bool dotted)
 {
@@ -360,6 +373,8 @@ void Line::reposition()
 void Line::Init()
 {
 	Drawer::addObject(this);
+	line[0].color = getColor();
+	line[1].color = getColor();
 }
 
 
@@ -387,10 +402,10 @@ LineSegment::LineSegment(Point* first, Point* second)
 {
 	first->addChild(this);
 	second->addChild(this);
-	equation = new SegmentEquation(Vector2f(),Vector2f());
+	equation = new SegmentEquation(Vector2f(), Vector2f());
 	construction = new ByTwoEnds(this, first, second);
-	line[0].color = getColor();
-	line[1].color = getColor();
+	line[0].color = first->getColor();
+	line[1].color = second->getColor();
 	reposition();
 	Drawer::addObject(this);
 }
@@ -471,8 +486,8 @@ void Point::Init()
 	nameText.setScale(textScale);
 	equation = new PointEquation(Vector2f(0, 0));
 	shape.setOrigin(pointSize, pointSize);
-	shape.setFillColor(Color::Black);
 	reposition();
+	shape.setFillColor(getColor());
 	Drawer::addObject(this);
 }
 
@@ -576,8 +591,8 @@ void Point::setName()
 
 void Point::draw()
 {
-	nameText.setPosition(shape.getPosition());
 	shape.setFillColor(getColor());
+	nameText.setPosition(shape.getPosition());
 	mainWindow.draw(shape);
 	mainWindow.draw(nameText);
 }
@@ -593,6 +608,18 @@ std::string Point::getLowerCaseName()
 	std::transform(name.begin(), name.end(), name.begin(),
 		[](unsigned char c) { return std::tolower(c); });
 	return name;
+}
+
+void Point::highlight()
+{
+	shape.setOutlineThickness(outlineThikness);
+	shape.setOutlineColor(hihglightedColor);
+}
+
+void Point::unhighlight()
+{
+	shape.setOutlineThickness(0);
+	shape.setOutlineColor(Color());
 }
 
 ByFourPoints::ByFourPoints(Object* object, Point* first, Point* second, Point* third, Point* fourth)

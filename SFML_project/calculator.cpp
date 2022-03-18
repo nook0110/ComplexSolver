@@ -619,6 +619,11 @@ poly_ptr calc::make_quasi_term(std::string name, expr_ptr& expr)
 	return polyNode::create(monomial(1, new quasiTerm(name, expr)));
 }
 
+poly_ptr calc::make_quasi_pair(std::string name, expr_ptr& expr, expr_ptr& conj)
+{
+	return polyNode::create(monomial(1, new quasiTerm(name, expr, conj)));
+}
+
 poly_ptr calc::make_scalar(constTy scalar)
 {
 	if (scalar == 0)

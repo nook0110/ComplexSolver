@@ -1,7 +1,7 @@
 #include "Prover.h"
 
 bool Prover::started, Prover::theorem, Prover::finished;
-std::thread Prover::provingThread;
+std::thread* Prover::provingThread;
 
 
 expr determinant(expr& A1, expr& B1, expr& C1, expr& A2, expr& B2, expr& C2, expr& A3, expr& B3, expr& C3)
@@ -89,13 +89,14 @@ void Prover::proveInscription(Point* first, Point* second, Point* third, Point* 
 	expr C = third_point_data->coord;
 	expr D = fourth_point_data->coord;
 
-	provingThread = std::thread(
+	std::thread Thread(
 		[=]() {
 			Prover::theorem = ::proveInscription(A, B, C, D);
 			finished = true;
 			std::cout << theorem << std::endl;
 		});
-	provingThread.detach();
+	provingThread = &Thread;
+	Thread.detach();
 }
 
 bool Prover::getFinished()
@@ -122,13 +123,12 @@ void Prover::proveCollinearity(Point* first, Point* second, Point* third)
 	expr A = first_point_data->coord;
 	expr B = second_point_data->coord;
 	expr C = third_point_data->coord;
-	provingThread = std::thread(
+	provingThread = new std::thread(
 		[=]() {
 			Prover::theorem = ::proveCollinearity(A, B, C);
 			finished = true;
 			std::cout << theorem << std::endl;
 		});
-	provingThread.detach();
 }
 
 void Prover::proveConcurrency(Line* first, Line* second, Line* third)
@@ -151,11 +151,12 @@ void Prover::proveConcurrency(Line* first, Line* second, Line* third)
 	expr zThird = third_line_data->z_coef;
 	expr zConjThird = third_line_data->z_conj_coef;
 	expr freeThird = third_line_data->free_coef;
-	provingThread = std::thread(
+	std::thread Thread(
 		[=]() {
 			Prover::theorem = ::proveConcurrency(zFirst, zConjFirst, freeFirst, zSecond, zConjSecond, freeSecond, zThird, zConjThird, freeThird);
 			std::cout << theorem << std::endl;
 			finished = true;
 		});
-	provingThread.detach();
+	provingThread = &Thread;
+	//Thread.detach();
 }
