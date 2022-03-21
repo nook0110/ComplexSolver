@@ -25,7 +25,6 @@ Button moveButton = Button(&mainWindow,
 				if (!interruptionChecker.checkInterruption())
 					return nullptr;
 				descr->moveTo(mainWindow.mapPixelToCoords(Mouse::getPosition(mainWindow), view) - deltaDescr);
-				wait.sleep();
 			}
 			return nullptr;
 		}
@@ -61,6 +60,7 @@ Button moveButton = Button(&mainWindow,
 				object->switchDescription(mainWindow.mapPixelToCoords(Mouse::getPosition(mainWindow), view));
 			}
 		}
+		wait.sleep();
 		Highlighter::unhighlight();
 		return nullptr;
 	});

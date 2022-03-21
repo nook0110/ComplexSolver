@@ -2,7 +2,7 @@
 #include "Creation.h"
 #include "Prover.h"
 #include "Printer.h"
-
+#include "Statebox.h"
 #include <iostream>
 #include <iomanip>
 using namespace sf;
@@ -90,27 +90,70 @@ void menuInit()
 	mainMenu.pushButton(&twoLineSegments, 1);
 	mainMenu.pushButton(&inscription, 1);
 	mainMenu.pushButton(&proveConstructionButton, 1);
-		mainMenu.pushButton(&moveButton, 2);
-		mainMenu.pushButton(&pointButton, 2);
-		mainMenu.pushButton(&centralProjectionButton, 2);
-		mainMenu.pushButton(&projectionButton, 2);
-		mainMenu.pushButton(&rotateLeftButton, 2);
-		mainMenu.pushButton(&rotateRightButton, 2);
-		mainMenu.pushButton(&scalarButton, 2);
-		mainMenu.pushButton(&symmetryButton, 2);
-		mainMenu.pushButton(&switchButton, 2);
+	mainMenu.pushButton(&moveButton, 2);
+	mainMenu.pushButton(&pointButton, 2);
+	mainMenu.pushButton(&centralProjectionButton, 2);
+	mainMenu.pushButton(&projectionButton, 2);
+	mainMenu.pushButton(&rotateLeftButton, 2);
+	mainMenu.pushButton(&rotateRightButton, 2);
+	mainMenu.pushButton(&scalarButton, 2);
+	mainMenu.pushButton(&symmetryButton, 2);
+	mainMenu.pushButton(&switchButton, 2);
 	mainMenu.pushButton(&switchButton, 1);
 
 	mainMenu.pushButton(&orthocenterButton, 3);
 	mainMenu.pushButton(&barycenterButton, 3);
 	mainMenu.pushButton(&switchButton, 3);
 
-	
+
 }
 
 void presets()
 {
-
+	StateMenu stateMenu;
+	Statebox test(Vector2f(500, 500), Vector2f(500, 100), "TEST", 3);
+	test.setStateTexture(0, "St:1", "Textures\\Button_textures\\Test.png");
+	test.setStateTexture(1, "St:2", "Textures\\Button_textures\\Test.png");
+	test.setStateTexture(2, "St:3", "Textures\\Button_textures\\Test.png");
+	Statebox test2(Vector2f(500, 500), Vector2f(500, 100), "TEST2", 2);
+	test2.setStateTexture(0, "St:1", "Textures\\Button_textures\\Test.png");
+	test2.setStateTexture(1, "St:2", "Textures\\Button_textures\\Test.png");
+	stateMenu.pushStatebox(&test);
+	stateMenu.pushStatebox(&test2);
+	stateMenu.update();
+	bool finished = false;
+	while (mainWindow.isOpen() && !finished)
+	{
+		Event event;
+		while (mainWindow.pollEvent(event))
+		{
+			if (event.type == Event::MouseButtonPressed || event.type == Event::MouseButtonReleased)
+			{
+				stateMenu.clickCheck();
+			}
+			if (event.type == Event::Resized)
+			{
+				// update the view to the new size of the mainWindow
+				FloatRect visibleArea(view.getCenter().x - view.getSize().x / 2, view.getCenter().y - view.getSize().y / 2, event.size.width, event.size.height);
+				mainWindow.setView(View(visibleArea));
+				view = View(visibleArea);
+				stateMenu.update();
+			}
+			if (event.type == Event::Closed || (event.type == Event::KeyPressed) && (event.key.code == Keyboard::Escape))
+			{
+				exit(0);
+			}
+			if ((event.type == Event::KeyPressed) && (event.key.code == Keyboard::Enter))
+			{
+				finished = true;
+			}
+		}
+		mainWindow.clear(Color::White);
+		mainWindow.setView(view);
+		stateMenu.draw();
+		mainWindow.display();
+		std::this_thread::sleep_for(std::chrono::microseconds(1));
+	}
 }
 
 void constructingTheDrawing()
@@ -216,7 +259,7 @@ void provingTheProblem()
 
 int main()
 {
-
+	presets();
 	preInit();
 	menuInit();
 

@@ -15,7 +15,7 @@ IntersectionOfTwoLines::IntersectionOfTwoLines(Point* object, Line* first, Line*
 		expr B = static_cast<ConstructionPoint*>(second_tangent_data->secondParent->construction)->coord;
 		result = (A * B * 2) / (A + B);
 		conj_result = expr(make_scalar(2)) / (A + B);
-		coord = result.get_quasi_known_conj(object->getLowerCaseName(), conj_result);
+		coord = result; //.get_quasi_known_conj(object->getLowerCaseName(), conj_result);
 	}
 	else
 	{
@@ -28,7 +28,7 @@ IntersectionOfTwoLines::IntersectionOfTwoLines(Point* object, Line* first, Line*
 		expr denom = A1 * B2 - A2 * B1;
 		result = (C1 * B2 - C2 * B1) / denom;
 		conj_result = (A1 * C2 - A2 * C1) / denom;
-		coord = result.get_quasi_known_conj(object->getLowerCaseName(), conj_result);
+		coord = result; //.get_quasi_known_conj(object->getLowerCaseName(), conj_result);
 	}
 }
 

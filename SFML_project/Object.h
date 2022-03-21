@@ -524,7 +524,7 @@ public:
 	bool isNearby(Vector2f position) override;
 	bool contains(Vector2f position);
 	void draw() override;
-	std::string getLowerCaseName();
+	std::string getLowerCaseName() override;
 	std::string makeTeX() override;
 private:
 	float outlineThikness = 5;

@@ -458,6 +458,7 @@ Point::Point(Point* first, Point* second, std::pair<int, int> masses)
 Point::~Point()
 {
 	NameBox::names.erase(getLowerCaseName());
+	deleteFiles(getLowerCaseName());
 }
 
 void Point::reposition()

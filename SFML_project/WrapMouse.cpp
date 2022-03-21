@@ -62,6 +62,7 @@ void WrapMouse::setClickedCoord(Mouse::Button button)
 
 bool WrapMouse::checkPress(Mouse::Button button)
 {
+	bool pressed = Mouse::isButtonPressed(button);
 	if (Mouse::isButtonPressed(button) && !WrapMouse::getClicked(button))
 	{
 		WrapMouse::setClicked(button, true);
