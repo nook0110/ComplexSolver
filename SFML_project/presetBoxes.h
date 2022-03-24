@@ -47,7 +47,7 @@ namespace presets
 
 		setFPS.setStateTexture(0, "60", "");
 		setFPS.setStateTexture(1, "Vertical Sync", "");
-		setFPS.setStateTexture(2, "Unlimited", "");
+		setFPS.setStateTexture(2, "Unlimited", "Textures\\Checkbox_textures\\PresetUnlimited.png");
 
 		constructionPreset.setStateTexture(0, "Nothing", "Textures\\Checkbox_textures\\PresetNothing.png");
 		constructionPreset.setStateTexture(1, "Triangle", "Textures\\Checkbox_textures\\PresetTriangle.png");
