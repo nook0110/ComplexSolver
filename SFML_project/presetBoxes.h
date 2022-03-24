@@ -19,13 +19,14 @@ namespace presets
 	enum Construction
 	{
 		NOTHING,
-		TRIANGULAR,
-		INCENTER
+		TRIANGLE,
+		INCENTER,
+		ORTHOCENTER
 	};
 
 	StateMenu stateMenu;
 
-	const Vector2f size(500, 100);
+	const Vector2f size(1000, 200);
 
 	Statebox enableLatex(Vector2f(), size, "Enable LaTeX", 2);
 	isEnabled latex;
@@ -33,25 +34,25 @@ namespace presets
 	isEnabled provePrinting;
 	Statebox setFPS(Vector2f(), size, "Max framerate", 3);
 	FPS fps;
-	Statebox constructionPreset(Vector2f(), size, "Presets", 3);
+	Statebox constructionPreset(Vector2f(), size, "Presets", 4);
 	Construction preset;
 
 	void stateboxesInit()
 	{
-		enableLatex.setStateTexture(0, "OFF", "Textures\\Button_textures\\Test.png");
-		enableLatex.setStateTexture(1, "ON", "Textures\\Button_textures\\Test.png");
+		enableLatex.setStateTexture(0, "OFF", "Textures\\Checkbox_textures\\PresetOFF.png");
+		enableLatex.setStateTexture(1, "ON", "Textures\\Checkbox_textures\\PresetON.png");
 
-		enableFullProvePrinting.setStateTexture(0, "OFF", "Textures\\Button_textures\\Test.png");
-		enableFullProvePrinting.setStateTexture(1, "ON", "Textures\\Button_textures\\Test.png");
+		enableFullProvePrinting.setStateTexture(0, "OFF", "Textures\\Checkbox_textures\\PresetOFF.png");
+		enableFullProvePrinting.setStateTexture(1, "ON", "Textures\\Checkbox_textures\\PresetON.png");
 
-		setFPS.setStateTexture(0, "60", "Textures\\Button_textures\\Test.png");
-		setFPS.setStateTexture(1, "Vertical Sync", "Textures\\Button_textures\\Test.png");
-		setFPS.setStateTexture(2, "Unlimited", "Textures\\Button_textures\\Test.png");
+		setFPS.setStateTexture(0, "60", "");
+		setFPS.setStateTexture(1, "Vertical Sync", "");
+		setFPS.setStateTexture(2, "Unlimited", "");
 
-		constructionPreset.setStateTexture(0, "Nothing", "Textures\\Button_textures\\Test.png");
-		constructionPreset.setStateTexture(1, "Triangular", "Textures\\Button_textures\\Test.png");
+		constructionPreset.setStateTexture(0, "Nothing", "Textures\\Checkbox_textures\\PresetNothing.png");
+		constructionPreset.setStateTexture(1, "Triangle", "Textures\\Checkbox_textures\\PresetTriangle.png");
 		constructionPreset.setStateTexture(2, "Incenter", "Textures\\Button_textures\\Test.png");
-
+		constructionPreset.setStateTexture(3, "Orthocenter", "Textures\\Checkbox_textures\\PresetOrthocenter.png");
 		stateMenu.pushStatebox(&enableLatex);
 		stateMenu.pushStatebox(&enableFullProvePrinting);
 		stateMenu.pushStatebox(&setFPS);

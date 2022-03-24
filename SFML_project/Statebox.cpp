@@ -109,9 +109,9 @@ void StateMenu::update()
 		size = nextSize;
 		nextSize *= coeff;
 	}
-	size = std::min(100.f, size);
+	size = std::min(150.f, size);
 	Vector2f center = mainWindow.getView().getCenter();
-	Vector2f delta = Vector2f(0, center.y - size * stateboxes.size() / 2);
+	Vector2f delta = Vector2f(0, center.y - size * (1.f + shiftRatio) * stateboxes.size() / 2);
 	for (int i = 0; i < stateboxes.size(); i++)
 	{
 		stateboxes[i]->setSize(size);

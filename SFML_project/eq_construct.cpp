@@ -37,8 +37,8 @@ CentralProjection::CentralProjection(UnitPoint* object, UnitCircle* first, Point
 {
 	ConstructionPoint* first_point_data = static_cast<ConstructionPoint*>(second->construction);
 	ConstructionPoint* second_point_data = static_cast<ConstructionPoint*>(third->construction);
-	expr m = first_point_data->coord.get_quasi(second->getLowerCaseName());
-	expr a = second_point_data->coord.get_quasi(third->getLowerCaseName());
+	expr m = first_point_data->coord; //.get_quasi(second->getLowerCaseName());
+	expr a = second_point_data->coord;
 	expr m_conj = m.conj();
 	coord = (m - a) / (expr(make_scalar(1)) - m_conj * a);
 }

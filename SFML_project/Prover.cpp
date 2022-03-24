@@ -11,15 +11,6 @@ expr determinant(expr A1, expr B1, expr C1, expr A2, expr B2, expr C2, expr A3, 
 		A2 B2 C2
 		A3 B3 C3
 	*/
-	A1.expand();
-	B1.expand();
-	C1.expand();
-	A2.expand();
-	B2.expand();
-	C2.expand();
-	A3.expand();
-	B3.expand();
-	C3.expand();
 	expr detA = B2 * C3 - C2 * B3;
 	expr detB = C2 * A3 - A2 * C3;
 	expr detC = A2 * B3 - B2 * A3;
@@ -36,12 +27,6 @@ bool proveCollinearity(expr A, expr B, expr C)
 	  |B B~ 1| = 0?
 	  |C C~ 1|
 	*/
-	A.expand();
-	B.expand();
-	C.expand();
-	A_conj.expand();
-	B_conj.expand();
-	C_conj.expand();
 	expr detA = B * C_conj - B_conj * C;
 	expr detB = C * A_conj - C_conj * A;
 	expr detC = A * B_conj - A_conj * B;
@@ -80,7 +65,6 @@ bool proveInscription(expr A, expr B, expr C, expr D)
 	std::cout << crossRatio.getTEXformat() << std::endl;
 	return (crossRatio - crossRatio.conj()).expand().checkZeroEquality();
 }
-
 
 bool Prover::getStarted()
 {
@@ -167,7 +151,6 @@ void Prover::proveConcurrency(Line* first, Line* second, Line* third)
 	expr zThird = third_line_data->z_coef;
 	expr zConjThird = third_line_data->z_conj_coef;
 	expr freeThird = third_line_data->free_coef;
-	
 	provingThread = new std::thread(
 		[=]() {
 			Prover::theorem = ::proveConcurrency(zFirst, zConjFirst, freeFirst, zSecond, zConjSecond, freeSecond, zThird, zConjThird, freeThird);

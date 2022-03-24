@@ -83,7 +83,6 @@ void menuInit()
 	mainMenu.pushButton(&switchConstructionButton, 0);
 	mainMenu.pushButton(&switchTriangleButton, 0);
 
-	//mainMenu.pushButton(&proveConstructionButton, 1);
 	mainMenu.pushButton(&concurrencyOfLines, 1);
 	mainMenu.pushButton(&ñollinearityOfPoints, 1);
 	mainMenu.pushButton(&twoLineSegments, 1);
@@ -163,17 +162,17 @@ void constructPreset()
 	}
 
 	NameBox namebox;
-	switch (presets::preset)
+	if (presets::preset == presets::Construction::TRIANGLE)
 	{
-	case (presets::Construction::TRIANGULAR):
 		namebox.setName("C");
 		new UnitPoint(UnitCircle::getInstance(), Vector2f(unitSeg, unitSeg));
 		namebox.setName("B");
 		new UnitPoint(UnitCircle::getInstance(), Vector2f(0, -unitSeg));
 		namebox.setName("A");
 		new UnitPoint(UnitCircle::getInstance(), Vector2f(-unitSeg, unitSeg));
-		break;
-	case (presets::Construction::INCENTER):
+	}
+	else if (presets::preset == presets::Construction::INCENTER)
+	{
 		namebox.setName("C");
 		UnitPoint* pointC = new UnitPoint(UnitCircle::getInstance(), Vector2f(unitSeg, unitSeg));
 		expr exprC(make_unit_term("c"));
@@ -189,7 +188,26 @@ void constructPreset()
 		namebox.setName("I");
 		Point* pointI = new Point(pointA, pointB, pointC, Point::INCENTER);
 		dynamic_cast<ConstructionPoint*>(pointI->construction)->coord = -(exprA * exprB + exprA * exprC + exprB * exprC);
-		break;
+		namebox.setName("Da");
+		UnitPoint* pointDa = new UnitPoint(UnitCircle::getInstance(), pointI, pointA);
+		dynamic_cast<ConstructionPoint*>(pointDa->construction)->coord = -exprB * exprC;
+		namebox.setName("Db");
+		UnitPoint* pointDb = new UnitPoint(UnitCircle::getInstance(), pointI, pointB);
+		dynamic_cast<ConstructionPoint*>(pointDb->construction)->coord = -exprA * exprC;
+		namebox.setName("Dc");
+		UnitPoint* pointDc = new UnitPoint(UnitCircle::getInstance(), pointI, pointC);
+		dynamic_cast<ConstructionPoint*>(pointDc->construction)->coord = -exprA * exprB;
+	}
+	else if (presets::preset == presets::Construction::ORTHOCENTER)
+	{
+		namebox.setName("C");
+		UnitPoint* pointC = new UnitPoint(UnitCircle::getInstance(), Vector2f(unitSeg, unitSeg));
+		namebox.setName("B");
+		UnitPoint* pointB = new UnitPoint(UnitCircle::getInstance(), Vector2f(0, -unitSeg));
+		namebox.setName("A");
+		UnitPoint* pointA = new UnitPoint(UnitCircle::getInstance(), Vector2f(-unitSeg, unitSeg));
+		namebox.setName("H");
+		Point* pointH = new Point(pointA, pointB, pointC, Point::ORTHOCENTER);
 	}
 }
 
