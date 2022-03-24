@@ -176,6 +176,7 @@
   <ItemGroup>
     <ClInclude Include="algebraic.h" />
     <ClInclude Include="calculator.h" />
+    <ClInclude Include="presetBoxes.h" />
     <ClInclude Include="Statebox.h" />
     <ClInclude Include="gui.h" />
     <ClInclude Include="Creation.h" />

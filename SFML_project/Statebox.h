@@ -8,8 +8,6 @@ using namespace sf;
 extern RenderWindow mainWindow;
 extern View view;
 
-
-
 class Statebox
 {
 private:

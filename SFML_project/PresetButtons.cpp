@@ -670,7 +670,7 @@ Button orthocenterButton = Button(&mainWindow,
 			Highlighter::highlight(point);
 		}
 		Highlighter::unhighlight();
-		return new Point(points[0], points[1], points[2]);
+		return new Point(points[0], points[1], points[2], Point::ORTHOCENTER);
 	});
 
 Button barycenterButton = Button(&mainWindow,

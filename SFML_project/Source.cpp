@@ -2,7 +2,7 @@
 #include "Creation.h"
 #include "Prover.h"
 #include "Printer.h"
-#include "Statebox.h"
+#include "presetBoxes.h"
 #include <iostream>
 #include <iomanip>
 using namespace sf;
@@ -54,7 +54,6 @@ void preInit()
 {
 	view.setViewport(mainWindowRect);
 	view.move(-500, -500);
-	mainWindow.setFramerateLimit(60);
 	system("rd /s /q Textures\\TeX");
 	system("md Textures\\TeX");
 	system("rd /s /q Textures\\Equations");
@@ -108,19 +107,10 @@ void menuInit()
 
 }
 
-void presets()
+void settings()
 {
-	StateMenu stateMenu;
-	Statebox test(Vector2f(500, 500), Vector2f(500, 100), "TEST", 3);
-	test.setStateTexture(0, "St:1", "Textures\\Button_textures\\Test.png");
-	test.setStateTexture(1, "St:2", "Textures\\Button_textures\\Test.png");
-	test.setStateTexture(2, "St:3", "Textures\\Button_textures\\Test.png");
-	Statebox test2(Vector2f(500, 500), Vector2f(500, 100), "TEST2", 2);
-	test2.setStateTexture(0, "St:1", "Textures\\Button_textures\\Test.png");
-	test2.setStateTexture(1, "St:2", "Textures\\Button_textures\\Test.png");
-	stateMenu.pushStatebox(&test);
-	stateMenu.pushStatebox(&test2);
-	stateMenu.update();
+	presets::stateboxesInit();
+
 	bool finished = false;
 	while (mainWindow.isOpen() && !finished)
 	{
@@ -129,7 +119,7 @@ void presets()
 		{
 			if (event.type == Event::MouseButtonPressed || event.type == Event::MouseButtonReleased)
 			{
-				stateMenu.clickCheck();
+				presets::stateMenu.clickCheck();
 			}
 			if (event.type == Event::Resized)
 			{
@@ -137,7 +127,7 @@ void presets()
 				FloatRect visibleArea(view.getCenter().x - view.getSize().x / 2, view.getCenter().y - view.getSize().y / 2, event.size.width, event.size.height);
 				mainWindow.setView(View(visibleArea));
 				view = View(visibleArea);
-				stateMenu.update();
+				presets::stateMenu.update();
 			}
 			if (event.type == Event::Closed || (event.type == Event::KeyPressed) && (event.key.code == Keyboard::Escape))
 			{
@@ -150,9 +140,56 @@ void presets()
 		}
 		mainWindow.clear(Color::White);
 		mainWindow.setView(view);
-		stateMenu.draw();
+		presets::stateMenu.draw();
 		mainWindow.display();
 		std::this_thread::sleep_for(std::chrono::microseconds(1));
+	}
+	presets::stateboxesApply();
+}
+
+void constructPreset()
+{
+	switch (presets::fps)
+	{
+	case presets::FPS::FRAMES_60:
+		mainWindow.setFramerateLimit(60);
+		break;
+	case presets::FPS::UNLIMITED:
+		mainWindow.setFramerateLimit(0);
+		break; 
+	case presets::FPS::VS:
+		mainWindow.setVerticalSyncEnabled(1);
+			break;
+	}
+
+	NameBox namebox;
+	switch (presets::preset)
+	{
+	case (presets::Construction::TRIANGULAR):
+		namebox.setName("C");
+		new UnitPoint(UnitCircle::getInstance(), Vector2f(unitSeg, unitSeg));
+		namebox.setName("B");
+		new UnitPoint(UnitCircle::getInstance(), Vector2f(0, -unitSeg));
+		namebox.setName("A");
+		new UnitPoint(UnitCircle::getInstance(), Vector2f(-unitSeg, unitSeg));
+		break;
+	case (presets::Construction::INCENTER):
+		namebox.setName("C");
+		UnitPoint* pointC = new UnitPoint(UnitCircle::getInstance(), Vector2f(unitSeg, unitSeg));
+		expr exprC(make_unit_term("c"));
+		dynamic_cast<ConstructionPoint*>(pointC->construction)->coord = exprC * exprC;
+		namebox.setName("B");
+		UnitPoint* pointB = new UnitPoint(UnitCircle::getInstance(), Vector2f(0, -unitSeg));
+		expr exprB(make_unit_term("b"));
+		dynamic_cast<ConstructionPoint*>(pointB->construction)->coord = exprB * exprB;
+		namebox.setName("A");
+		UnitPoint* pointA = new UnitPoint(UnitCircle::getInstance(), Vector2f(-unitSeg, unitSeg));
+		expr exprA(make_unit_term("a"));
+		dynamic_cast<ConstructionPoint*>(pointA->construction)->coord = exprA * exprA;
+		namebox.setName("I");
+		Point* pointI = new Point(pointA, pointB, pointC, Point::INCENTER);
+		dynamic_cast<ConstructionPoint*>(pointI->construction)->coord = -(exprA * exprB + exprA * exprC + exprB * exprC);
+		break;
 	}
 }
 
@@ -259,8 +296,9 @@ void provingTheProblem()
 
 int main()
 {
-	presets();
+	settings();
 	preInit();
+	constructPreset();
 	menuInit();
 
 	constructingTheDrawing();

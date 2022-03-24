@@ -42,7 +42,6 @@ void Statebox::setSize(float sizeY)
 bool Statebox::mouseCheck(View clickView = view)
 {
 	Vector2f point = mainWindow.mapPixelToCoords(WrapMouse::getClickedCoord(Mouse::Button::Left), clickView);
-	std::cout << point.x << " " << point.y << std::endl;
 	return background.getGlobalBounds().contains(point);
 }
 

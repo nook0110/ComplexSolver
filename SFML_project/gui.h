@@ -166,6 +166,7 @@ public:
 	static std::map<std::string, bool> names;
 	NameBox();
 	void cin(Event event) override;
+	void setName(std::string name);
 	std::string getName();
 };
 

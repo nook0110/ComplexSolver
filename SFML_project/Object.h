@@ -334,6 +334,18 @@ public:
 	void recreate(Equation* equation) override;
 };
 
+class Incenter : public ConstructionPoint
+{
+	UnitPoint* firstParent;
+	UnitPoint* secondParent;
+	UnitPoint* thirdParent;
+public:
+	Incenter(Object* object, UnitPoint* firstParent, UnitPoint* secondParent, UnitPoint* thirdParent);
+	~Incenter();
+	void moveTo(Vector2f coords) {};
+	void recreate(Equation* equation) override;
+};
+
 class Barycenter : public ConstructionPoint
 {
 	Point* firstParent;
@@ -516,8 +528,13 @@ public:
 	Point(Point* first, Point* second, std::pair<int, int> masses);
 	// Rotation on 90 degrees
 	Point(Point* center, Point* preimage, int sign);
+	enum triangleCenter
+	{
+		ORTHOCENTER,
+		INCENTER
+	};
 	// Orthocenter
-	Point(UnitPoint* first, UnitPoint* second, UnitPoint* third);
+	Point(UnitPoint* first, UnitPoint* second, UnitPoint* third, triangleCenter center);
 	// Barycenter
 	Point(Point* first, Point* second, Point* third);
 	double distance(Vector2f point);

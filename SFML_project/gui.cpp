@@ -511,6 +511,12 @@ void NameBox::cin(Event event)
 	}
 }
 
+void NameBox::setName(std::string name)
+{
+	textIn = name;
+	finished = true;
+}
+
 std::string NameBox::getName()
 {
 	return newName(textIn);

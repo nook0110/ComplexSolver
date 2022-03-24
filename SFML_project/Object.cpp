@@ -332,7 +332,7 @@ void Line::draw()
 	{
 		Vector2f delta = Vector2f(x2 - x1, y2 - y1);
 		float lineLength = sqrt(delta.x * delta.x + delta.y * delta.y);
-		RectangleShape outline(Vector2f(lineLength, outlineThikness*2));
+		RectangleShape outline(Vector2f(lineLength, outlineThikness * 2));
 		outline.setOrigin(Vector2f(0, outlineThikness));
 		float angle = atan2(delta.y, delta.x);
 		const float radToDegRatio = 180 / M_PI;
@@ -530,14 +530,23 @@ Point::Point(Point* point, Line* line)
 	Init();
 }
 
-Point::Point(UnitPoint* first, UnitPoint* second, UnitPoint* third)
+Point::Point(UnitPoint* first, UnitPoint* second, UnitPoint* third, triangleCenter center)
 {
 	setName();
-	construction = new Orthocenter(this, first, second, third);
+	switch (center)
+	{
+	case ORTHOCENTER:
+		construction = new Orthocenter(this, first, second, third);
+		break;
+	case INCENTER:
+		construction = new Incenter(this, first, second, third);
+		break;
+	}
 	first->addChild(this);
 	second->addChild(this);
 	third->addChild(this);
 	Init();
+
 }
 
 Point::Point(Point* first, Point* second, Point* third)
@@ -580,14 +589,22 @@ void Point::setName()
 {
 	auto current = Mousemode;
 	Mousemode = MODE_NAMING;
-	NameBox nameBox;
-	while (!nameBox.isFinished())
+	NameBox* namebox = nullptr;
+	if (!Drawer::dialogBox)
+	{
+		namebox = new NameBox;
+	}
+	while (!Drawer::dialogBox->isFinished())
 	{
 		std::this_thread::sleep_for(std::chrono::nanoseconds(1000));
 	}
-	pointName = nameBox.getName();
+	pointName = dynamic_cast<NameBox*>(Drawer::dialogBox)->getName();
 	nameText = Text(pointName, font, textSize);
 	Mousemode = current;
+	if (namebox)
+	{
+		delete namebox;
+	}
 }
 
 void Point::draw()
@@ -1103,6 +1120,29 @@ void Orthocenter::recreate(Equation* equation)
 	PointEquation* secondEquation = dynamic_cast<PointEquation*>(secondParent->getEquation());
 	PointEquation* thirdEquation = dynamic_cast<PointEquation*>(thirdParent->getEquation());
 	*dynamic_cast<PointEquation*>(equation) = PointEquation(firstEquation->point + secondEquation->point + thirdEquation->point);
+}
+
+Incenter::~Incenter()
+{
+	firstParent->eraseChild(object);
+	secondParent->eraseChild(object);
+	thirdParent->eraseChild(object);
+}
+
+void Incenter::recreate(Equation* equation)
+{
+	PointEquation* firstEquation = dynamic_cast<PointEquation*>(firstParent->getEquation());
+	PointEquation* secondEquation = dynamic_cast<PointEquation*>(secondParent->getEquation());
+	PointEquation* thirdEquation = dynamic_cast<PointEquation*>(thirdParent->getEquation());
+	Vector2f firstPoint = firstEquation->point;
+	Vector2f secondPoint = secondEquation->point;
+	Vector2f thirdPoint = thirdEquation->point;
+	float sideA = sqrt((secondPoint - thirdPoint).x * (secondPoint - thirdPoint).x + (secondPoint - thirdPoint).y * (secondPoint - thirdPoint).y);
+	float sideB = sqrt((firstPoint - thirdPoint).x * (firstPoint - thirdPoint).x + (firstPoint - thirdPoint).y * (firstPoint - thirdPoint).y);
+	float sideC = sqrt((secondPoint - firstPoint).x * (secondPoint - firstPoint).x + (secondPoint - firstPoint).y * (secondPoint - firstPoint).y);
+
+	*dynamic_cast<PointEquation*>(equation) = PointEquation((firstEquation->point * sideA + secondEquation->point * sideB + thirdEquation->point * sideC) / (sideA + sideB + sideC));
+
 }
 
 Barycenter::~Barycenter()
