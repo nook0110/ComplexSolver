@@ -165,6 +165,7 @@ class NameBox : public DialogBox
 public:
 	static std::map<std::string, bool> names;
 	NameBox();
+	NameBox(std::string name);
 	void cin(Event event) override;
 	void setName(std::string name);
 	std::string getName();

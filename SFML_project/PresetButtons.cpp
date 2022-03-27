@@ -773,6 +773,7 @@ Button twoLineSegments = Button(&mainWindow,
 			Highlighter::highlight(point);
 		}
 		new LineSegment(points[2], points[3]);
+		Prover::proveEquivalence(points[0], points[1], points[2], points[3]);
 		Highlighter::unhighlight();
 		return nullptr;
 	});
@@ -800,6 +801,60 @@ Button concurrencyOfLines = Button(&mainWindow,
 			Highlighter::highlight(line);
 		}
 		Prover::proveConcurrency(lines[0], lines[1], lines[2]);
+		Highlighter::unhighlight();
+		return nullptr;
+	});
+
+Button proveParallel = Button(&mainWindow,
+	"Textures\\Button_textures\\Test.png",
+	MODE_THREE_LINES, []()->Object* {
+		Waiter wait;
+		Finder find;
+		const int twoTimes = 2;
+		std::vector<Line*> lines;
+		for (int i = 0; i < twoTimes; ++i)
+		{
+			Line* line = nullptr;
+			while (!line)
+			{
+				if (wait.untilClick())
+				{
+					return nullptr;
+				}
+				Vector2f mousePosition = mainWindow.mapPixelToCoords(Mouse::getPosition(mainWindow), view);
+				line = find.nearbyLine(mousePosition);
+			}
+			lines.push_back(line);
+			Highlighter::highlight(line);
+		}
+		Prover::proveParallel(lines[0], lines[1]);
+		Highlighter::unhighlight();
+		return nullptr;
+	});
+
+Button proveOrthogonality = Button(&mainWindow,
+	"Textures\\Button_textures\\Test.png",
+	MODE_THREE_LINES, []()->Object* {
+		Waiter wait;
+		Finder find;
+		const int twoTimes = 2;
+		std::vector<Line*> lines;
+		for (int i = 0; i < twoTimes; ++i)
+		{
+			Line* line = nullptr;
+			while (!line)
+			{
+				if (wait.untilClick())
+				{
+					return nullptr;
+				}
+				Vector2f mousePosition = mainWindow.mapPixelToCoords(Mouse::getPosition(mainWindow), view);
+				line = find.nearbyLine(mousePosition);
+			}
+			lines.push_back(line);
+			Highlighter::highlight(line);
+		}
+		Prover::proveOrthogonality(lines[0], lines[1]);
 		Highlighter::unhighlight();
 		return nullptr;
 	});

@@ -133,6 +133,18 @@ bool Prover::getStarted()
 	return started;
 }
 
+
+
+bool Prover::getFinished()
+{
+	return finished;
+}
+
+bool Prover::getTheorem()
+{
+	return theorem;
+}
+
 void Prover::proveInscription(Point* first, Point* second, Point* third, Point* fourth)
 {
 	if (started)
@@ -158,16 +170,6 @@ void Prover::proveInscription(Point* first, Point* second, Point* third, Point* 
 			std::cout << theorem << std::endl;
 		});
 	provingThread->detach();
-}
-
-bool Prover::getFinished()
-{
-	return finished;
-}
-
-bool Prover::getTheorem()
-{
-	return theorem;
 }
 
 void Prover::proveCollinearity(Point* first, Point* second, Point* third)
@@ -239,6 +241,81 @@ void Prover::proveConstruction(Point* first, Point* second)
 			Prover::theorem = ::proveEquivalence(A, B);
 			finished = true;
 			std::cout << theorem << std::endl;
+		});
+	provingThread->detach();
+}
+
+void Prover::proveEquivalence(Point* first, Point* second, Point* third, Point* fourth)
+{
+	if (started)
+	{
+		throw "Already proving";
+	}
+	started = true;
+
+	ConstructionPoint* first_point_data = dynamic_cast<ConstructionPoint*>(first->construction);
+	ConstructionPoint* second_point_data = dynamic_cast<ConstructionPoint*>(second->construction);
+	ConstructionPoint* third_point_data = dynamic_cast<ConstructionPoint*>(third->construction);
+	ConstructionPoint* fourth_point_data = dynamic_cast<ConstructionPoint*>(fourth->construction);
+
+	expr A = first_point_data->coord;
+	expr B = second_point_data->coord;
+	expr C = third_point_data->coord;
+	expr D = fourth_point_data->coord;
+
+	provingThread = new std::thread(
+		[=]() {
+			Prover::theorem = ::proveEquivalence(A, B, C, D);
+			finished = true;
+			std::cout << theorem << std::endl;
+		});
+	provingThread->detach();
+}
+
+void Prover::proveParallel(Line* first, Line* second)
+{
+	if (started)
+	{
+		throw "Already proving";
+	}
+	started = true;
+
+	ConstructionLine* first_line_data = dynamic_cast<ConstructionLine*>(first->construction);
+	ConstructionLine* second_line_data = dynamic_cast<ConstructionLine*>(second->construction);
+	expr zFirst = first_line_data->z_coef;
+	expr zConjFirst = first_line_data->z_conj_coef;
+	expr zSecond = second_line_data->z_coef;
+	expr zConjSecond = second_line_data->z_conj_coef;
+
+	provingThread = new std::thread(
+		[=]() {
+			Prover::theorem = ::proveParallel(zFirst, zConjFirst, zSecond, zConjSecond);
+			std::cout << theorem << std::endl;
+			finished = true;
+		});
+	provingThread->detach();
+}
+
+void Prover::proveOrthogonality(Line* first, Line* second)
+{
+	if (started)
+	{
+		throw "Already proving";
+	}
+	started = true;
+
+	ConstructionLine* first_line_data = dynamic_cast<ConstructionLine*>(first->construction);
+	ConstructionLine* second_line_data = dynamic_cast<ConstructionLine*>(second->construction);
+	expr zFirst = first_line_data->z_coef;
+	expr zConjFirst = first_line_data->z_conj_coef;
+	expr zSecond = second_line_data->z_coef;
+	expr zConjSecond = second_line_data->z_conj_coef;
+
+	provingThread = new std::thread(
+		[=]() {
+			Prover::theorem = ::proveOrthogonality(zFirst, zConjFirst, zSecond, zConjSecond);
+			std::cout << theorem << std::endl;
+			finished = true;
 		});
 	provingThread->detach();
 }

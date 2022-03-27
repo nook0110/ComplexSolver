@@ -45,8 +45,8 @@ namespace presets
 		enableFullProvePrinting.setStateTexture(0, "OFF", "Textures\\Checkbox_textures\\PresetOFF.png");
 		enableFullProvePrinting.setStateTexture(1, "ON", "Textures\\Checkbox_textures\\PresetON.png");
 
-		setFPS.setStateTexture(0, "60", "");
-		setFPS.setStateTexture(1, "Vertical Sync", "");
+		setFPS.setStateTexture(0, "60", "Textures\\Checkbox_textures\\Preset60.png");
+		setFPS.setStateTexture(1, "Vertical Sync", "Textures\\Checkbox_textures\\PresetVS.png");
 		setFPS.setStateTexture(2, "Unlimited", "Textures\\Checkbox_textures\\PresetUnlimited.png");
 
 		constructionPreset.setStateTexture(0, "Nothing", "Textures\\Checkbox_textures\\PresetNothing.png");

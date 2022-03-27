@@ -42,6 +42,8 @@ extern Button barycenterButton;
 extern Button switchConstructionButton;
 extern Button concurrencyOfLines;
 extern Button ñollinearityOfPoints;
+extern Button proveParallel;
+extern Button proveOrthogonality;
 extern Button proveConstructionButton;
 extern Button twoLineSegments;
 extern Button inscription;
@@ -85,6 +87,8 @@ void menuInit()
 
 	mainMenu.pushButton(&concurrencyOfLines, 1);
 	mainMenu.pushButton(&ñollinearityOfPoints, 1);
+	mainMenu.pushButton(&proveParallel, 1);
+	mainMenu.pushButton(&proveOrthogonality, 1);
 	mainMenu.pushButton(&twoLineSegments, 1);
 	mainMenu.pushButton(&inscription, 1);
 	mainMenu.pushButton(&proveConstructionButton, 1);

@@ -484,6 +484,13 @@ NameBox::NameBox() : DialogBox()
 	formatIn = "Enter name...";
 }
 
+NameBox::NameBox(std::string name) : DialogBox()
+{
+	formatIn = "Enter name...";
+	textIn = name;
+	finished = true;
+}
+
 void NameBox::cin(Event event)
 {
 	switch (event.text.unicode)
