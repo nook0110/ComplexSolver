@@ -889,7 +889,7 @@ Button ñollinearityOfPoints = Button(&mainWindow,
 	});
 
 Button proveConstructionButton = Button(&mainWindow,
-	"Textures\\Button_textures\\Test.png",
+	"Textures\\Button_textures\\ProveConstruction.png",
 	MODE_PROVE_CONSTRUCTION, []()->Object* {
 		Waiter wait;
 		Finder find;

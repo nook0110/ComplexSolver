@@ -52,17 +52,9 @@ bool proveConcurrency(expr A1, expr B1, expr C1, expr A2, expr B2, expr C2, expr
 
 bool proveOrthogonality(expr A1, expr B1, expr A2, expr B2)
 {
-	/*
-		A1 - B1     A1~ - B1~
-		------- = - --------
-		A2 - B2     A2~ - B2~
-	*/
-	expr A1_conj = A1.conj();
-	expr B1_conj = B1.conj();
-	expr A2_conj = A2.conj();
-	expr B2_conj = B2.conj();
-	expr left = (A1 - B1) * (A2_conj - B2_conj);
-	expr right = (A2 - B2) * (A1_conj - B1_conj);
+	// some magic dunno how it works
+	expr left = A1 * B2;
+	expr right = A2 * B1;
 	expr result = left + right;
 	result.print();
 	std::cout << std::endl;
@@ -72,16 +64,14 @@ bool proveOrthogonality(expr A1, expr B1, expr A2, expr B2)
 bool proveParallel(expr A1, expr B1, expr A2, expr B2)
 {
 	/*
-		A1 - B1    A1~ - B1~
-		------- =  --------
-		A2 - B2    A2~ - B2~
+		incompatible system
+		zA1 + z~B1 = C1
+		zA2 + z~B2 = C2
+		therefore
+		A1 * B2 - A2 * B1 = 0
 	*/
-	expr A1_conj = A1.conj();
-	expr B1_conj = B1.conj();
-	expr A2_conj = A2.conj();
-	expr B2_conj = B2.conj();
-	expr left = (A1 - B1) * (A2_conj - B2_conj);
-	expr right = (A2 - B2) * (A1_conj - B1_conj);
+	expr left = A1 * B2;
+	expr right = A2 * B1;
 	expr result = left - right;
 	result.print();
 	std::cout << std::endl;

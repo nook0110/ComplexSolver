@@ -111,7 +111,7 @@ void Object::switchDescription(Vector2f position)
 	{
 		if (equationPath.empty())
 		{
-			equationPath = makeTexture(makeTeX(), getLowerCaseName());
+			equationPath = makeTexture(TeX, getLowerCaseName());
 		}
 		description = new Description(equationPath, getLowerCaseName());
 		description->moveTo(position);
@@ -382,6 +382,7 @@ void Line::reposition()
 
 void Line::Init()
 {
+	TeX = makeTeX();
 	Drawer::addObject(this);
 	line[0].color = getColor();
 	line[1].color = getColor();
@@ -492,6 +493,7 @@ void Point::moveTo(Vector2f coords)
 
 void Point::Init()
 {
+	TeX = makeTeX();
 	font.loadFromFile("Textures\\Font\\font.ttf");
 	nameText.setFillColor(textColor);
 	nameText.setScale(textScale);

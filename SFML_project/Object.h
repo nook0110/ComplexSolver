@@ -106,6 +106,7 @@ protected:
 	Description* description;
 	//If empty - No File created
 	std::string equationPath;
+	std::string TeX;
 	virtual std::string makeTeX();
 public:
 	virtual std::string getLowerCaseName();
