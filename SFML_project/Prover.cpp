@@ -50,6 +50,68 @@ bool proveConcurrency(expr A1, expr B1, expr C1, expr A2, expr B2, expr C2, expr
 	return expanded.checkZeroEquality();
 }
 
+bool proveOrthogonality(expr A1, expr B1, expr A2, expr B2)
+{
+	/*
+		A1 - B1     A1~ - B1~
+		------- = - --------
+		A2 - B2     A2~ - B2~
+	*/
+	expr A1_conj = A1.conj();
+	expr B1_conj = B1.conj();
+	expr A2_conj = A2.conj();
+	expr B2_conj = B2.conj();
+	expr left = (A1 - B1) * (A2_conj - B2_conj);
+	expr right = (A2 - B2) * (A1_conj - B1_conj);
+	expr result = left + right;
+	result.print();
+	std::cout << std::endl;
+	return result.expand().checkZeroEquality();
+}
+
+bool proveParallel(expr A1, expr B1, expr A2, expr B2)
+{
+	/*
+		A1 - B1    A1~ - B1~
+		------- =  --------
+		A2 - B2    A2~ - B2~
+	*/
+	expr A1_conj = A1.conj();
+	expr B1_conj = B1.conj();
+	expr A2_conj = A2.conj();
+	expr B2_conj = B2.conj();
+	expr left = (A1 - B1) * (A2_conj - B2_conj);
+	expr right = (A2 - B2) * (A1_conj - B1_conj);
+	expr result = left - right;
+	result.print();
+	std::cout << std::endl;
+	return result.expand().checkZeroEquality();
+}
+
+bool proveEquivalence(expr A1, expr B1, expr A2, expr B2)
+{
+	expr A1_conj = A1.conj();
+	expr B1_conj = B1.conj();
+	expr A2_conj = A2.conj();
+	expr B2_conj = B2.conj();
+	expr left = (A1 - B1) * (A1_conj - B1_conj);
+	expr right = (A2 - B2) * (A2_conj - B2_conj);
+	expr result = left - right;
+	result.print();
+	std::cout << std::endl;
+	return result.expand().checkZeroEquality();
+}
+
+bool proveEquivalence(expr A, expr B)
+{
+	expr diff = A - B;
+	A.print();
+	std::cout << "\n=\n";
+	B.print();
+	std::cout << std::endl;
+	return diff.expand().checkZeroEquality();
+}
+
 bool proveInscription(expr A, expr B, expr C, expr D)
 {
 	/*
@@ -156,6 +218,27 @@ void Prover::proveConcurrency(Line* first, Line* second, Line* third)
 			Prover::theorem = ::proveConcurrency(zFirst, zConjFirst, freeFirst, zSecond, zConjSecond, freeSecond, zThird, zConjThird, freeThird);
 			std::cout << theorem << std::endl;
 			finished = true;
+		});
+	provingThread->detach();
+}
+
+void Prover::proveConstruction(Point* first, Point* second)
+{
+	if (started)
+	{
+		throw "Already proving";
+	}
+	started = true;
+
+	ConstructionPoint* first_point_data = dynamic_cast<ConstructionPoint*>(first->construction);
+	ConstructionPoint* second_point_data = dynamic_cast<ConstructionPoint*>(second->construction);
+	expr A = first_point_data->coord;
+	expr B = second_point_data->coord;
+	provingThread = new std::thread(
+		[=]() {
+			Prover::theorem = ::proveEquivalence(A, B);
+			finished = true;
+			std::cout << theorem << std::endl;
 		});
 	provingThread->detach();
 }

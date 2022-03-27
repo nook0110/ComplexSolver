@@ -269,6 +269,16 @@ Line::Line(Line* first, Point* second)
 	Init();
 }
 
+Line::Line(Point* first, Line* second)
+{
+	first->addChild(this);
+	second->addChild(this);
+	construction = new Perpendicular(this, first, second);
+	equation = new LineEquation(0, 0, 0);
+	reposition();
+	Init();
+}
+
 bool Line::isNearby(Vector2f position)
 {
 	return distance(position) < epsilon;
@@ -766,6 +776,24 @@ ByTwoPoints::~ByTwoPoints()
 void PerpendicularBisector::recreate(Equation* equation)
 {
 	return;
+}
+
+
+Perpendicular::~Perpendicular()
+{
+	firstParent->eraseChild(object);
+	secondParent->eraseChild(object);
+}
+
+void Perpendicular::recreate(Equation* equation)
+{
+	PointEquation* firstEquation = dynamic_cast<PointEquation*>(firstParent->getEquation());
+	LineEquation* secondEquation = dynamic_cast<LineEquation*>(secondParent->getEquation());
+	Vector2f coord = firstEquation->point;
+	double A = -(*secondEquation).B;
+	double B = (*secondEquation).A;
+	double C = (*secondEquation).B * coord.x - (*secondEquation).A * coord.y;
+	*dynamic_cast<LineEquation*>(equation) = LineEquation(A, B, C);
 }
 
 void Polar::recreate(Equation* equation)

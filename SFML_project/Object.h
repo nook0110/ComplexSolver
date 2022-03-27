@@ -384,6 +384,16 @@ class PerpendicularBisector : public ConstructionLine
 	void recreate(Equation* equation) override;
 };
 
+class Perpendicular : public ConstructionLine
+{
+	Point* firstParent;
+	Line* secondParent;
+public:
+	Perpendicular(Object* object, Point* firstParent, Line* secondParent);
+	~Perpendicular();
+	void recreate(Equation* equation) override;
+};
+
 class Polar : public ConstructionLine
 {
 	Point* parent;
@@ -473,6 +483,8 @@ public:
 	Line(UnitCircle* first, Point* second);
 	//Parallel
 	Line(Line* first, Point* second);
+	// Perpendicular
+	Line(Point* first, Line* second);
 	double distance(Vector2f point);
 	bool isNearby(Vector2f position);
 	void draw() override;

@@ -258,13 +258,13 @@ Button perpendicularButton = Button(&mainWindow,
 			line = find.nearbyLine(mousePosition);
 			wait.sleep();
 		}
+		Highlighter::unhighlight();
 		if (dynamic_cast<UnitPoint*>(point) && dynamic_cast<Chord*>(line))
 		{
 			UnitPoint* unitPoint = new UnitPoint(UnitCircle::getInstance(), dynamic_cast<UnitPoint*>(point), dynamic_cast<Chord*>(line));
 			return new Chord(dynamic_cast<UnitPoint*>(point), unitPoint);
 		}
-		Point* projPoint = new Point(point, line);
-		return new Line(point, projPoint);
+		return new Line(point, line);
 	});
 
 Button midPointButton = Button(&mainWindow,
@@ -560,9 +560,8 @@ Button scalarButton = Button(&mainWindow,
 		}
 		std::pair<int, int> masses = dialogBox->getDouble();
 		delete dialogBox;
-		new Point(points.first, points.second, masses);
 		Highlighter::unhighlight();
-		return nullptr;
+		return new Point(points.first, points.second, masses);
 	});
 
 Button tangentButton = Button(&mainWindow,
@@ -850,7 +849,7 @@ Button proveConstructionButton = Button(&mainWindow,
 			Vector2f mousePosition = mainWindow.mapPixelToCoords(Mouse::getPosition(mainWindow), view);
 			firstObject = find.nearbyConstructedPoint(mousePosition);
 		}
-		Highlighter::highlight(firstObject);
+		
 		mainMenu.switchLayer(2);
 		Object* secondObject = nullptr;
 		while (checker.checkInterruption())
@@ -859,12 +858,15 @@ Button proveConstructionButton = Button(&mainWindow,
 		}
 		while (!secondObject)
 		{
+			Highlighter::highlight(firstObject);
 			if (Mousemode == MODE_SWITCH)
 			{
 				return nullptr;
 			}
 			secondObject = Creation::getInstance()->CurrentMethod();
 		}
+		Prover::proveConstruction(firstObject, dynamic_cast<Point*>(secondObject));
+		Highlighter::unhighlight();
 		wait.sleep();
 	});
 

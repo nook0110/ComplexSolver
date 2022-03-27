@@ -108,6 +108,7 @@ void menuInit()
 
 void settings()
 {
+	mainWindow.setFramerateLimit(60);
 	presets::stateboxesInit();
 
 	bool finished = false;
@@ -116,6 +117,8 @@ void settings()
 		Event event;
 		while (mainWindow.pollEvent(event))
 		{
+			Drawer::update(event);
+			Drawer::updateMenu(event);
 			if (event.type == Event::MouseButtonPressed || event.type == Event::MouseButtonReleased)
 			{
 				presets::stateMenu.clickCheck();

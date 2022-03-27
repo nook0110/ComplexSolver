@@ -1,6 +1,6 @@
 #include "Memento.h"
 std::list<Memento*> Memento::mementos;
-std::list<Memento*>::iterator Memento::it = Memento::mementos.begin();
+std::list<Memento*>::iterator Memento::it = Memento::mementos.end();
 
 Memento::Memento(Object* object)
 	:object(object)
@@ -37,6 +37,7 @@ void Memento::clear()
 		objectDestructionMutex.unlock();
 		mementos.pop_back();
 	}
+	it = mementos.begin();
 }
 
 void Memento::previousMemento()

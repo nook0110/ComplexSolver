@@ -203,9 +203,23 @@ Parallel::Parallel(Object* object, Line* first, Point* second)
 	const ConstructionLine* line_data = static_cast<ConstructionLine*>(firstParent->construction);
 	expr m = point_data->coord;
 	expr m_conj = m.conj();
+	expr A = line_data->z_coef;
 	expr B = line_data->z_conj_coef;
-	expr B_conj = B.conj();
-	z_coef = m_conj * 2 - m * B_conj;
-	z_conj_coef = B * m_conj - m * 2;
-	free_coef = B_conj * m * m - B * m_conj * m_conj;
+	z_coef = A;
+	z_conj_coef = B;
+	free_coef = A * m + B * m_conj;
+}
+
+Perpendicular::Perpendicular(Object* object, Point* firstParent, Line* secondParent) 
+	: firstParent(firstParent), secondParent(secondParent), ConstructionLine(object)
+{
+	const ConstructionPoint* point_data = static_cast<ConstructionPoint*>(firstParent->construction);
+	const ConstructionLine* line_data = static_cast<ConstructionLine*>(secondParent->construction);
+	expr m = point_data->coord;
+	expr m_conj = m.conj();
+	expr A = line_data->z_coef;
+	expr B = line_data->z_conj_coef;
+	z_coef = A;
+	z_conj_coef = -B;
+	free_coef = A * m - B * m_conj;
 }

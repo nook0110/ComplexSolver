@@ -51,7 +51,7 @@ namespace presets
 
 		constructionPreset.setStateTexture(0, "Nothing", "Textures\\Checkbox_textures\\PresetNothing.png");
 		constructionPreset.setStateTexture(1, "Triangle", "Textures\\Checkbox_textures\\PresetTriangle.png");
-		constructionPreset.setStateTexture(2, "Incenter", "Textures\\Button_textures\\Test.png");
+		constructionPreset.setStateTexture(2, "Incenter", "Textures\\Checkbox_textures\\PresetIncenter.png");
 		constructionPreset.setStateTexture(3, "Orthocenter", "Textures\\Checkbox_textures\\PresetOrthocenter.png");
 		stateMenu.pushStatebox(&enableLatex);
 		stateMenu.pushStatebox(&enableFullProvePrinting);
