@@ -204,6 +204,13 @@ void constructPreset()
 		namebox.setName("Dc");
 		UnitPoint* pointDc = new UnitPoint(UnitCircle::getInstance(), pointI, pointC);
 		dynamic_cast<ConstructionPoint*>(pointDc->construction)->coord = -exprA * exprB;
+		pointA->updateTeX();
+		pointB->updateTeX();
+		pointC->updateTeX();
+		pointI->updateTeX();
+		pointDa->updateTeX();
+		pointDb->updateTeX();
+		pointDc->updateTeX();
 	}
 	else if (presets::preset == presets::Construction::ORTHOCENTER)
 	{

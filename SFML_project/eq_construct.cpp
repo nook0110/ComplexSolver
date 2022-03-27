@@ -185,6 +185,7 @@ firstParent(firstParent), secondParent(secondParent), thirdParent(thirdParent)
 Incenter::Incenter(Object* object, UnitPoint* firstParent, UnitPoint* secondParent, UnitPoint* thirdParent) : ConstructionPoint(object),
 firstParent(firstParent), secondParent(secondParent), thirdParent(thirdParent)
 {
+	coord = expr(make_term("i"));
 }
 
 Barycenter::Barycenter(Object* object, Point* firstParent, Point* secondParent, Point* thirdParent) : ConstructionPoint(object),

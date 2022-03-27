@@ -109,6 +109,7 @@ protected:
 	std::string TeX;
 	virtual std::string makeTeX();
 public:
+	void updateTeX();
 	virtual std::string getLowerCaseName();
 	void switchDescription(Vector2f position);
 

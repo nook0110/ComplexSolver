@@ -100,6 +100,11 @@ std::string Object::makeTeX()
 	return std::string();
 }
 
+void Object::updateTeX()
+{
+	TeX = makeTeX();
+}
+
 std::string Object::getLowerCaseName()
 {
 	return std::to_string(int(this));
@@ -935,6 +940,7 @@ CenterPoint::CenterPoint() : Point()
 	shape.setFillColor(Color::Black);
 	Drawer::allVisibleObjects.push_front(this);
 	nameText.setScale(textScale);
+	updateTeX();
 }
 
 void CenterPoint::reposition()
