@@ -734,7 +734,7 @@ Button inscription = Button(&mainWindow,
 	});
 
 Button twoLineSegments = Button(&mainWindow,
-	"Textures\\Button_textures\\Test.png",
+	"Textures\\Button_textures\\TwoLineSegments.png",
 	MODE_TWO_LINE_SEGMENTS, []()->Object* {
 		Waiter wait;
 		Finder find;
@@ -806,7 +806,7 @@ Button concurrencyOfLines = Button(&mainWindow,
 	});
 
 Button proveParallel = Button(&mainWindow,
-	"Textures\\Button_textures\\Test.png",
+	"Textures\\Button_textures\\ProveParallel.png",
 	MODE_THREE_LINES, []()->Object* {
 		Waiter wait;
 		Finder find;
@@ -833,7 +833,7 @@ Button proveParallel = Button(&mainWindow,
 	});
 
 Button proveOrthogonality = Button(&mainWindow,
-	"Textures\\Button_textures\\Test.png",
+	"Textures\\Button_textures\\ProveOrthogonality.png",
 	MODE_THREE_LINES, []()->Object* {
 		Waiter wait;
 		Finder find;
