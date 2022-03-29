@@ -264,7 +264,10 @@ const bool term::operator==(const term& other) const
 expr_ptr basicTerm::conj()
 {
 	if (props.isReal)
-		return polyNode::create(monomial(1, this));
+	{
+		poly_ptr poly_of_this = polyNode::create(monomial(1, this));
+		return poly_of_this;
+	}
 	if (props.isUnit)
 	{
 		poly_ptr poly_of_this = polyNode::create(monomial(1, this));
@@ -321,13 +324,15 @@ expr_ptr monomial::conj() const
 
 const bool monomial::operator<(const monomial& other) const
 {
+	if (degree != other.degree)
+		return degree > other.degree;
 	auto jt = other.product.begin();
 	for (auto it = product.begin(); it != product.end(); ++it)
 	{
 		if (jt == other.product.end())
 			return false;
-		if (!(*it->first == *jt->first))
-			return *it->first < *jt->first;
+		if (!(*(it->first) == *(jt->first)))
+			return *(it->first) < *(jt->first);
 		if (it->second < jt->second)
 			return (it == std::prev(product.end()));
 		if (jt->second < it->second)
@@ -341,9 +346,24 @@ const bool monomial::operator<(const monomial& other) const
 
 const bool monomial::operator==(const monomial& other) const
 {
-	return std::equal(product.begin(), product.end(), other.product.begin(), other.product.end(),
-		[](const auto& a, const auto& b)
-		{ return (*a.first == *b.first) && (a.second == b.second); });
+	if (degree != other.degree)
+		return false;
+	if (product.size() != other.product.size())
+		return false;
+	auto jt = other.product.begin();
+	for (auto it = product.begin(); it != product.end(); ++it)
+	{
+		if (jt == other.product.end())
+			return false;
+		if (!(*(it->first) == *(jt->first)))
+			return false;
+		if (it->second != jt->second)
+			return false;
+		++jt;
+	}
+	if (jt != other.product.end())
+		return false;
+	return true;
 }
 
 monomial monomial::operator*(const monomial& other) const
@@ -365,6 +385,7 @@ monomial monomial::operator*(const monomial& other) const
 		else
 			result.product.emplace(it, term, degree);
 	}
+	result.degree = degree + other.degree;
 	return result;
 }
 
@@ -410,6 +431,7 @@ monomial monomial::divide(const monomial& divider) const
 		else
 			result.product.erase(it++);
 	}
+	result.degree = degree - divider.degree;
 	return result;
 }
 
@@ -430,7 +452,7 @@ const std::string calc::monomial::getTEXformat() const
 		if (product.empty())
 			result += "1";
 	}
-	for (const auto &deg : product)
+	for (const auto& deg : product)
 	{
 		bool conjugationMark = deg.first->hasConjugationMark;
 		std::string name_index;
@@ -440,7 +462,7 @@ const std::string calc::monomial::getTEXformat() const
 		{
 			name_index = deg.first->name.substr(0, 1) + "_{" + deg.first->name.substr(1) + "}";
 		}
-		result += (conjugationMark? "\\overline{" : "") + name_index + (deg.second == 1 ? "" : "^" + std::to_string(deg.second)) + (conjugationMark ? "}" : "");
+		result += (conjugationMark ? "\\overline{" : "") + name_index + (deg.second == 1 ? "" : "^" + std::to_string(deg.second)) + (conjugationMark ? "}" : "");
 	}
 	return result;
 }
@@ -486,8 +508,7 @@ polyNode& polyNode::operator+=(const polyNode& other)
 polyNode polyNode::operator+(const polyNode& other) const
 {
 	polyNode result = *this;
-	result += other;
-	return result;
+	return result += other;
 }
 
 polyNode polyNode::operator*(const monomial& other) const
@@ -561,7 +582,7 @@ expr_ptr polyNode::divide(op_ptr& secondOp, const bool isDivident)
 
 const bool polyNode::dividedBy(const monomial& divider) const
 {
-	for (const auto &mono : sum)
+	for (const auto& mono : sum)
 	{
 		if (!mono.dividedBy(divider))
 			return false;
@@ -597,6 +618,7 @@ expr_ptr calc::polyNode::expand()
 		result = result->expandAddition(expanded_mono);
 	}
 	return result;
+	//return shared_from_base<polyNode>();
 }
 
 poly_ptr calc::make_term(std::string name)
@@ -699,7 +721,7 @@ void polyNode::print() const
 				std::cout << std::abs(coef.real());
 		}
 		for (auto [term, degree] : mono.product)
-			std::cout << term->name << (term->hasConjugationMark? "~" : "") << (degree > 1 ? "^" + std::to_string(degree) : "");
+			std::cout << term->name << (term->hasConjugationMark ? "~" : "") << (degree > 1 ? "^" + std::to_string(degree) : "");
 	}
 }
 

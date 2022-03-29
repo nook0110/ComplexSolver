@@ -175,7 +175,7 @@ namespace calc
 		virtual expr_ptr getExpr() = 0;
 		virtual expr_ptr conj() = 0;
 	};
-	
+
 	class basicTerm : public term
 	{
 	public:
@@ -234,6 +234,8 @@ namespace calc
 
 		std::list<std::pair<term*, int>> product; // sorted list of pairs term - degree
 
+		unsigned short int degree = 0;
+
 		monomial() {}
 		monomial(const constTy _coef)
 			: coef(_coef)
@@ -243,6 +245,7 @@ namespace calc
 			: coef(_coef)
 		{
 			product.emplace_back(_term, 1);
+			degree = 1;
 		}
 
 		const bool operator<(const monomial& other) const;

@@ -55,7 +55,7 @@ Vector2f CamCenter = Vector2f(0, 0);
 void preInit()
 {
 	view.setViewport(mainWindowRect);
-	view.move(-500, -500);
+	view.move(-view.getCenter());
 	system("rd /s /q Textures\\TeX");
 	system("md Textures\\TeX");
 	system("rd /s /q Textures\\Equations");
@@ -241,6 +241,8 @@ void constructingTheDrawing()
 				mainWindow.setView(View(visibleArea));
 				view = View(visibleArea);
 				view.setViewport(mainWindowRect);
+				view.move(-view.getCenter());
+
 			}
 			if (event.type == Event::Closed || (event.type == Event::KeyPressed) && (event.key.code == Keyboard::Escape))
 			{
