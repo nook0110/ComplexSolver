@@ -5,38 +5,38 @@ std::list<Memento*>::iterator Memento::it = Memento::mementos.end();
 Memento::Memento(Object* object)
 	:object(object)
 {
+	objectDestructionMutex.lock();
 	while (!mementos.empty() && prev(mementos.end()) != it)
 	{
 		auto delIt = prev(mementos.end());
 		Memento* mem = (*delIt);
-		objectDestructionMutex.lock();
 		if (dynamic_cast<MementoAddition*>(mem))
 		{
 			delete mem->getObject();
 			delete mem;
 		}
-		objectDestructionMutex.unlock();
 		mementos.pop_back();
 	}
+	objectDestructionMutex.unlock();
 	mementos.push_back(this);
 	it = prev(mementos.end());
 }
 
 void Memento::clear()
 {
+	objectDestructionMutex.lock();
 	while (!mementos.empty())
 	{
 		auto delIt = prev(mementos.end());
 		Memento* mem = (*delIt);
-		objectDestructionMutex.lock();
 		if (dynamic_cast<MementoAddition*>(mem))
 		{
 			delete mem->getObject();
 			delete mem;
 		}
-		objectDestructionMutex.unlock();
 		mementos.pop_back();
 	}
+	objectDestructionMutex.unlock();
 	it = mementos.begin();
 }
 

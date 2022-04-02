@@ -2,7 +2,8 @@
 
 bool Prover::started, Prover::theorem, Prover::finished;
 std::thread* Prover::provingThread;
-
+std::chrono::time_point<std::chrono::high_resolution_clock> Prover::startTime;
+std::chrono::time_point<std::chrono::high_resolution_clock> Prover::finishTime;
 
 expr determinant(expr A1, expr B1, expr C1, expr A2, expr B2, expr C2, expr A3, expr B3, expr C3)
 {
@@ -162,14 +163,25 @@ void Prover::proveInscription(Point* first, Point* second, Point* third, Point* 
 	provingThread->detach();
 }
 
+void Prover::start()
+{
+	started = true;
+	startTime = std::chrono::high_resolution_clock::now();
+}
+
+void Prover::finish()
+{
+	finishTime = std::chrono::high_resolution_clock::now();
+	finished = true;
+	std::cout << theorem << std::endl;
+}
+
 void Prover::proveCollinearity(Point* first, Point* second, Point* third)
 {
 	if (started)
 	{
 		throw "Already proving";
 	}
-	started = true;
-
 	ConstructionPoint* first_point_data = dynamic_cast<ConstructionPoint*>(first->construction);
 	ConstructionPoint* second_point_data = dynamic_cast<ConstructionPoint*>(second->construction);
 	ConstructionPoint* third_point_data = dynamic_cast<ConstructionPoint*>(third->construction);
@@ -178,9 +190,9 @@ void Prover::proveCollinearity(Point* first, Point* second, Point* third)
 	expr C = third_point_data->coord;
 	provingThread = new std::thread(
 		[=]() {
+			start();
 			Prover::theorem = ::proveCollinearity(A, B, C);
-			finished = true;
-			std::cout << theorem << std::endl;
+			finish();
 		});
 	provingThread->detach();
 }
@@ -191,7 +203,6 @@ void Prover::proveConcurrency(Line* first, Line* second, Line* third)
 	{
 		throw "Already proving";
 	}
-	started = true;
 
 	ConstructionLine* first_line_data = dynamic_cast<ConstructionLine*>(first->construction);
 	ConstructionLine* second_line_data = dynamic_cast<ConstructionLine*>(second->construction);
@@ -207,11 +218,40 @@ void Prover::proveConcurrency(Line* first, Line* second, Line* third)
 	expr freeThird = third_line_data->free_coef;
 	provingThread = new std::thread(
 		[=]() {
+			start();
 			Prover::theorem = ::proveConcurrency(zFirst, zConjFirst, freeFirst, zSecond, zConjSecond, freeSecond, zThird, zConjThird, freeThird);
-			std::cout << theorem << std::endl;
-			finished = true;
+			finish();
 		});
 	provingThread->detach();
+}
+
+void Prover::updateTextBox()
+{
+	if (finished)
+	{
+
+		TextBox* provingState = dynamic_cast<TextBox*> (Drawer::dialogBox);
+		if (provingState)
+		{
+			auto time = std::chrono::nanoseconds(finishTime - startTime);
+			std::ostringstream str;
+			str << std::fixed;
+			str << std::setprecision(3);
+			str << (double)(time.count()) / 1000000;
+			if (theorem)
+			{
+				std::string text = "True. Time: " + str.str() + " ms";
+				provingState->setText(text);
+				provingState->setColor(Color(32, 133, 54));
+			}
+			else
+			{
+				std::string text = "False. Time: " + str.str() + " ms";
+				provingState->setText(text);
+				provingState->setColor(Color::Red);
+			}
+		}
+	}
 }
 
 void Prover::proveConstruction(Point* first, Point* second)
@@ -220,7 +260,6 @@ void Prover::proveConstruction(Point* first, Point* second)
 	{
 		throw "Already proving";
 	}
-	started = true;
 
 	ConstructionPoint* first_point_data = dynamic_cast<ConstructionPoint*>(first->construction);
 	ConstructionPoint* second_point_data = dynamic_cast<ConstructionPoint*>(second->construction);
@@ -228,9 +267,9 @@ void Prover::proveConstruction(Point* first, Point* second)
 	expr B = second_point_data->coord;
 	provingThread = new std::thread(
 		[=]() {
+			start();
 			Prover::theorem = ::proveEquivalence(A, B);
-			finished = true;
-			std::cout << theorem << std::endl;
+			finish();
 		});
 	provingThread->detach();
 }
@@ -241,7 +280,6 @@ void Prover::proveEquivalence(Point* first, Point* second, Point* third, Point* 
 	{
 		throw "Already proving";
 	}
-	started = true;
 
 	ConstructionPoint* first_point_data = dynamic_cast<ConstructionPoint*>(first->construction);
 	ConstructionPoint* second_point_data = dynamic_cast<ConstructionPoint*>(second->construction);
@@ -255,9 +293,9 @@ void Prover::proveEquivalence(Point* first, Point* second, Point* third, Point* 
 
 	provingThread = new std::thread(
 		[=]() {
+			start();
 			Prover::theorem = ::proveEquivalence(A, B, C, D);
-			finished = true;
-			std::cout << theorem << std::endl;
+			finish();
 		});
 	provingThread->detach();
 }
@@ -268,7 +306,6 @@ void Prover::proveParallel(Line* first, Line* second)
 	{
 		throw "Already proving";
 	}
-	started = true;
 
 	ConstructionLine* first_line_data = dynamic_cast<ConstructionLine*>(first->construction);
 	ConstructionLine* second_line_data = dynamic_cast<ConstructionLine*>(second->construction);
@@ -279,9 +316,9 @@ void Prover::proveParallel(Line* first, Line* second)
 
 	provingThread = new std::thread(
 		[=]() {
+			start();
 			Prover::theorem = ::proveParallel(zFirst, zConjFirst, zSecond, zConjSecond);
-			std::cout << theorem << std::endl;
-			finished = true;
+			finish();
 		});
 	provingThread->detach();
 }
@@ -292,7 +329,6 @@ void Prover::proveOrthogonality(Line* first, Line* second)
 	{
 		throw "Already proving";
 	}
-	started = true;
 
 	ConstructionLine* first_line_data = dynamic_cast<ConstructionLine*>(first->construction);
 	ConstructionLine* second_line_data = dynamic_cast<ConstructionLine*>(second->construction);
@@ -303,9 +339,9 @@ void Prover::proveOrthogonality(Line* first, Line* second)
 
 	provingThread = new std::thread(
 		[=]() {
+			start();
 			Prover::theorem = ::proveOrthogonality(zFirst, zConjFirst, zSecond, zConjSecond);
-			std::cout << theorem << std::endl;
-			finished = true;
+			finish();
 		});
 	provingThread->detach();
 }

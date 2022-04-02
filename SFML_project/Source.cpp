@@ -3,6 +3,7 @@
 #include "Prover.h"
 #include "Printer.h"
 #include "presetBoxes.h"
+#include "Compiler.h"
 #include <iostream>
 #include <iomanip>
 using namespace sf;
@@ -114,7 +115,6 @@ void settings()
 {
 	mainWindow.setFramerateLimit(60);
 	presets::stateboxesInit();
-
 	bool finished = false;
 	while (mainWindow.isOpen() && !finished)
 	{
@@ -162,10 +162,10 @@ void constructPreset()
 		break;
 	case presets::FPS::UNLIMITED:
 		mainWindow.setFramerateLimit(0);
-		break; 
+		break;
 	case presets::FPS::VS:
 		mainWindow.setVerticalSyncEnabled(1);
-			break;
+		break;
 	}
 
 	NameBox namebox;
@@ -285,12 +285,13 @@ void constructingTheDrawing()
 
 void provingTheProblem()
 {
+	TextBox* problemState = new TextBox();
+	problemState->setText("Solving the problem...");
 	mainWindowRect = FloatRect(0.f, 0.f, 1.0f, 1.0f);
 	view.setViewport(mainWindowRect);
 	moveButton.press();
 	Creation::getInstance()->CurrentMethod = moveButton.getObjectCreationMethod();
 	mainMenu.setViewport(FloatRect());
-
 	while (mainWindow.isOpen())
 	{
 		Event event;
@@ -322,19 +323,29 @@ void provingTheProblem()
 		}
 		mainWindow.clear(Color::White);
 		mainWindow.setView(view);
+		Prover::updateTextBox();
 		Drawer::draw();
 		mainWindow.display();
 		std::this_thread::sleep_for(std::chrono::microseconds(1));
 	}
 }
 
-int main()
+int main(int argc, char** argv)
 {
-	settings();
-	preInit();
-	constructPreset();
-	menuInit();
-
+	if (argc == 2)
+	{
+		mainWindow.setFramerateLimit(60);
+		Compiler::compile(argv[1]);
+		preInit();
+		menuInit();
+	}
+	else
+	{
+		settings();
+		preInit();
+		constructPreset();
+		menuInit();
+	}
 	constructingTheDrawing();
 
 	provingTheProblem();

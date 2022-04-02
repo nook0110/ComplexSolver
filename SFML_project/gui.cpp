@@ -207,10 +207,10 @@ void Menu::updateButtons()
 		size = std::min(menuSize.x, menuSize.y) / 2;
 	}
 	size = adjustSize(size, menuSize, buttons[layer].size());
-	
+
 	buttonTable.x = (menuSize.x) / (size);
 	buttonTable.y = ceil((float)buttons[layer].size() / (float)buttonTable.x);
-	resize(size * buttonTable.y + shiftRatio*size);
+	resize(size * buttonTable.y + shiftRatio * size);
 	size /= (1 + shiftRatio);
 	double shiftSize = size * shiftRatio;
 
@@ -229,7 +229,7 @@ void Menu::updateButtons()
 void Menu::resize(double newSize)
 {
 	double ratio = newSize / menuView.getSize().y;
-	mainWindowRect.top = ratio*normalViewport.height;
+	mainWindowRect.top = ratio * normalViewport.height;
 	view.setViewport(mainWindowRect);
 	background.setSize(Vector2f(menuView.getSize().x, newSize));
 	background.setPosition(position);
@@ -249,7 +249,7 @@ Menu::Menu(RenderWindow* window)
 {
 	buttons.resize(3);
 	normalView = window->getDefaultView();
-	normalView.setSize(normalView.getSize().x* normalViewport.width, normalView.getSize().y* normalViewport.height);
+	normalView.setSize(normalView.getSize().x * normalViewport.width, normalView.getSize().y * normalViewport.height);
 	normalView.setCenter(normalView.getCenter().x * normalViewport.width, normalView.getCenter().y * normalViewport.height);
 	normalView.setViewport(normalViewport);
 	menuView = window->getDefaultView();
@@ -262,7 +262,7 @@ void Menu::update(Event event)
 {
 	FloatRect visibleArea(menuView.getCenter().x - menuView.getSize().x / 2, menuView.getCenter().y - menuView.getSize().y / 2, event.size.width * viewport.width, event.size.height * viewport.height);
 	FloatRect normalVisibleArea = FloatRect(menuView.getCenter().x - menuView.getSize().x / 2, menuView.getCenter().y - menuView.getSize().y / 2, event.size.width * normalViewport.width, event.size.height * normalViewport.height);
-	
+
 	normalView = View(normalVisibleArea);
 	window->setView(View(visibleArea));
 	menuView = View(visibleArea);
@@ -368,6 +368,15 @@ void DialogBox::update(Event event)
 {
 	FloatRect visibleArea(dialogBoxView.getCenter().x - dialogBoxView.getSize().x / 2, dialogBoxView.getCenter().y - dialogBoxView.getSize().y / 2, event.size.width * viewport.width, event.size.height * viewport.height);
 	mainWindow.setView(dialogBoxView = View(visibleArea));
+}
+
+void DialogBox::setSize(Vector2f size)
+{
+	sizeDialogBox = size;
+	sizeTextBox = size - Vector2f(5, 5);
+	dialogBox.setSize(sizeDialogBox);
+	shadow = dialogBox;
+	textBox.setSize(sizeTextBox);
 }
 
 void DialogBox::cin(Event event)
@@ -529,13 +538,43 @@ std::string NameBox::getName()
 	return newName(textIn);
 }
 
+
+TextBox::TextBox() : DialogBox()
+{
+	setSize(Vector2f(400, 60));
+}
+
 void TextBox::setText(std::string text)
 {
-	TextBox::text = text;
+	textIn = text;
+	Text txt = Text(textIn, font, textSize);
+	setSize(Vector2f(txt.getGlobalBounds().width, txt.getGlobalBounds().height) + (textBoxOffset + textOffset) * 3.f);
+}
+
+void TextBox::setColor(Color color)
+{
+	DialogBox::color = color;
 }
 
 void TextBox::draw()
 {
+	deletion.lock();
+	mainWindow.setView(dialogBoxView);
+	Vector2f position = dialogBoxView.getCenter() + dialogBoxView.getSize() / 2.f - sizeDialogBox + cornerOffset;
+	dialogBox.setPosition(position);
+	textBox.setPosition(position + textBoxOffset);
+	shadow.setPosition(position + shadowOffset);
+	mainWindow.draw(shadow);
+	mainWindow.draw(dialogBox);
+	mainWindow.draw(textBox);
+	Text text;
+
+	text = Text(textIn, font, textSize);
+	text.setFillColor(color);
+
+	text.setPosition(position + textBoxOffset + textOffset);
+	mainWindow.draw(text);
+	deletion.unlock();
 }
 
 Description::Description(std::string filePath, std::string name)

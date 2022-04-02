@@ -49,7 +49,7 @@ private:
 	void setTexture(std::string textureLocation, Vector2i textureStart, Vector2i textureSize);
 public:
 	Button(Vector2f position, Vector2f size, RenderWindow* window,
-		std::string textureLocation, Vector2i textureStart = Vector2i(0, 0), Vector2i textureSize = Vector2i(0,0),
+		std::string textureLocation, Vector2i textureStart = Vector2i(0, 0), Vector2i textureSize = Vector2i(0, 0),
 		MODES mode = MODE_NOTHING, std::function<Object* (void)> modeFunction = []()->Object* {});
 	Button(Vector2f position, Vector2f size, RenderWindow* window,
 		std::string textureLocation, std::string texturePressedLocation,
@@ -120,8 +120,8 @@ protected:
 	Color color = Color(128, 128, 128);
 	Color shadowColor = Color(32, 32, 32);
 	const FloatRect viewport = FloatRect(0.f, 0.f, 1.0f, 1.0f);
-	const Vector2f sizeDialogBox = Vector2f(300, 60);
-	const Vector2f sizeTextBox = Vector2f(295, 55);
+	Vector2f sizeDialogBox = Vector2f(300, 60);
+	Vector2f sizeTextBox = Vector2f(295, 55);
 	const unsigned int textSize = 35;
 	const Vector2f textOffset = Vector2f((sizeTextBox.y - textSize) / 2, (sizeTextBox.y - textSize) / 2);
 	const Vector2f textBoxOffset = (sizeDialogBox - sizeTextBox) / 2.f;
@@ -140,9 +140,10 @@ public:
 	~DialogBox();
 	// Resize DialogBox
 	void update(Event event);
+	void setSize(Vector2f size);
 	// Cin into the box
 	virtual void cin(Event event);
-	void draw();
+	virtual void draw();
 	// Returns if "Enter" was entered
 	bool isFinished();
 
@@ -173,16 +174,13 @@ public:
 
 
 // In construction...
-class TextBox
+class TextBox : public DialogBox
 {
-	RenderWindow* window;
-	View textBoxView;
-	const Vector2f sizeTextBox = Vector2f(30, 300);
-	RectangleShape textBox = RectangleShape(sizeTextBox);
-	Vector2f position;
-	std::string text;
+	Vector2f cornerOffset = Vector2f(-50, -50);
 public:
+	TextBox();
 	void setText(std::string text);
+	void setColor(Color color);
 	void draw();
 };
 
@@ -195,7 +193,7 @@ class Description
 	Vector2f position = Vector2f();
 	Vector2f size;
 	const Vector2f backgroundDelta = Vector2f(5, 5);
-	const float outlineThikness= 1;
+	const float outlineThikness = 1;
 	std::string name;
 public:
 	Description(std::string filePath, std::string name);

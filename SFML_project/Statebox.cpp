@@ -11,7 +11,7 @@ Statebox::Statebox(Vector2f position, Vector2f size, std::string name, int state
 	text = Text(name, font, textSize);
 	text.setFillColor(textColor);
 	background.setFillColor(backgroundColor);
-	
+
 }
 
 void Statebox::setStateTexture(int state, std::string textState, std::string texturePath)
@@ -104,18 +104,18 @@ void StateMenu::update()
 	float size = menuSize.y / stateboxes.size() / 2;
 	float nextSize = size;
 	const float coeff = 1.001;
-	while (nextSize*stateboxes.size() < menuSize.y - nextSize*shiftRatio)
+	while (nextSize * stateboxes.size() < menuSize.y - nextSize * shiftRatio)
 	{
 		size = nextSize;
 		nextSize *= coeff;
 	}
 	size = std::min(150.f, size);
 	Vector2f center = mainWindow.getView().getCenter();
-	Vector2f delta = Vector2f(0, center.y - size * (1.f + shiftRatio) * stateboxes.size() / 2);
+	Vector2f delta = Vector2f(0, center.y - size * (1.f + shiftRatio) * (stateboxes.size()-1) / 2.f);
 	for (int i = 0; i < stateboxes.size(); i++)
 	{
 		stateboxes[i]->setSize(size);
-		Vector2f position = Vector2f(center.x, i * size * (1.f + shiftRatio) + delta.y);
+		Vector2f position = Vector2f(center.x, i * size * (1.f + shiftRatio)) + delta;
 		stateboxes[i]->setPosition(Vector2f(position));
 	}
 }

@@ -275,7 +275,7 @@ class OnLine : public ConstructionPoint
 	Line* thirdParent;
 	float ratio;
 public:
-	OnLine(Object* object, Point* firstParent, Point* secondParent, float ratio, Line* fourthParent);
+	OnLine(Point* object, Point* firstParent, Point* secondParent, float ratio, Line* fourthParent);
 	void moveTo(Vector2f coords) override;
 	void recreate(Equation* equation) override;
 	~OnLine();
@@ -547,7 +547,7 @@ public:
 		ORTHOCENTER,
 		INCENTER
 	};
-	// Orthocenter
+	// Orthocenter and Incenter
 	Point(UnitPoint* first, UnitPoint* second, UnitPoint* third, triangleCenter center);
 	// Barycenter
 	Point(Point* first, Point* second, Point* third);

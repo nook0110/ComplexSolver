@@ -1,0 +1,6 @@
+UnitPoint A OnCircle 100 100
+UnitPoint B OnCircle -100 100
+UnitPoint C OnCircle 0 -100
+Chord C1 ByTwoUnitPoints A B
+Chord C2 ByTwoUnitPoints B C
+Line X Perpendicular A C1

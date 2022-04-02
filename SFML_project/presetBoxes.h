@@ -18,7 +18,7 @@ namespace presets
 
 	enum Construction
 	{
-		NOTHING,
+		EMPTY,
 		TRIANGLE,
 		INCENTER,
 		ORTHOCENTER
@@ -49,12 +49,12 @@ namespace presets
 		setFPS.setStateTexture(1, "Vertical Sync", "Textures\\Checkbox_textures\\PresetVS.png");
 		setFPS.setStateTexture(2, "Unlimited", "Textures\\Checkbox_textures\\PresetUnlimited.png");
 
-		constructionPreset.setStateTexture(0, "Nothing", "Textures\\Checkbox_textures\\PresetNothing.png");
+		constructionPreset.setStateTexture(0, "Empty", "Textures\\Checkbox_textures\\PresetEmpty.png");
 		constructionPreset.setStateTexture(1, "Triangle", "Textures\\Checkbox_textures\\PresetTriangle.png");
 		constructionPreset.setStateTexture(2, "Incenter", "Textures\\Checkbox_textures\\PresetIncenter.png");
 		constructionPreset.setStateTexture(3, "Orthocenter", "Textures\\Checkbox_textures\\PresetOrthocenter.png");
-		stateMenu.pushStatebox(&enableLatex);
-		stateMenu.pushStatebox(&enableFullProvePrinting);
+		//stateMenu.pushStatebox(&enableLatex);
+		//stateMenu.pushStatebox(&enableFullProvePrinting);
 		stateMenu.pushStatebox(&setFPS);
 		stateMenu.pushStatebox(&constructionPreset);
 

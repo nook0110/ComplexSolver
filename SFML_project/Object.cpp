@@ -968,6 +968,7 @@ void CenterPoint::moveTo(Vector2f coords)
 
 UnitPoint::UnitPoint(UnitCircle* unitCircle, Vector2f position)
 {
+	setColor(movableColor);
 	setName();
 	float angle = atan2(position.y, position.x);
 	construction = new OnCircle(this, unitCircle, angle);

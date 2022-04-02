@@ -116,14 +116,14 @@ byTwoPointsFixedRatio::byTwoPointsFixedRatio(Object* object, Point* firstParent,
 		coord = linear_combination / expr(make_scalar(masses.first + masses.second));
 }
 
-OnLine::OnLine(Object* object, Point* firstParent, Point* secondParent, float ratio, Line* thirdParent)
+OnLine::OnLine(Point* object, Point* firstParent, Point* secondParent, float ratio, Line* thirdParent)
 	:firstParent(firstParent), secondParent(secondParent), ratio(ratio), thirdParent(thirdParent), ConstructionPoint(object)
 {
 	const ConstructionPoint* first_point_data = static_cast<ConstructionPoint*>(firstParent->construction);
 	const ConstructionPoint* second_point_data = static_cast<ConstructionPoint*>(secondParent->construction);
 	expr A = first_point_data->coord;
 	expr B = second_point_data->coord;
-	expr k = expr(make_real_term("k" + firstParent->getLowerCaseName() + secondParent->getLowerCaseName()));
+	expr k = expr(make_real_term("k" + object->getLowerCaseName()));
 	coord = (A * k) + (B * (expr(make_scalar(1)) - k));
 }
 
@@ -211,7 +211,7 @@ Parallel::Parallel(Object* object, Line* first, Point* second)
 	free_coef = A * m + B * m_conj;
 }
 
-Perpendicular::Perpendicular(Object* object, Point* firstParent, Line* secondParent) 
+Perpendicular::Perpendicular(Object* object, Point* firstParent, Line* secondParent)
 	: firstParent(firstParent), secondParent(secondParent), ConstructionLine(object)
 {
 	const ConstructionPoint* point_data = static_cast<ConstructionPoint*>(firstParent->construction);

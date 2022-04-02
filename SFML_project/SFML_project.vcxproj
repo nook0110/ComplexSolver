@@ -160,6 +160,7 @@
   <ItemGroup>
     <ClCompile Include="algebraic.cpp" />
     <ClCompile Include="calculator.cpp" />
+    <ClCompile Include="Compiler.cpp" />
     <ClCompile Include="Statebox.cpp" />
     <ClCompile Include="eq_construct.cpp" />
     <ClCompile Include="gui.cpp" />
@@ -176,6 +177,7 @@
   <ItemGroup>
     <ClInclude Include="algebraic.h" />
     <ClInclude Include="calculator.h" />
+    <ClInclude Include="Compiler.h" />
     <ClInclude Include="presetBoxes.h" />
     <ClInclude Include="Statebox.h" />
     <ClInclude Include="gui.h" />
