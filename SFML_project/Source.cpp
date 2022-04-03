@@ -2,10 +2,11 @@
 #include "Creation.h"
 #include "Prover.h"
 #include "Printer.h"
-#include "presetBoxes.h"
 #include "Compiler.h"
+#include "presetBoxes.h"
 #include <iostream>
 #include <iomanip>
+
 using namespace sf;
 
 extern RenderWindow mainWindow;
@@ -51,10 +52,17 @@ extern Button inscription;
 
 extern Button debugButton;
 
+extern StateMenu stateMenu;
+extern presets::isEnabled latex;
+extern presets::isEnabled provePrinting;
+extern presets::FPS fps;
+extern presets::Construction preset;
+
 Vector2f CamCenter = Vector2f(0, 0);
 
 void preInit()
 {
+
 	view.setViewport(mainWindowRect);
 	view.move(-view.getCenter());
 	system("rd /s /q Textures\\TeX");
@@ -125,7 +133,7 @@ void settings()
 			Drawer::updateMenu(event);
 			if (event.type == Event::MouseButtonPressed || event.type == Event::MouseButtonReleased)
 			{
-				presets::stateMenu.clickCheck();
+				stateMenu.clickCheck();
 			}
 			if (event.type == Event::Resized)
 			{
@@ -133,7 +141,7 @@ void settings()
 				FloatRect visibleArea(view.getCenter().x - view.getSize().x / 2, view.getCenter().y - view.getSize().y / 2, event.size.width, event.size.height);
 				mainWindow.setView(View(visibleArea));
 				view = View(visibleArea);
-				presets::stateMenu.update();
+				stateMenu.update();
 			}
 			if (event.type == Event::Closed || (event.type == Event::KeyPressed) && (event.key.code == Keyboard::Escape))
 			{
@@ -146,7 +154,7 @@ void settings()
 		}
 		mainWindow.clear(Color::White);
 		mainWindow.setView(view);
-		presets::stateMenu.draw();
+		stateMenu.draw();
 		mainWindow.display();
 		std::this_thread::sleep_for(std::chrono::microseconds(1));
 	}
@@ -155,7 +163,7 @@ void settings()
 
 void constructPreset()
 {
-	switch (presets::fps)
+	switch (fps)
 	{
 	case presets::FPS::FRAMES_60:
 		mainWindow.setFramerateLimit(60);
@@ -169,16 +177,16 @@ void constructPreset()
 	}
 
 	NameBox namebox;
-	if (presets::preset == presets::Construction::TRIANGLE)
+	if (preset == presets::Construction::TRIANGLE)
 	{
 		namebox.setName("C");
-		new UnitPoint(UnitCircle::getInstance(), Vector2f(unitSeg, unitSeg));
+		Compiler::points["C"] = new UnitPoint(UnitCircle::getInstance(), Vector2f(unitSeg, unitSeg));
 		namebox.setName("B");
-		new UnitPoint(UnitCircle::getInstance(), Vector2f(0, -unitSeg));
+		Compiler::points["B"] = new UnitPoint(UnitCircle::getInstance(), Vector2f(0, -unitSeg));
 		namebox.setName("A");
-		new UnitPoint(UnitCircle::getInstance(), Vector2f(-unitSeg, unitSeg));
+		Compiler::points["A"] = new UnitPoint(UnitCircle::getInstance(), Vector2f(-unitSeg, unitSeg));
 	}
-	else if (presets::preset == presets::Construction::INCENTER)
+	else if (preset == presets::Construction::INCENTER)
 	{
 		namebox.setName("C");
 		UnitPoint* pointC = new UnitPoint(UnitCircle::getInstance(), Vector2f(unitSeg, unitSeg));
@@ -211,8 +219,15 @@ void constructPreset()
 		pointDa->updateTeX();
 		pointDb->updateTeX();
 		pointDc->updateTeX();
+		Compiler::points["C"] = pointC;
+		Compiler::points["B"] = pointB;
+		Compiler::points["A"] = pointA;
+		Compiler::points["I"] = pointI;
+		Compiler::points["Dc"] = pointDc;
+		Compiler::points["Db"] = pointDb;
+		Compiler::points["Da"] = pointDa;
 	}
-	else if (presets::preset == presets::Construction::ORTHOCENTER)
+	else if (preset == presets::Construction::ORTHOCENTER)
 	{
 		namebox.setName("C");
 		UnitPoint* pointC = new UnitPoint(UnitCircle::getInstance(), Vector2f(unitSeg, unitSeg));
@@ -222,6 +237,10 @@ void constructPreset()
 		UnitPoint* pointA = new UnitPoint(UnitCircle::getInstance(), Vector2f(-unitSeg, unitSeg));
 		namebox.setName("H");
 		Point* pointH = new Point(pointA, pointB, pointC, Point::ORTHOCENTER);
+		Compiler::points["C"] = pointC;
+		Compiler::points["B"] = pointB;
+		Compiler::points["A"] = pointA;
+		Compiler::points["H"] = pointH;
 	}
 }
 
@@ -337,15 +356,15 @@ int main(int argc, char** argv)
 		mainWindow.setFramerateLimit(60);
 		Compiler::compile(argv[1]);
 		preInit();
-		menuInit();
 	}
 	else
 	{
 		settings();
 		preInit();
 		constructPreset();
-		menuInit();
 	}
+	menuInit();
+
 	constructingTheDrawing();
 
 	provingTheProblem();

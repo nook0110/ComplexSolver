@@ -107,7 +107,7 @@ void Object::updateTeX()
 
 std::string Object::getLowerCaseName()
 {
-	return std::to_string(int(this));
+	return std::string();
 }
 
 void Object::switchDescription(Vector2f position)
@@ -116,7 +116,7 @@ void Object::switchDescription(Vector2f position)
 	{
 		if (equationPath.empty())
 		{
-			equationPath = makeTexture(TeX, getLowerCaseName());
+			equationPath = makeTexture(TeX, getLowerCaseName() + std::to_string(int(this)));
 		}
 		description = new Description(equationPath, getLowerCaseName());
 		description->moveTo(position);
@@ -142,6 +142,7 @@ void Object::del()
 	if (description)
 	{
 		delete description;
+		description = nullptr;
 	}
 	NameBox::names[getLowerCaseName()] = false;
 	Drawer::allVisibleObjects.remove(this);

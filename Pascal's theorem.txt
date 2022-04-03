@@ -1,0 +1,20 @@
+#Pascal's theorem
+Settings 60 Empty
+#These strange numbers are used to make picture more 'realistic'
+UnitPoint A OnCircle -4 -5
+UnitPoint B OnCircle -1 10 
+UnitPoint C OnCircle 9 -7
+UnitPoint D OnCircle -3 5
+UnitPoint E OnCircle 1 -15
+UnitPoint F OnCircle 5 7
+#Pascal for ABCDEF
+Chord X1 ByTwoUnitPoints A B
+Chord X2 ByTwoUnitPoints D E
+Point X IntersectionOfTwoLines X1 X2
+Chord Y1 ByTwoUnitPoints B C
+Chord Y2 ByTwoUnitPoints E F
+Point Y IntersectionOfTwoLines Y1 Y2
+Chord Z1 ByTwoUnitPoints C D
+Chord Z2 ByTwoUnitPoints F A
+Point Z IntersectionOfTwoLines Z1 Z2
+#XYZ is a Pascal line

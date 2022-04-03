@@ -156,9 +156,9 @@ void Prover::proveInscription(Point* first, Point* second, Point* third, Point* 
 
 	provingThread = new std::thread(
 		[=]() {
+			start();
 			Prover::theorem = ::proveInscription(A, B, C, D);
-			finished = true;
-			std::cout << theorem << std::endl;
+			finish();
 		});
 	provingThread->detach();
 }

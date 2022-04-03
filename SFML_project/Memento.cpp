@@ -24,19 +24,21 @@ Memento::Memento(Object* object)
 
 void Memento::clear()
 {
-	objectDestructionMutex.lock();
+	
 	while (!mementos.empty())
 	{
 		auto delIt = prev(mementos.end());
 		Memento* mem = (*delIt);
 		if (dynamic_cast<MementoAddition*>(mem))
 		{
+			objectDestructionMutex.lock();
 			delete mem->getObject();
 			delete mem;
+			objectDestructionMutex.unlock();
 		}
 		mementos.pop_back();
 	}
-	objectDestructionMutex.unlock();
+
 	it = mementos.begin();
 }
 

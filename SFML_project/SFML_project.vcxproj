@@ -161,6 +161,7 @@
     <ClCompile Include="algebraic.cpp" />
     <ClCompile Include="calculator.cpp" />
     <ClCompile Include="Compiler.cpp" />
+    <ClCompile Include="presetBoxes.cpp" />
     <ClCompile Include="Statebox.cpp" />
     <ClCompile Include="eq_construct.cpp" />
     <ClCompile Include="gui.cpp" />
