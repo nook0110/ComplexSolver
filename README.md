@@ -78,13 +78,13 @@ ___
 ![image](https://user-images.githubusercontent.com/77803419/183294843-7d186c4f-6ea3-449f-9e6d-b46f947432ef.png)
 
 
-## Compiling files
+# Compiling files
 
 You can compile files such as ```Pascal's theorem.txt```
 
 Just drag them onto the ```.exe```
 
-## How to make this files
+# How to make this files
 
 Saving picture isn`t in project now.
 But if you want, you can write this file yourself.
@@ -108,7 +108,7 @@ Presets:
 * ```Orthocenter``` - Creates Triangle ```ABC``` inscribed into unit circle and orthocenter ```H```
 * ```Incenter``` - Creates Triangle ```ABC``` inscribed into unit circle, incenter ```I```, and centers of arcs: ```Da```, ```Db```, ```Dc```
 
-### Objects
+## Objects
 ```
 Chord X1 ByTwoUnitPoints A B
 ```
@@ -123,7 +123,7 @@ Type:
 Name: make it up yourself! 
 ```But be careful with redefenition, also don`t forget about objects in presets```
 
-#### Point
+### Point
 Construction:
 * ```OnPlane```
 
@@ -170,4 +170,4 @@ Creates a point which is projection of point on a line (chords are lines too)
   Point_name is projection of point_1 on line_1
   
   
-### Have a nice experience!
+## Have a nice experience!
