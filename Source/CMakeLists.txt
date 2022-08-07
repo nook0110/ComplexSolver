@@ -7,16 +7,35 @@ set(PROJECT_NAME SFML_project)
 ################################################################################
 # Target
 ################################################################################
-target_sources(sfml PRIVATE 
-                gui.cpp
-                gui.h
+target_sources(sfml PRIVATE
+		algebraic.cpp
+		algebraic.h
+		calculator.cpp
+		calculator.h
+		Compiler.cpp
+		Compiler.h 
                 Creation.cpp
                 Creation.h
+		eq_construct.cpp
+		geometry.cpp
                 GlobalVariables.cpp
+                gui.cpp
+                gui.h
+		Memento.cpp
+		Memento.h
                 Object.cpp
                 Object.h
+		presetBoxes.cpp
+		presetBoxes.h
                 PresetButtons.cpp
                 PresetButtons.h
+		Printer.cpp
+		Printer.h
+		Prover.cpp
+		Prover.h
+		Source.cpp
+		Statebox.cpp
+		Statebox.h
                 WrapMouse.cpp
                 WrapMouse.h)
 
