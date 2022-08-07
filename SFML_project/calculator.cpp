@@ -302,6 +302,7 @@ expr_ptr calc::monomial::subExpand() const
 	for (auto& [term, degree] : product)
 	{
 		expr_ptr hidden_expr = term->getExpr();
+		#pragma omp parallel for
 		for (int i = 0; i < degree; ++i)
 		{
 			result = result->multiply(hidden_expr);

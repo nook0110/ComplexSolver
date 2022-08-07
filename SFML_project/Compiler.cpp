@@ -7,6 +7,24 @@ extern void constructPreset();
 
 
 
+void Compiler::compileProperties(std::stringstream& sstring, Object* object)
+{
+	std::string visibility;
+	sstring >> visibility;
+	if (visibility == "")
+	{
+		return;
+	}
+	if (visibility == "invisible")
+	{
+		object->setVisibility(false);
+	}
+	else
+	{
+		object->setVisibility(true);
+	}
+}
+
 void Compiler::compileSettings(std::stringstream& sstring)
 {
 	std::string fpsstr;
@@ -45,7 +63,7 @@ void Compiler::compileSettings(std::stringstream& sstring)
 	return;
 }
 
-void Compiler::compilePoint(std::stringstream& sstring, std::string name, std::string construction)
+Object* Compiler::compilePoint(std::stringstream& sstring, std::string name, std::string construction)
 {
 	if (points[name])
 	{
@@ -62,8 +80,7 @@ void Compiler::compilePoint(std::stringstream& sstring, std::string name, std::s
 		}
 		Vector2f position(std::stof(coordX), std::stof(coordY));
 
-		points[name] = new Point(position);
-		return;
+		return points[name] = new Point(position);
 	}
 	else if (construction == "IntersectionOfTwoLines")
 	{
@@ -84,8 +101,7 @@ void Compiler::compilePoint(std::stringstream& sstring, std::string name, std::s
 		}
 
 
-		points[name] = new Point(lines[firstLine], lines[secondLine]);
-		return;
+		return points[name] = new Point(lines[firstLine], lines[secondLine]);
 	}
 	else if (construction == "OnLine")
 	{
@@ -114,8 +130,7 @@ void Compiler::compilePoint(std::stringstream& sstring, std::string name, std::s
 			throw((std::string)"Compile error: no point with name " + secondPoint);
 		}
 
-		points[name] = new Point(lines[line], points[firstPoint], points[secondPoint], position);
-		return;
+		return points[name] = new Point(lines[line], points[firstPoint], points[secondPoint], position);
 	}
 	else if (construction == "Projection")
 	{
@@ -135,8 +150,8 @@ void Compiler::compilePoint(std::stringstream& sstring, std::string name, std::s
 			throw((std::string)"Compile error: no line with name " + line);
 		}
 
-		points[name] = new Point(points[point], lines[line]);
-		return;
+		return points[name] = new Point(points[point], lines[line]);
+
 	}
 	else if (construction == "byTwoPointsFixedRatio")
 	{
@@ -160,8 +175,7 @@ void Compiler::compilePoint(std::stringstream& sstring, std::string name, std::s
 			throw((std::string)"Compile error: no point with name " + secondPoint);
 		}
 
-		points[name] = new Point(points[firstPoint], points[secondPoint], masses);
-		return;
+		return points[name] = new Point(points[firstPoint], points[secondPoint], masses);
 	}
 	else if (construction == "Rotation90")
 	{
@@ -182,8 +196,7 @@ void Compiler::compilePoint(std::stringstream& sstring, std::string name, std::s
 			throw((std::string)"Compile error: no point with name " + preimage);
 		}
 
-		points[name] = new Point(points[center], points[preimage], stoi(sign));
-		return;
+		return points[name] = new Point(points[center], points[preimage], stoi(sign));
 	}
 	else if (construction == "Orthocenter")
 	{
@@ -213,10 +226,9 @@ void Compiler::compilePoint(std::stringstream& sstring, std::string name, std::s
 			throw((std::string)"Compile error: invalid args");
 		}
 
-		points[name] = new Point(dynamic_cast<UnitPoint*>(points[first]),
+		return points[name] = new Point(dynamic_cast<UnitPoint*>(points[first]),
 			dynamic_cast<UnitPoint*>(points[second]),
 			dynamic_cast<UnitPoint*>(points[third]), Point::triangleCenter::ORTHOCENTER);
-		return;
 	}
 	else if (construction == "Barycenter")
 	{
@@ -241,8 +253,7 @@ void Compiler::compilePoint(std::stringstream& sstring, std::string name, std::s
 			throw((std::string)"Compile error: no point with name " + third);
 		}
 
-		points[name] = new Point(points[first], points[second], points[third]);
-		return;
+		return points[name] = new Point(points[first], points[second], points[third]);
 	}
 	else
 	{
@@ -250,7 +261,7 @@ void Compiler::compilePoint(std::stringstream& sstring, std::string name, std::s
 	}
 }
 
-void Compiler::compileUnitPoint(std::stringstream& sstring, std::string name, std::string construction)
+Object* Compiler::compileUnitPoint(std::stringstream& sstring, std::string name, std::string construction)
 {
 	if (construction == "OnCircle")
 	{
@@ -263,8 +274,7 @@ void Compiler::compileUnitPoint(std::stringstream& sstring, std::string name, st
 		}
 		Vector2f position(std::stof(coordX), std::stof(coordY));
 
-		points[name] = new UnitPoint(UnitCircle::getInstance(), position);
-		return;
+		return points[name] = new UnitPoint(UnitCircle::getInstance(), position);
 	}
 	else if (construction == "CentralProjection")
 	{
@@ -287,8 +297,7 @@ void Compiler::compileUnitPoint(std::stringstream& sstring, std::string name, st
 		{
 			throw((std::string)"Compile error: invalid args");
 		}
-		points[name] = new UnitPoint(UnitCircle::getInstance(), points[first], dynamic_cast<UnitPoint*>(points[second]));
-		return;
+		return points[name] = new UnitPoint(UnitCircle::getInstance(), points[first], dynamic_cast<UnitPoint*>(points[second]));
 	}
 	else if (construction == "IntersectionPerpendicularChord")
 	{
@@ -311,8 +320,7 @@ void Compiler::compileUnitPoint(std::stringstream& sstring, std::string name, st
 		{
 			throw((std::string)"Compile error: invalid args");
 		}
-		points[name] = new UnitPoint(UnitCircle::getInstance(), dynamic_cast<Chord*>(lines[first]), dynamic_cast<UnitPoint*>(points[second]));
-		return;
+		return points[name] = new UnitPoint(UnitCircle::getInstance(), dynamic_cast<Chord*>(lines[first]), dynamic_cast<UnitPoint*>(points[second]));
 	}
 	else if (construction == "IntersectionParallelChord")
 	{
@@ -335,12 +343,11 @@ void Compiler::compileUnitPoint(std::stringstream& sstring, std::string name, st
 		{
 			throw((std::string)"Compile error: invalid args");
 		}
-		points[name] = new UnitPoint(UnitCircle::getInstance(), dynamic_cast<UnitPoint*>(points[first]), dynamic_cast<Chord*>(lines[second]));
-		return;
+		return points[name] = new UnitPoint(UnitCircle::getInstance(), dynamic_cast<UnitPoint*>(points[first]), dynamic_cast<Chord*>(lines[second]));
 	}
 }
 
-void Compiler::compileLine(std::stringstream& sstring, std::string name, std::string construction)
+Object* Compiler::compileLine(std::stringstream& sstring, std::string name, std::string construction)
 {
 	if (lines[name])
 	{
@@ -364,8 +371,7 @@ void Compiler::compileLine(std::stringstream& sstring, std::string name, std::st
 			throw((std::string)"Compile error: no point with name " + secondPoint);
 		}
 
-		lines[name] = new Line(points[firstPoint], points[secondPoint]);
-		return;
+		return lines[name] = new Line(points[firstPoint], points[secondPoint]);
 	}
 	else if (construction == "Tangent")
 	{
@@ -384,8 +390,7 @@ void Compiler::compileLine(std::stringstream& sstring, std::string name, std::st
 			throw((std::string)"Compile error: invalid args");
 		}
 
-		lines[name] = new Line(UnitCircle::getInstance(), dynamic_cast<UnitPoint*>(points[point]));
-		return;
+		return lines[name] = new Line(UnitCircle::getInstance(), dynamic_cast<UnitPoint*>(points[point]));
 	}
 	else if (construction == "Parallel")
 	{
@@ -405,8 +410,7 @@ void Compiler::compileLine(std::stringstream& sstring, std::string name, std::st
 			throw((std::string)"Compile error: no point with name " + point);
 		}
 
-		lines[name] = new Line(lines[line], points[point]);
-		return;
+		return lines[name] = new Line(lines[line], points[point]);
 	}
 	else if (construction == "Perpendicular")
 	{
@@ -426,16 +430,16 @@ void Compiler::compileLine(std::stringstream& sstring, std::string name, std::st
 			throw((std::string)"Compile error: no point with name " + point);
 		}
 
-		lines[name] = new Line(points[point], lines[line]);
-		return;
+		return lines[name] = new Line(points[point], lines[line]);
 	}
 	else
 	{
 		throw((std::string)"Compile error: undefined construction");
+		return nullptr;
 	}
 }
 
-void Compiler::compileChord(std::stringstream& sstring, std::string name, std::string construction)
+Object* Compiler::compileChord(std::stringstream& sstring, std::string name, std::string construction)
 {
 	if (lines[name])
 	{
@@ -462,13 +466,12 @@ void Compiler::compileChord(std::stringstream& sstring, std::string name, std::s
 		{
 			throw((std::string)"Compile error: invalid args");
 		}
-		lines[name] = new Chord(dynamic_cast<UnitPoint*>(points[firstPoint]), dynamic_cast<UnitPoint*>(points[secondPoint]));
-		return;
+		return lines[name] = new Chord(dynamic_cast<UnitPoint*>(points[firstPoint]), dynamic_cast<UnitPoint*>(points[secondPoint]));
 	}
 	else
 	{
 		throw((std::string)"Compile error: undefined construction");
-		return;
+		return nullptr;
 	}
 }
 
@@ -497,34 +500,37 @@ void Compiler::codeLineCompile(std::string line)
 	}
 	NameBox nameBox;
 	nameBox.setName(name);
+	Object* object;
 	if (objectType == "Point")
 	{
-		compilePoint(sstring, name, construction);
-		return;
+		object = compilePoint(sstring, name, construction);
 	}
 	else if (objectType == "UnitPoint")
 	{
-		compileUnitPoint(sstring, name, construction);
-		return;
+		object = compileUnitPoint(sstring, name, construction);
 	}
 	else if (objectType == "Line")
 	{
-		compileLine(sstring, name, construction);
-		return;
+		object = compileLine(sstring, name, construction);
 	}
 	else if ("Chord")
 	{
-		compileChord(sstring, name, construction);
+		object = compileChord(sstring, name, construction);
 	}
 	else
 	{
 		throw((std::string)"Compile error: uncertain object");
 		return;
 	}
+	if (object)
+	{
+		compileProperties(sstring, object);
+	}
 }
 
 void Compiler::compile(std::string filePath)
 {
+	points["O"] = CenterPoint::getInstance();
 	std::ifstream file;
 	file.open(filePath);
 	int lineNumber = 0;
@@ -543,7 +549,7 @@ void Compiler::compile(std::string filePath)
 		}
 		catch (std::string error)
 		{
-			std::cout << error << " in line " << lineNumber << std::endl;
+			std::cout << error << " in line " << lineNumber << std::endl << line << std::endl;
 			mainWindow.close();
 			system("pause");
 			exit(0);

@@ -15,12 +15,13 @@ extern presets::Construction preset;
 class Compiler
 {
 private:
+	static void compileProperties(std::stringstream& sstring, Object* object);
 	static void compileSettings(std::stringstream& sstring);
-	static void compilePoint(std::stringstream& sstring, std::string name, std::string construction);
-	static void compileUnitPoint(std::stringstream& sstring, std::string name, std::string construction);
-	static void compileLine(std::stringstream& sstring, std::string name, std::string construction);
-	static void compileChord(std::stringstream& sstring, std::string name, std::string construction);
-	static void compileProve(std::stringstream& sstring, std::string name, std::string construction);
+	static Object* compilePoint(std::stringstream& sstring, std::string name, std::string construction);
+	static Object* compileUnitPoint(std::stringstream& sstring, std::string name, std::string construction);
+	static Object* compileLine(std::stringstream& sstring, std::string name, std::string construction);
+	static Object* compileChord(std::stringstream& sstring, std::string name, std::string construction);
+	static Object* compileProve(std::stringstream& sstring, std::string name, std::string construction);
 public:
 	static std::map<std::string, Point*> points;
 	static std::map<std::string, Line*> lines;

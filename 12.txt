@@ -1,0 +1,30 @@
+#12
+Settings 60 Empty
+#These strange numbers are used to make picture more 'realistic'
+UnitPoint A OnCircle -4 -5
+UnitPoint B OnCircle -7 10 
+UnitPoint C OnCircle 9 -7
+
+Chord first ByTwoUnitPoints A B
+Chord second ByTwoUnitPoints B C
+Chord third ByTwoUnitPoints A C
+
+Point H1 Orthocenter A B C invisible
+Line Euler1 ByTwoPoints O H1
+
+Point D OnPlane 200 200 invisible
+Line fourth Parallel Euler1 D
+
+Point X2 IntersectionOfTwoLines first fourth
+Point X3 IntersectionOfTwoLines second fourth
+
+Line Hx1 Perpendicular B fourth invisible
+Line Hx2 Perpendicular X2 second invisible
+Point H IntersectionOfTwoLines Hx1 Hx2
+
+Point G Barycenter B X2 X3
+
+#Must be || "third" (AC)
+Line Euler2 ByTwoPoints G H
+
+

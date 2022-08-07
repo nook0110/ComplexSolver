@@ -1,0 +1,26 @@
+#15 LZ
+Settings 60 Incenter
+
+Chord ADa ByTwoUnitPoints A Da
+Chord BDb ByTwoUnitPoints B Db
+Chord CDc ByTwoUnitPoints C Dc
+
+Chord AB ByTwoUnitPoints A B
+Chord BC ByTwoUnitPoints B C
+Chord CA ByTwoUnitPoints C A
+
+Point A1 IntersectionOfTwoLines BC ADa
+Point B1 IntersectionOfTwoLines CA BDb
+Point C1 IntersectionOfTwoLines AB CDc
+
+Chord A0B0 ByTwoUnitPoints Da Db
+Chord B0C0 ByTwoUnitPoints Db Dc
+Chord C0A0 ByTwoUnitPoints Dc Da
+
+Line A1B1 ByTwoPoints A1 B1
+Line B1C1 ByTwoPoints B1 C1
+Line C1A1 ByTwoPoints C1 A1
+
+Point A' IntersectionOfTwoLines B1C1 B0C0
+Point B' IntersectionOfTwoLines C1A1 C0A0
+Point C' IntersectionOfTwoLines A1B1 A0B0
