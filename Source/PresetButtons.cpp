@@ -859,7 +859,7 @@ Button proveOrthogonality = Button(&mainWindow,
 		return nullptr;
 	});
 
-Button ñollinearityOfPoints = Button(&mainWindow,
+Button collinearityOfPoints = Button(&mainWindow,
 	"Textures\\Button_textures\\Collinearity.png",
 	MODE_THREE_POINTS, []()->Object* {
 		Waiter wait;

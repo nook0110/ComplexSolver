@@ -43,7 +43,7 @@ extern Button barycenterButton;
 
 extern Button switchConstructionButton;
 extern Button concurrencyOfLines;
-extern Button ñollinearityOfPoints;
+extern Button collinearityOfPoints;
 extern Button proveParallel;
 extern Button proveOrthogonality;
 extern Button proveConstructionButton;
@@ -95,7 +95,7 @@ void menuInit()
 	mainMenu.pushButton(&switchTriangleButton, 0);
 
 	mainMenu.pushButton(&concurrencyOfLines, 1);
-	mainMenu.pushButton(&ñollinearityOfPoints, 1);
+	mainMenu.pushButton(&collinearityOfPoints, 1);
 	mainMenu.pushButton(&proveParallel, 1);
 	mainMenu.pushButton(&proveOrthogonality, 1);
 	mainMenu.pushButton(&twoLineSegments, 1);
