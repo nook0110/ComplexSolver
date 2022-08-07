@@ -1,7 +1,7 @@
 # ComplexSolver
 ### Building with CMake and MinGW
 
-SFML_Project uses SFML library, so you need it to be installed. There is a ```Find_SFML.cmake``` script (took from [here](https://github.com/eXpl0it3r/game-off-2016)) 
+ComplexSolver uses SFML library, so you need it to be installed. There is a ```Find_SFML.cmake``` script (took from [here](https://github.com/eXpl0it3r/game-off-2016)) 
 that may find installed SFML (for example, if you use MSYS2 to install libraries), but if it didn't, try to add ```-DSFML_ROOT=C:/..``` to CMake configure command 
 (check [this](https://stackoverflow.com/questions/45671299/linking-sfml-with-cmake-windows-mingw)).
 
