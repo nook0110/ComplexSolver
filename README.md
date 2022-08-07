@@ -33,12 +33,13 @@ Open project with Visual Studio
 Edit paths to SFML in ```Project->Properties->C/C++->General``` for headers and ```Project->Properties->Linker->General``` for libraries
 (check [this](https://www.sfml-dev.org/tutorials/2.5/start-vc.php) for more info)
 
-After that you can compile a project.
+If everything went fine, you can compile a project.
 
-After compilation and running you would probably see a message 
+After compilation and running you would probably see a message: 
 ```
 sfml-graphics-2.dll was not found
 ```
+
 You need to put bin files (These files can be found in ```<sfml-install-path/bin>```) near ```SFML_project.exe```
 ___
 
