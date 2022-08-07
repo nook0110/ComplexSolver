@@ -8,7 +8,7 @@ that may find installed SFML (for example, if you use MSYS2 to install libraries
 Now, if you have MinGW and CMake:
 
 ```
-cd .../SFML_Project
+cd .../ComplexSolver
 cmake -G "MinGW Makefiles" -S "" -B "build"
 ```
 
@@ -18,7 +18,7 @@ If everything went fine, CMake will create a build directory and write its files
 cmake --build build
 ```
 
-You have built SFML_Project! Now just
+You have built ComplexSolver! Now just
 
 ```
 cd build
@@ -40,7 +40,7 @@ After compilation and running you would probably see a message:
 sfml-graphics-2.dll was not found
 ```
 
-You need to put bin files (These files can be found in ```<sfml-install-path/bin>```) near ```SFML_project.exe```
+You need to put bin files (These files can be found in ```<sfml-install-path/bin>```) near ```.exe```
 ___
 
 # Using the program
@@ -167,7 +167,19 @@ Creates a point which is projection of point on a line (chords are lines too)
  Line line_1 ...
  Point point_name Projection point_1 line_1
  ```
-  Point_name is projection of point_1 on line_1
+  point_name is projection of point_1 on line_1
+* ```byTwoPointsFixedRatio```
+
+Creates a point which coordin
+
+  Args: point and a line
+ ```
+ Point point_1 ...
+ Line line_1 ...
+ Point point_name Projection point_1 line_1
+ ```
+  Point_name is projection of point_1 on line_1 
   
-  
+...
+
 ## Have a nice experience!
