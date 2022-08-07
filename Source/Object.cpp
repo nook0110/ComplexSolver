@@ -116,7 +116,7 @@ void Object::switchDescription(Vector2f position)
 	{
 		if (equationPath.empty())
 		{
-			equationPath = makeTexture(TeX, getLowerCaseName() + std::to_string(int(this)));
+			equationPath = makeTexture(TeX, getLowerCaseName() + std::to_string((uintptr_t)this));
 		}
 		description = new Description(equationPath, getLowerCaseName());
 		description->moveTo(position);
