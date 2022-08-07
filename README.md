@@ -35,9 +35,9 @@ Edit paths to SFML in ```Project->Properties->C/C++->General``` for headers and 
 
 After that you can compile a project.
 
-After compilation and runnig you would probably see a message "sfml-graphics-2.dll was not found"
+After compilation and runnig you would probably see a message ```sfml-graphics-2.dll was not found```
 
-You need to put bin files (These files can be found in <sfml-install-path/bin>) near SFML_project.exe
+You need to put bin files (These files can be found in ```<sfml-install-path/bin>```) near ```SFML_project.exe```
 ___
 
 
