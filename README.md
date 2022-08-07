@@ -1,4 +1,4 @@
-# SFML_project
+# ComplexSolver
 ### Building with CMake and MinGW
 
 SFML_Project uses SFML library, so you need it to be installed. There is a ```Find_SFML.cmake``` script (took from [here](https://github.com/eXpl0it3r/game-off-2016)) 
