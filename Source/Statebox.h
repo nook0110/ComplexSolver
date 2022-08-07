@@ -11,7 +11,7 @@ extern View view;
 class Statebox
 {
 private:
-	const float ratio = 0.2;
+	const float ratio = 0.2f;
 	Vector2f position;
 	Vector2f size;
 	std::string name;
@@ -43,7 +43,7 @@ class StateMenu
 private:
 	std::vector<Statebox*> stateboxes;
 	void updateBoxes();
-	float shiftRatio = 0.1;
+	float shiftRatio = 0.1f;
 public:
 	void update();
 	StateMenu();

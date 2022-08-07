@@ -175,10 +175,10 @@ std::function<Object* (void)> Button::getObjectCreationMethod()
 	return modeFunction;
 }
 
-double Menu::adjustSize(double size, Vector2f menuSize, int count)
+float Menu::adjustSize(float size, Vector2f menuSize, int count)
 {
-	const double coeff = 1.001;
-	double nextSize = size * coeff;
+	const float coeff = 1.001f;
+	float nextSize = size * coeff;
 	while (floor((menuSize.x - nextSize * shiftRatio) / nextSize) * floor((menuSize.y - nextSize * shiftRatio) / nextSize) > count - 1)
 	{
 		size = nextSize;
@@ -194,12 +194,12 @@ void Menu::updateButtons()
 	//c-buttons.size(), s-size, x-menuSize.x, y-menuSize.y
 	//(x/s-1)(y/s-1)>c
 	//(c-1)s^2+(x+y)*s-xy=0
-	double size;
+	float size;
 	if (buttons[layer].size() > 1)
 	{
-		double a = buttons[layer].size() - 1;
-		double b = menuSize.x + menuSize.y;
-		double c = -menuSize.x * menuSize.y;
+		float a = buttons[layer].size() - 1;
+		float b = menuSize.x + menuSize.y;
+		float c = -menuSize.x * menuSize.y;
 		size = ((-b + sqrt(b * b - 4 * a * c)) / (2 * a));
 	}
 	else
@@ -212,7 +212,7 @@ void Menu::updateButtons()
 	buttonTable.y = ceil((float)buttons[layer].size() / (float)buttonTable.x);
 	resize(size * buttonTable.y + shiftRatio * size);
 	size /= (1 + shiftRatio);
-	double shiftSize = size * shiftRatio;
+	float shiftSize = size * shiftRatio;
 
 	for (int i = 0; i < buttons[layer].size(); i++)
 	{
@@ -226,9 +226,9 @@ void Menu::updateButtons()
 
 }
 
-void Menu::resize(double newSize)
+void Menu::resize(float newSize)
 {
-	double ratio = newSize / menuView.getSize().y;
+	float ratio = newSize / menuView.getSize().y;
 	mainWindowRect.top = ratio * normalViewport.height;
 	view.setViewport(mainWindowRect);
 	background.setSize(Vector2f(menuView.getSize().x, newSize));
@@ -428,7 +428,7 @@ ScalarBox::ScalarBox() :DialogBox()
 	formatIn = "Input: p:q";
 }
 
-std::pair<int, int> ScalarBox::getDouble()
+std::pair<int, int> ScalarBox::getRatio()
 {
 	auto position = textIn.find(":");
 	try

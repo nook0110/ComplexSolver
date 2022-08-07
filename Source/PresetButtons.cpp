@@ -558,7 +558,7 @@ Button scalarButton = Button(&mainWindow,
 			}
 			wait.sleep();
 		}
-		std::pair<int, int> masses = dialogBox->getDouble();
+		std::pair<int, int> masses = dialogBox->getRatio();
 		delete dialogBox;
 		Highlighter::unhighlight();
 		return new Point(points.first, points.second, masses);
@@ -1175,7 +1175,7 @@ Point* Finder::nearbyIntersection(Vector2f mousePosition)
 			);
 			Vector2f mousePixelPosition = Vector2f(mainWindow.mapCoordsToPixel(mousePosition, view));
 			Vector2f coord = Vector2f(mainWindow.mapCoordsToPixel(pointCoord, view));
-			double distance = sqrt(pow((coord.x - mousePixelPosition.x), 2) + pow((coord.y - mousePixelPosition.y), 2));
+			float distance = sqrtf(pow((coord.x - mousePixelPosition.x), 2) + pow((coord.y - mousePixelPosition.y), 2));
 			if (distance < epsilon)
 			{
 				return new Point(firstLine, secondLine);

@@ -1,7 +1,7 @@
 #include "Object.h"
 
 
-extern double const epsilon;
+extern float const epsilon;
 extern RenderWindow mainWindow;
 extern View view;
 
@@ -170,14 +170,14 @@ UnitCircle* UnitCircle::getInstance()
 	return unitCircle;
 }
 
-double UnitCircle::distance(Vector2f point)
+float UnitCircle::distance(Vector2f point)
 {
 	Vector2f center = shape.getPosition();
-	double radius = shape.getRadius();
-	double distanceToCenter = sqrt(
+	float radius = shape.getRadius();
+	float distanceToCenter = sqrtf(
 		pow(point.x - 0, 2) +
 		pow(point.y - 0, 2));
-	double distance = abs(distanceToCenter - radius);
+	float distance = abs(distanceToCenter - radius);
 	Vector2f delta = Vector2f(mainWindow.mapCoordsToPixel(Vector2f(0, distance), view) - mainWindow.mapCoordsToPixel(Vector2f(0, 0), view));
 	return sqrt(delta.x * delta.x + delta.y * delta.y);
 }
@@ -211,16 +211,16 @@ void Circle::reposition()
 	construction->recreate(equation);
 	CircleEquation* circleEquation = dynamic_cast<CircleEquation*>(equation);
 	Vector2f position = circleEquation->center;
-	double radius = circleEquation->radius;
+	float radius = circleEquation->radius;
 	shape.setRadius(radius - outlineThickness / 2);
 	shape.setOrigin(radius - outlineThickness / 2, radius - outlineThickness / 2);
 	shape.setPosition(position);
 	shape.setOutlineThickness(outlineThickness);
 }
 
-double Circle::distance(Vector2f point)
+float Circle::distance(Vector2f point)
 {
-	return 0.0;
+	return 0.0f;
 }
 
 bool Circle::isNearby(Vector2f position)
@@ -243,13 +243,13 @@ Circle::Circle(Point* first, Point* second, Point* third, Point* fourth)
 	Drawer::addObject(this);
 }
 
-double Line::distance(Vector2f point)
+float Line::distance(Vector2f point)
 {
 	LineEquation* lineEquation = dynamic_cast<LineEquation*>(getEquation());
-	double A = lineEquation->A;
-	double B = lineEquation->B;
-	double C = lineEquation->C;
-	double distance = abs((A * point.x + B * point.y + C) / sqrt(A * A + B * B));
+	float A = lineEquation->A;
+	float B = lineEquation->B;
+	float C = lineEquation->C;
+	float distance = abs((A * point.x + B * point.y + C) / sqrt(A * A + B * B));
 	Vector2f delta = Vector2f(mainWindow.mapCoordsToPixel(Vector2f(0, distance), view) - mainWindow.mapCoordsToPixel(Vector2f(0, 0), view));
 	return sqrt(delta.x * delta.x + delta.y * delta.y);
 }
@@ -293,7 +293,7 @@ bool Line::isNearby(Vector2f position)
 void Line::draw()
 {
 	LineEquation lineEq = *(dynamic_cast<LineEquation*>(getEquation()));
-	double x1, x2, y1, y2;
+	float x1, x2, y1, y2;
 	if (lineEq.A == 0)
 	{
 		x1 = view.getCenter().x - (view.getSize().x / 2);
@@ -351,7 +351,7 @@ void Line::draw()
 		RectangleShape outline(Vector2f(lineLength, outlineThikness * 2));
 		outline.setOrigin(Vector2f(0, outlineThikness));
 		float angle = atan2(delta.y, delta.x);
-		const float radToDegRatio = 180 / M_PI;
+		const float radToDegRatio = 180 / (float)M_PI;
 		outline.setRotation(angle * radToDegRatio);
 		outline.move(Vector2f(x1, y1));
 		outline.setFillColor(hihglightedColor);
@@ -451,7 +451,7 @@ Chord::Chord(UnitPoint* first, UnitPoint* second)
 }
 
 
-double Point::distance(Vector2f point)
+float Point::distance(Vector2f point)
 {
 	point = Vector2f(mainWindow.mapCoordsToPixel(point, view));
 	Vector2f coord = Vector2f(mainWindow.mapCoordsToPixel(shape.getPosition(), view));
@@ -717,9 +717,9 @@ void CentralProjection::recreate(Equation* equation)
 	PointEquation* secondEquation = dynamic_cast<PointEquation*>(thirdParent->getEquation());
 	Vector2f firstCoord = firstEquation->point;
 	Vector2f secondCoord = secondEquation->point;
-	double A = -firstCoord.y + secondCoord.y;
-	double B = -(-firstCoord.x + secondCoord.x);
-	double C = firstCoord.x * (firstCoord.y - secondCoord.y) - firstCoord.y * (firstCoord.x - secondCoord.x);
+	float A = -firstCoord.y + secondCoord.y;
+	float B = -(-firstCoord.x + secondCoord.x);
+	float C = firstCoord.x * (firstCoord.y - secondCoord.y) - firstCoord.y * (firstCoord.x - secondCoord.x);
 	LineEquation lineEquation(A, B, C);
 	Vector2f projection = projectionOnLine(lineEquation, PointEquation(Vector2f(0, 0)));
 	Vector2f delta = projection - thirdParent->getCoordinate();
@@ -755,10 +755,6 @@ void Pole::recreate(Equation* equation)
 	return;
 }
 
-ByTwoPoints::ByTwoPoints(Object* object) : ConstructionLine(object)
-{
-}
-
 void ByTwoPoints::recreate(Equation* equation)
 {
 	if (!equation)
@@ -769,9 +765,9 @@ void ByTwoPoints::recreate(Equation* equation)
 	PointEquation* secondEquation = dynamic_cast<PointEquation*>(secondParent->getEquation());
 	Vector2f firstCoord = firstEquation->point;
 	Vector2f secondCoord = secondEquation->point;
-	double A = -firstCoord.y + secondCoord.y;
-	double B = -(-firstCoord.x + secondCoord.x);
-	double C = firstCoord.x * (firstCoord.y - secondCoord.y) - firstCoord.y * (firstCoord.x - secondCoord.x);
+	float A = -firstCoord.y + secondCoord.y;
+	float B = -(-firstCoord.x + secondCoord.x);
+	float C = firstCoord.x * (firstCoord.y - secondCoord.y) - firstCoord.y * (firstCoord.x - secondCoord.x);
 	*dynamic_cast<LineEquation*>(equation) = LineEquation(A, B, C);
 }
 
@@ -798,9 +794,9 @@ void Perpendicular::recreate(Equation* equation)
 	PointEquation* firstEquation = dynamic_cast<PointEquation*>(firstParent->getEquation());
 	LineEquation* secondEquation = dynamic_cast<LineEquation*>(secondParent->getEquation());
 	Vector2f coord = firstEquation->point;
-	double A = -(*secondEquation).B;
-	double B = (*secondEquation).A;
-	double C = (*secondEquation).B * coord.x - (*secondEquation).A * coord.y;
+	float A = -(*secondEquation).B;
+	float B = (*secondEquation).A;
+	float C = (*secondEquation).B * coord.x - (*secondEquation).A * coord.y;
 	*dynamic_cast<LineEquation*>(equation) = LineEquation(A, B, C);
 }
 
@@ -820,9 +816,9 @@ void Parallel::recreate(Equation* equation)
 	LineEquation* lineEquation = dynamic_cast<LineEquation*>(firstParent->getEquation());
 	PointEquation* pointEquation = dynamic_cast<PointEquation*>(secondParent->getEquation());
 	Vector2f coord = pointEquation->point;
-	double A = lineEquation->A;
-	double B = lineEquation->B;
-	double C = -lineEquation->A * coord.x - lineEquation->B * coord.y;
+	float A = lineEquation->A;
+	float B = lineEquation->B;
+	float C = -lineEquation->A * coord.x - lineEquation->B * coord.y;
 	*dynamic_cast<LineEquation*>(equation) = LineEquation(A, B, C);
 }
 
@@ -836,9 +832,9 @@ void Tangent::recreate(Equation* equation)
 {
 	PointEquation* secondEquation = dynamic_cast<PointEquation*>(secondParent->getEquation());
 	Vector2f coord = secondEquation->point;
-	double A = coord.x;
-	double B = coord.y;
-	double C = -(coord.x * coord.x + coord.y * coord.y);
+	float A = coord.x;
+	float B = coord.y;
+	float C = -(coord.x * coord.x + coord.y * coord.y);
 	*dynamic_cast<LineEquation*>(equation) = LineEquation(A, B, C);
 }
 
@@ -852,7 +848,7 @@ ConstructionData::ConstructionData(Object* object)
 }
 
 
-LineEquation::LineEquation(double A, double B, double C)
+LineEquation::LineEquation(float A, float B, float C)
 	: A(A), B(B), C(C)
 {
 }
@@ -877,11 +873,11 @@ Equation::Equation()
 
 Vector2f projectionOnLine(LineEquation lineEquation, PointEquation pointEquation)
 {
-	double A = lineEquation.A;
-	double B = lineEquation.B;
-	double C = lineEquation.C;
-	double x = pointEquation.point.x;
-	double y = pointEquation.point.y;
+	float A = lineEquation.A;
+	float B = lineEquation.B;
+	float C = lineEquation.C;
+	float x = pointEquation.point.x;
+	float y = pointEquation.point.y;
 	Vector2f point(
 		(B * B * x - A * (B * y + C)) / (A * A + B * B),
 		(A * A * y - B * (A * x + C)) / (A * A + B * B));
@@ -1029,14 +1025,14 @@ void ByFourPoints::recreate(Equation* equation)
 	Vector2f deltaOneTwo = first->point - second->point;
 	Vector2f deltaTwoThree = second->point - third->point;
 	Vector2f deltaThreeOne = third->point - first->point;
-	double zFirst = (first->point.x) * (first->point.x) + (first->point.y) * (first->point.y);
-	double zSecond = (second->point.x) * (second->point.x) + (second->point.y) * (second->point.y);
-	double zThird = (third->point.x) * (third->point.x) + (third->point.y) * (third->point.y);
-	double zX = deltaOneTwo.y * zThird + deltaTwoThree.y * zFirst + deltaThreeOne.y * zSecond;
-	double zY = deltaOneTwo.x * zThird + deltaTwoThree.x * zFirst + deltaThreeOne.x * zSecond;
-	double z = deltaOneTwo.x * deltaThreeOne.y - deltaOneTwo.y * deltaThreeOne.x;
+	float zFirst = (first->point.x) * (first->point.x) + (first->point.y) * (first->point.y);
+	float zSecond = (second->point.x) * (second->point.x) + (second->point.y) * (second->point.y);
+	float zThird = (third->point.x) * (third->point.x) + (third->point.y) * (third->point.y);
+	float zX = deltaOneTwo.y * zThird + deltaTwoThree.y * zFirst + deltaThreeOne.y * zSecond;
+	float zY = deltaOneTwo.x * zThird + deltaTwoThree.x * zFirst + deltaThreeOne.x * zSecond;
+	float z = deltaOneTwo.x * deltaThreeOne.y - deltaOneTwo.y * deltaThreeOne.x;
 	Vector2f center(-zX / (2 * z), zY / (2 * z));
-	double radius = sqrt((first->point - center).x * (first->point - center).x + (first->point - center).y * (first->point - center).y);
+	float radius = sqrt((first->point - center).x * (first->point - center).x + (first->point - center).y * (first->point - center).y);
 	*dynamic_cast<CircleEquation*>(equation) = CircleEquation(center, radius);
 }
 
@@ -1048,7 +1044,7 @@ ByFourPoints::~ByFourPoints()
 	fourthParent->eraseChild(object);
 }
 
-CircleEquation::CircleEquation(Vector2f center, double radius)
+CircleEquation::CircleEquation(Vector2f center, float radius)
 	:center(center), radius(radius)
 {
 }
@@ -1065,9 +1061,9 @@ void IntersectionParallelChord::recreate(Equation* equation)
 	LineEquation* firstEquation = dynamic_cast<LineEquation*>(firstParent->getEquation());
 	PointEquation* secondEquation = dynamic_cast<PointEquation*>(secondParent->getEquation());
 	Vector2f coord = secondEquation->point;
-	double A = firstEquation->A;
-	double B = firstEquation->B;
-	double C = -(A * coord.x + B * coord.y);
+	float A = firstEquation->A;
+	float B = firstEquation->B;
+	float C = -(A * coord.x + B * coord.y);
 	LineEquation lineEquation(A, B, C);
 	Vector2f projection = projectionOnLine(lineEquation, PointEquation(Vector2f(0, 0)));
 	Vector2f delta = projection - coord;
@@ -1086,9 +1082,9 @@ void IntersectionPerpendicularChord::recreate(Equation* equation)
 	PointEquation* firstEquation = dynamic_cast<PointEquation*>(firstParent->getEquation());
 	LineEquation* secondEquation = dynamic_cast<LineEquation*>(secondParent->getEquation());
 	Vector2f coord = firstEquation->point;
-	double A = secondEquation->B;
-	double B = -secondEquation->A;
-	double C = -(A * coord.x + B * coord.y);
+	float A = secondEquation->B;
+	float B = -secondEquation->A;
+	float C = -(A * coord.x + B * coord.y);
 	LineEquation lineEquation(A, B, C);
 	Vector2f projection = projectionOnLine(lineEquation, PointEquation(Vector2f(0, 0)));
 	Vector2f delta = projection - coord;

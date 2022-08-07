@@ -15,14 +15,14 @@
 
 using namespace sf;
 
-extern double const epsilon;
-extern double const unitSeg;
+extern float const epsilon;
+extern float const unitSeg;
 extern std::thread Creator;
 extern MODES Mousemode;
 extern RenderWindow mainWindow;
 extern View view;
-class LineEquation;
-class PointEquation;
+struct LineEquation;
+struct PointEquation;
 
 Vector2f projectionOnLine(LineEquation lineEquation, PointEquation pointEquation);
 
@@ -36,14 +36,14 @@ struct Equation
 struct CircleEquation : public Equation
 {
 	Vector2f center;
-	double radius;
-	CircleEquation(Vector2f center, double radius);
+	float radius;
+	CircleEquation(Vector2f center, float radius);
 };
 
 struct LineEquation : public Equation
 {
-	double A, B, C;
-	LineEquation(double A, double B, double C);
+	float A, B, C;
+	LineEquation(float A, float B, float C);
 };
 
 struct SegmentEquation : public Equation
@@ -84,7 +84,7 @@ private:
 	const Color unvisibleColor = Color(0, 0, 255, 128);
 	void erase();
 public:
-	ConstructionData* construction;
+	ConstructionData* construction = nullptr;
 protected:
 	virtual void reposition() = 0;
 	bool visible = true;
@@ -94,7 +94,7 @@ public:
 	//Debug
 	virtual void printExpr();
 	//
-	virtual double distance(Vector2f point) = 0;
+	virtual float distance(Vector2f point) = 0;
 	virtual bool isNearby(Vector2f position) = 0;
 	virtual void draw() = 0;
 	void setVisibility(bool newVisibility);
@@ -103,9 +103,9 @@ public:
 	bool getVisibility();
 	bool isOnCircle();
 protected:
-	Description* description;
+	Description* description = nullptr;
 	//If empty - No File created
-	std::string equationPath;
+	std::string equationPath = "";
 	std::string TeX;
 	virtual std::string makeTeX();
 public:
@@ -365,7 +365,6 @@ class ByTwoPoints : public ConstructionLine
 protected:
 	Point* firstParent;
 	Point* secondParent;
-	ByTwoPoints(Object* object);
 public:
 	ByTwoPoints(Object* object, Point* firstParent, Point* secondParent);
 	~ByTwoPoints() override;
@@ -427,13 +426,13 @@ public:
 class UnitCircle : public Object
 {
 private:
-	const double outlineThickness = unitSeg / 100;
+	const float outlineThickness = unitSeg / 100;
 	//Pattern singleton
 	UnitCircle();
 	static UnitCircle* unitCircle;
 	CircleShape shape;
 public:
-	double distance(Vector2f point);
+	float distance(Vector2f point);
 	static UnitCircle* getInstance();
 	void reposition() {};
 	bool isNearby(Vector2f position);
@@ -444,11 +443,11 @@ public:
 //Circle can only be constructed to prove the problem
 class Circle : public Object
 {
-	const double outlineThickness = unitSeg / 100;
+	const float outlineThickness = unitSeg / 100;
 	CircleShape shape;
 	void reposition() override;
 public:
-	double distance(Vector2f point);
+	float distance(Vector2f point);
 	bool isNearby(Vector2f position);
 	Circle(Point* first, Point* second, Point* third, Point* fourth);
 	void draw();
@@ -461,7 +460,7 @@ class LineSegment : public Object
 	void reposition() override;
 public:
 	LineSegment(Point* first, Point* second);
-	double distance(Vector2f point) { return 0; };
+	float distance(Vector2f point) { return 0; };
 	bool isNearby(Vector2f position) { return false; };
 	void draw();
 };
@@ -473,7 +472,7 @@ class Line : public Object
 protected:
 	void reposition() override;
 	void Init();
-	bool dotted;
+	bool dotted = false;
 public:
 	//DEBUG
 	void printExpr();
@@ -487,7 +486,7 @@ public:
 	Line(Line* first, Point* second);
 	// Perpendicular
 	Line(Point* first, Line* second);
-	double distance(Vector2f point);
+	float distance(Vector2f point);
 	bool isNearby(Vector2f position);
 	void draw() override;
 	void switchDescription();
@@ -518,7 +517,7 @@ protected:
 	Color textColor = Color::Black;
 	Text nameText;
 	Point();
-	const double pointSize = unitSeg / 30;
+	const float pointSize = unitSeg / 30;
 	CircleShape shape = CircleShape(pointSize);
 	void reposition() override;
 	void setName();
@@ -551,7 +550,7 @@ public:
 	Point(UnitPoint* first, UnitPoint* second, UnitPoint* third, triangleCenter center);
 	// Barycenter
 	Point(Point* first, Point* second, Point* third);
-	double distance(Vector2f point);
+	float distance(Vector2f point);
 	bool isNearby(Vector2f position) override;
 	bool contains(Vector2f position);
 	void draw() override;

@@ -1,5 +1,6 @@
 #pragma once
 #include "Object.h"
+#include <mutex>
 #include <list>
 extern std::mutex objectDestructionMutex;
 

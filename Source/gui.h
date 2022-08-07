@@ -2,6 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include "WrapMouse.h"
 #include "Creation.h"
+#include <mutex>
 #include <iostream>
 #include <map>
 
@@ -85,7 +86,7 @@ class Menu
 private:
 	View menuView;
 	RenderWindow* window;
-	const double shiftRatio = 0.1;
+	const float shiftRatio = 0.1f;
 	Vector2i buttonTable;
 	FloatRect viewport = FloatRect(0.f, 0.f, 1.0f, mainWindowRect.top);
 	const FloatRect normalViewport = FloatRect(0.f, 0.f, 1.0f, mainWindowRect.top);
@@ -95,10 +96,10 @@ private:
 	int layer = 0;
 	std::vector<std::vector<Button*>> buttons;
 	RectangleShape background;
-	double adjustSize(double size, Vector2f menuSize, int count);
+	float adjustSize(float size, Vector2f menuSize, int count);
 	void updateButtons();
 
-	void resize(double newSize);
+	void resize(float newSize);
 public:
 	void setViewport(FloatRect viewport);
 	Menu(RenderWindow* window);
@@ -155,7 +156,7 @@ class ScalarBox : public DialogBox
 public:
 	ScalarBox();
 	//Returns two numbers p and q
-	std::pair<int, int>  getDouble();
+	std::pair<int, int>  getRatio();
 	void cin(Event event) override;
 };
 

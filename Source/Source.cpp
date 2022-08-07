@@ -11,7 +11,7 @@ using namespace sf;
 
 extern RenderWindow mainWindow;
 extern View view;
-extern double const epsilon;
+extern float const epsilon;
 
 extern Vector2i maxTextureResolution;
 extern FloatRect mainWindowRect;
