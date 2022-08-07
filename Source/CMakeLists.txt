@@ -1,4 +1,4 @@
-set(PROJECT_NAME SFML_project)
+set(PROJECT_NAME ComplexSolver)
 
 ################################################################################
 # Target
