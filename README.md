@@ -170,7 +170,7 @@ Creates a point which is projection of point on a line (chords are lines too)
   point_name is projection of point_1 on line_1
 * ```byTwoPointsFixedRatio```
 
-Creates a point which coordin
+Creates a point which coordinate eqauls of ((coord of point_1 * number_1) + (coord of point_2 * number_2)) / (number_1 + number_2)
 
   Args: point and a line
  ```
