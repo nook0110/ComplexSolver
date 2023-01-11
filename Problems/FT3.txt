@@ -1,0 +1,75 @@
+#12
+Settings 60 Empty
+
+
+UnitPoint Ta OnCircle -4 -5
+UnitPoint Tb OnCircle -7 10 
+UnitPoint Tc OnCircle 9 -7
+
+
+Line BC Tangent Ta 
+Line CA Tangent Tb 
+Line AB Tangent Tc 
+
+
+Point A IntersectionOfTwoLines AB CA
+Point B IntersectionOfTwoLines AB BC
+Point C IntersectionOfTwoLines BC CA
+
+
+Line BisA ByTwoPoints A O invisible
+Line BisB ByTwoPoints B O invisible
+Line BisC ByTwoPoints C O invisible
+
+
+Line EBisA Perpendicular A BisA invisible
+Line EBisB Perpendicular B BisB invisible
+Line EBisC Perpendicular C BisC invisible
+
+
+Point Ia IntersectionOfTwoLines EBisC BisA
+Point Ib IntersectionOfTwoLines EBisA BisB
+Point Ic IntersectionOfTwoLines EBisB BisC
+
+
+Point Xa Projection Ib AB
+Point Ya Projection Ic CA 
+
+Point Xb Projection Ic BC 
+Point Yb Projection Ia AB 
+
+Point Xc Projection Ia CA
+Point Yc Projection Ib BC 
+
+
+Line CXa ByTwoPoints C Xa
+Line BYa ByTwoPoints B Ya
+
+Line AXb ByTwoPoints A Xb
+Line CYb ByTwoPoints C Yb
+
+Line BXc ByTwoPoints B Xc
+Line AYc ByTwoPoints A Yc
+
+
+Point Na IntersectionOfTwoLines CXa BYa
+Point Nb IntersectionOfTwoLines AXb CYb
+Point Nc IntersectionOfTwoLines BXc AYc
+
+
+Line NaNb ByTwoPoints Na Nb
+Line NbNc ByTwoPoints Nb Nc
+Line NcNa ByTwoPoints Nc Na 
+
+
+Line TaTb ByTwoPoints Ta Tb 
+Line TbTc ByTwoPoints Tb Tc 
+Line TcTa ByTwoPoints Tc Ta 
+
+
+Point P IntersectionOfTwoLines NaNb TbTc
+Point Q IntersectionOfTwoLines NaNb TcTa
+Point R IntersectionOfTwoLines NbNc TcTa
+Point S IntersectionOfTwoLines NbNc TaTb
+Point U IntersectionOfTwoLines NcNa TaTb
+Point V IntersectionOfTwoLines NcNa TbTc
