@@ -109,7 +109,7 @@ MementoAddition::MementoAddition(Object* object) : Memento(object)
 void MementoAddition::doMemento()
 {
 	NameBox::names[object->getLowerCaseName()] = true;
-	Drawer::allVisibleObjects.push_back(object);
+	Drawer::all_visible_objects.push_back(object);
 }
 
 void MementoAddition::undoMemento()

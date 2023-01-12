@@ -5,99 +5,99 @@
 
 void Button::updateSprite()
 {
-	sprite.setScale(1 / sprite.getScale().x, 1 / sprite.getScale().y); // Scaling Sprite to 1*1;
-	sprite.setScale(
-		size.x / sprite.getLocalBounds().width,
-		size.y / sprite.getLocalBounds().height); // Scaling Sprite to required size;
+	sprite_.setScale(1 / sprite_.getScale().x, 1 / sprite_.getScale().y); // Scaling Sprite to 1*1;
+	sprite_.setScale(
+		size_.x / sprite_.getLocalBounds().width,
+		size_.y / sprite_.getLocalBounds().height); // Scaling Sprite to required size;
 }
 
-void Button::setTexture(std::string textureLocation, Vector2i textureStart, Vector2i textureSize)
+void Button::setTexture(std::string texture_location, Vector2i texture_start, Vector2i texture_size)
 {
-	texture.loadFromFile(textureLocation, IntRect(textureStart, textureSize));
-	texture.setSmooth(true);
-	sprite.setTexture(texture);
+	texture_.loadFromFile(texture_location, IntRect(texture_start, texture_size));
+	texture_.setSmooth(true);
+	sprite_.setTexture(texture_);
 	updateSprite();
 }
 
-Button::Button(Vector2f position, Vector2f size, RenderWindow* window,
-	std::string textureLocation, Vector2i textureStart, Vector2i textureSize,
-	MODES mode, std::function<Object* (void)> modeFunction)
-	:position(position),
-	size(size),
-	window(window),
-	textureSize(textureSize),
-	textureStart(textureStart),
-	textureLocation(textureLocation),
-	mode(mode), modeFunction(modeFunction)
+Button::Button(Vector2f position, Vector2f size, RenderWindow& window,
+	std::string texture_location, Vector2i texture_start, Vector2i texture_size,
+	MODES mode, std::function<Object* (void)> mode_function)
+	:position_(position),
+	size_(size),
+	window_(window),
+	texture_size_(texture_size),
+	texture_start_(texture_start),
+	texture_location_(texture_location),
+	mode(mode), modeFunction(mode_function)
 {
-	setTexture(textureLocation, textureStart, textureSize);
+	setTexture(texture_location, texture_start, texture_size);
 }
 
-Button::Button(Vector2f position, Vector2f size, RenderWindow* window,
-	std::string textureLocation, std::string texturePressedLocation,
+Button::Button(Vector2f position, Vector2f size, RenderWindow& window,
+	std::string texture_location, std::string texture_pressed_location,
 	MODES mode, std::function<Object* (void)> modeFunction)
-	:position(position),
-	size(size),
-	window(window),
-	textureLocation(textureLocation),
-	texturePressedLocation(texturePressedLocation),
+	:position_(position),
+	size_(size),
+	window_(window),
+	texture_location_(texture_location),
+	texture_pressed_location_(texture_pressed_location),
 	texturePressed(true),
 	mode(mode), modeFunction(modeFunction)
 {
-	setTexture(textureLocation, textureStart, textureSize);
+	setTexture(texture_location, texture_start_, texture_size_);
 }
 
-Button::Button(Vector2f position, Vector2f size, RenderWindow* window,
-	std::string textureLocation, Vector2i textureStart, Vector2i textureSize,
-	std::string texturePressedLocation, Vector2i texturePressedStart, Vector2i texturePressedSize,
+Button::Button(Vector2f position, Vector2f size, RenderWindow& window,
+	std::string texture_location, Vector2i texture_start, Vector2i texture_size,
+	std::string texture_pressed_location, Vector2i texturePressedStart, Vector2i texturePressedSize,
 	MODES mode, std::function<Object* (void)> modeFunction)
-	:position(position),
-	size(size),
-	window(window),
-	textureSize(textureSize), texturePressedSize(texturePressedSize),
-	textureStart(textureStart), texturePressedStart(texturePressedStart),
-	textureLocation(textureLocation), texturePressedLocation(texturePressedLocation),
+	:position_(position),
+	size_(size),
+	window_(window),
+	texture_size_(texture_size), texture_pressed_size_(texturePressedSize),
+	texture_start_(texture_start), texture_pressed_start_(texturePressedStart),
+	texture_location_(texture_location), texture_pressed_location_(texture_pressed_location),
 	texturePressed(true),
 	mode(mode), modeFunction(modeFunction)
 {
-	setTexture(textureLocation, textureStart, textureSize);
+	setTexture(texture_location, texture_start, texture_size);
 }
 
-Button::Button(RenderWindow* window, std::string textureLocation, MODES mode, std::function<Object* (void)> modeFunction)
-	:window(window), textureLocation(textureLocation), mode(mode), modeFunction(modeFunction)
+Button::Button(RenderWindow& window, std::string texture_location, MODES mode, std::function<Object* (void)> modeFunction)
+	:window_(window), texture_location_(texture_location), mode(mode), modeFunction(modeFunction)
 {
-	setTexture(textureLocation, Vector2i(0, 0), Vector2i(0, 0));
-	sprite.setColor(unpressedColor);
+	setTexture(texture_location, Vector2i(0, 0), Vector2i(0, 0));
+	sprite_.setColor(kUnpressedColor);
 }
 
-void Button::setPosition(Vector2f position)
+void Button::set_position(Vector2f position)
 {
 	position = position;
-	sprite.setPosition(position);
+	sprite_.setPosition(position);
 }
 
-void Button::setSize(Vector2f size)
+void Button::set_size(Vector2f size)
 {
-	Button::size = size;
+	Button::size_ = size;
 	updateSprite();
 }
 
-void Button::draw() {
-	window->draw(sprite);
+void Button::Draw() {
+	window_.draw(sprite_);
 }
 
-bool Button::mouseCheck(View buttonView = view)
+bool Button::CheckMouse(View buttonView = view)
 {
-	Vector2f point = window->mapPixelToCoords(WrapMouse::getClickedCoord(Mouse::Button::Left), buttonView);
-	return sprite.getGlobalBounds().contains(point);
+	Vector2f point = window_.mapPixelToCoords(WrapMouse::getClickedCoord(Mouse::Button::Left), buttonView);
+	return sprite_.getGlobalBounds().contains(point);
 }
 
 bool Button::leftClickCheck(View buttonView = view)
 {
-	Vector2f point = window->mapPixelToCoords(WrapMouse::getClickedCoord(Mouse::Button::Left), buttonView);
+	Vector2f point = window_.mapPixelToCoords(WrapMouse::getClickedCoord(Mouse::Button::Left), buttonView);
 	if (!Mouse::isButtonPressed(Mouse::Button::Left)) LeftPressed = false;
 	if (!LeftPressed
-		&& sprite.getGlobalBounds().contains(point)
+		&& sprite_.getGlobalBounds().contains(point)
 		&& Mouse::isButtonPressed(Mouse::Button::Left))
 	{
 		LeftPressed = true;
@@ -108,9 +108,9 @@ bool Button::leftClickCheck(View buttonView = view)
 
 bool Button::rightClickCheck(View buttonView = view)
 {
-	Vector2f point = window->mapPixelToCoords(WrapMouse::getClickedCoord(Mouse::Button::Right), buttonView);
+	Vector2f point = window_.mapPixelToCoords(WrapMouse::getClickedCoord(Mouse::Button::Right), buttonView);
 	if (!Mouse::isButtonPressed(Mouse::Button::Right)) RightPressed = false;
-	if (!RightPressed && sprite.getGlobalBounds().contains(point)) {
+	if (!RightPressed && sprite_.getGlobalBounds().contains(point)) {
 		RightPressed = true;
 		return true;
 	}
@@ -119,17 +119,17 @@ bool Button::rightClickCheck(View buttonView = view)
 
 Vector2f Button::getSize()
 {
-	return size;
+	return size_;
 }
 
 Vector2f Button::getLocalPosition()
 {
-	return  position;
+	return  position_;
 }
 
 Vector2f Button::getGlobalPosition()
 {
-	return  sprite.getPosition();
+	return  sprite_.getPosition();
 }
 
 void Button::setMode()
@@ -144,11 +144,11 @@ void Button::press()
 	setMode();
 	if (texturePressed)
 	{
-		setTexture(texturePressedLocation, texturePressedStart, texturePressedSize);
+		setTexture(texture_pressed_location_, texture_pressed_start_, texture_pressed_size_);
 	}
 	else
 	{
-		sprite.setColor(pressedColor);
+		sprite_.setColor(kPressedColor);
 	}
 }
 
@@ -157,11 +157,11 @@ void Button::unpress()
 	pressed = false;
 	if (texturePressed)
 	{
-		setTexture(textureLocation, textureStart, textureSize);
+		setTexture(texture_location_, texture_start_, texture_size_);
 	}
 	else
 	{
-		sprite.setColor(unpressedColor);
+		sprite_.setColor(kUnpressedColor);
 	}
 }
 
@@ -189,8 +189,8 @@ float Menu::adjustSize(float size, Vector2f menuSize, int count)
 
 void Menu::updateButtons()
 {
-	window->setView(normalView);
-	Vector2f menuSize = normalView.getSize();
+	window->setView(normal_view);
+	Vector2f menuSize = normal_view.getSize();
 	//c-buttons.size(), s-size, x-menuSize.x, y-menuSize.y
 	//(x/s-1)(y/s-1)>c
 	//(c-1)s^2+(x+y)*s-xy=0
@@ -217,30 +217,30 @@ void Menu::updateButtons()
 	for (int i = 0; i < buttons[layer].size(); i++)
 	{
 		int row = i / buttonTable.x;
-		buttons[layer][i]->setPosition(Vector2f(
+		buttons[layer][i]->set_position(Vector2f(
 			(i - row * buttonTable.x) * (size + shiftSize) + shiftSize,
 			row * (size + shiftSize) + shiftSize
 		));
-		buttons[layer][i]->setSize(Vector2f(size, size));
+		buttons[layer][i]->set_size(Vector2f(size, size));
 	}
 
 }
 
 void Menu::resize(float newSize)
 {
-	float ratio = newSize / menuView.getSize().y;
-	mainWindowRect.top = ratio * normalViewport.height;
+	float ratio = newSize / menu_view.getSize().y;
+	mainWindowRect.top = ratio * normal_viewport.height;
 	view.setViewport(mainWindowRect);
-	background.setSize(Vector2f(menuView.getSize().x, newSize));
+	background.setSize(Vector2f(menu_view.getSize().x, newSize));
 	background.setPosition(position);
 }
 
 void Menu::setViewport(FloatRect viewport)
 {
 	Menu::viewport = viewport;
-	menuView.setViewport(viewport);
-	menuView.setCenter(menuView.getSize() / 2.f + position);
-	background.setSize(menuView.getSize());
+	menu_view.setViewport(viewport);
+	menu_view.setCenter(menu_view.getSize() / 2.f + position);
+	background.setSize(menu_view.getSize());
 	background.setPosition(position);
 }
 
@@ -248,36 +248,36 @@ Menu::Menu(RenderWindow* window)
 	:window(window)
 {
 	buttons.resize(3);
-	normalView = window->getDefaultView();
-	normalView.setSize(normalView.getSize().x * normalViewport.width, normalView.getSize().y * normalViewport.height);
-	normalView.setCenter(normalView.getCenter().x * normalViewport.width, normalView.getCenter().y * normalViewport.height);
-	normalView.setViewport(normalViewport);
-	menuView = window->getDefaultView();
-	menuView.setSize(menuView.getSize().x * viewport.width, menuView.getSize().y * viewport.height);
-	menuView.setCenter(menuView.getCenter().x * viewport.width, menuView.getCenter().y * viewport.height);
-	menuView.setViewport(viewport);
+	normal_view = window->getDefaultView();
+	normal_view.setSize(normal_view.getSize().x * normal_viewport.width, normal_view.getSize().y * normal_viewport.height);
+	normal_view.setCenter(normal_view.getCenter().x * normal_viewport.width, normal_view.getCenter().y * normal_viewport.height);
+	normal_view.setViewport(normal_viewport);
+	menu_view = window->getDefaultView();
+	menu_view.setSize(menu_view.getSize().x * viewport.width, menu_view.getSize().y * viewport.height);
+	menu_view.setCenter(menu_view.getCenter().x * viewport.width, menu_view.getCenter().y * viewport.height);
+	menu_view.setViewport(viewport);
 	background.setFillColor(color);
 }
 void Menu::update(Event event)
 {
-	FloatRect visibleArea(menuView.getCenter().x - menuView.getSize().x / 2, menuView.getCenter().y - menuView.getSize().y / 2, event.size.width * viewport.width, event.size.height * viewport.height);
-	FloatRect normalVisibleArea = FloatRect(menuView.getCenter().x - menuView.getSize().x / 2, menuView.getCenter().y - menuView.getSize().y / 2, event.size.width * normalViewport.width, event.size.height * normalViewport.height);
+	FloatRect visibleArea(menu_view.getCenter().x - menu_view.getSize().x / 2, menu_view.getCenter().y - menu_view.getSize().y / 2, event.size.width * viewport.width, event.size.height * viewport.height);
+	FloatRect normalVisibleArea = FloatRect(menu_view.getCenter().x - menu_view.getSize().x / 2, menu_view.getCenter().y - menu_view.getSize().y / 2, event.size.width * normal_viewport.width, event.size.height * normal_viewport.height);
 
-	normalView = View(normalVisibleArea);
+	normal_view = View(normalVisibleArea);
 	window->setView(View(visibleArea));
-	menuView = View(visibleArea);
+	menu_view = View(visibleArea);
 	updateButtons();
 }
 
 bool Menu::mouseOnMenu()
 {
-	Vector2f mousePosition = window->mapPixelToCoords(Mouse::getPosition(*window), menuView);
-	return background.getGlobalBounds().contains(mousePosition);
+	Vector2f mouse_position = window->mapPixelToCoords(Mouse::getPosition(*window), menu_view);
+	return background.getGlobalBounds().contains(mouse_position);
 }
 
 void Menu::pushButton(Button* newButton, int layerPB)
 {
-	window->setView(menuView);
+	window->setView(menu_view);
 	if (buttons.size() <= layerPB)
 	{
 		buttons.resize(layerPB + 1);
@@ -288,10 +288,10 @@ void Menu::pushButton(Button* newButton, int layerPB)
 
 bool Menu::checkMouse()
 {
-	window->setView(menuView);
+	window->setView(menu_view);
 	for (auto& Button : buttons[layer])
 	{
-		if (Button->mouseCheck(menuView))
+		if (Button->CheckMouse(menu_view))
 		{
 			return true;
 		}
@@ -301,10 +301,10 @@ bool Menu::checkMouse()
 
 Button* Menu::leftClickCheck()
 {
-	window->setView(menuView);
+	window->setView(menu_view);
 	for (auto& Button : buttons[layer])
 	{
-		if (Button->leftClickCheck(menuView))
+		if (Button->leftClickCheck(menu_view))
 		{
 			return Button;
 		}
@@ -314,7 +314,7 @@ Button* Menu::leftClickCheck()
 
 void Menu::unpress()
 {
-	window->setView(menuView);
+	window->setView(menu_view);
 	for (auto& Button : buttons[layer])
 	{
 		Button->unpress();
@@ -336,15 +336,15 @@ void Menu::switchLayer(unsigned int newLayer)
 	unpress();
 }
 
-void Menu::draw()
+void Menu::Draw()
 {
-	menuView.setViewport(viewport);
-	menuView.setCenter(menuView.getSize() / 2.f + position);
-	window->setView(menuView);
+	menu_view.setViewport(viewport);
+	menu_view.setCenter(menu_view.getSize() / 2.f + position);
+	window->setView(menu_view);
 	window->draw(background);
 	for (auto& button : buttons[layer])
 	{
-		button->draw();
+		button->Draw();
 	}
 }
 
@@ -384,7 +384,7 @@ void DialogBox::cin(Event event)
 
 }
 
-void DialogBox::draw()
+void DialogBox::Draw()
 {
 	deletion.lock();
 	mainWindow.setView(dialogBoxView);
@@ -556,7 +556,7 @@ void TextBox::setColor(Color color)
 	DialogBox::color = color;
 }
 
-void TextBox::draw()
+void TextBox::Draw()
 {
 	deletion.lock();
 	mainWindow.setView(dialogBoxView);
@@ -588,7 +588,7 @@ Description::Description(std::string filePath, std::string name)
 	background.setSize(size + backgroundDelta * 2.f);
 	background.setFillColor(Color::White);
 	background.setOutlineColor(Color::Black);
-	background.setOutlineThickness(outlineThikness);;
+	background.setOutlineThickness(outline_thickness_);;
 	sprite.setScale(1 / sprite.getScale().x, 1 / sprite.getScale().y); // Scaling Sprite to 1*1;
 	sprite.setScale(
 		size.x / sprite.getLocalBounds().width,
@@ -618,7 +618,7 @@ Vector2f Description::getDelta(Vector2f position)
 	return position - background.getPosition();
 }
 
-void Description::draw()
+void Description::Draw()
 {
 	mainWindow.draw(background);
 	mainWindow.draw(sprite);

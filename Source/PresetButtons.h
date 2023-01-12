@@ -30,17 +30,17 @@ public:
 class Finder
 {
 public:
-	Description* nearbyDescription(Vector2f mousePosition);
-	Object* nearbyNotUnitCircleObject(Vector2f mousePosition);
-	Object* nearbyObject(Vector2f mousePosition);
-	Point* nearbyConstructedPoint(Vector2f mousePosition);
-	UnitPoint* nearbyConstructedPointOnCircle(Vector2f mousePosition);
-	Point* nearbyNewPoint(Vector2f mousePosition);
-	UnitPoint* nearbyNewPointOnCircle(Vector2f mousePosition);
-	Line* nearbyLine(Vector2f mousePosition);
-	std::vector<Line*> nearbyLines(Vector2f mousePosition);
-	Point* nearbyIntersection(Vector2f mousePosition);
-	UnitCircle* nearbyUnitCircle(Vector2f mousePosition);
+	Description* nearbyDescription(Vector2f mouse_position);
+	Object* nearbyNotUnitCircleObject(Vector2f mouse_position);
+	Object* nearbyObject(Vector2f mouse_position);
+	Point* nearbyConstructedPoint(Vector2f mouse_position);
+	UnitPoint* nearbyConstructedPointOnCircle(Vector2f mouse_position);
+	Point* nearbyNewPoint(Vector2f mouse_position);
+	UnitPoint* nearbyNewPointOnCircle(Vector2f mouse_position);
+	Line* nearbyLine(Vector2f mouse_position);
+	std::vector<Line*> nearbyLines(Vector2f mouse_position);
+	Point* nearbyIntersection(Vector2f mouse_position);
+	UnitCircle* nearbyUnitCircle(Vector2f mouse_position);
 };
 
 class Highlighter

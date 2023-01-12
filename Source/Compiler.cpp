@@ -7,7 +7,7 @@ extern void constructPreset();
 
 
 
-void Compiler::compileProperties(std::stringstream& sstring, Object* object)
+void Compiler::CompileProperties(std::stringstream& sstring, Object* object)
 {
 	std::string visibility;
 	sstring >> visibility;
@@ -17,15 +17,15 @@ void Compiler::compileProperties(std::stringstream& sstring, Object* object)
 	}
 	if (visibility == "invisible")
 	{
-		object->setVisibility(false);
+		object->SetVisibility(false);
 	}
 	else
 	{
-		object->setVisibility(true);
+		object->SetVisibility(true);
 	}
 }
 
-void Compiler::compileSettings(std::stringstream& sstring)
+void Compiler::CompileSettings(std::stringstream& sstring)
 {
 	std::string fpsstr;
 	sstring >> fpsstr;
@@ -63,7 +63,7 @@ void Compiler::compileSettings(std::stringstream& sstring)
 	return;
 }
 
-Object* Compiler::compilePoint(std::stringstream& sstring, std::string name, std::string construction)
+Object* Compiler::CompilePoint(std::stringstream& sstring, std::string name, std::string construction)
 {
 	if (points[name])
 	{
@@ -84,42 +84,42 @@ Object* Compiler::compilePoint(std::stringstream& sstring, std::string name, std
 	}
 	else if (construction == "IntersectionOfTwoLines")
 	{
-		std::string firstLine, secondLine;
-		sstring >> firstLine;
-		sstring >> secondLine;
-		if (firstLine.empty() || secondLine.empty())
+		std::string first_line, second_line;
+		sstring >> first_line;
+		sstring >> second_line;
+		if (first_line.empty() || second_line.empty())
 		{
 			throw((std::string)"Compile error: not enough args");
 		}
-		if (!lines[firstLine])
+		if (!lines[first_line])
 		{
-			throw((std::string)"Compile error: no line with name " + firstLine);
+			throw((std::string)"Compile error: no line with name " + first_line);
 		}
-		if (!lines[secondLine])
+		if (!lines[second_line])
 		{
-			throw((std::string)"Compile error: no line with name " + secondLine);
+			throw((std::string)"Compile error: no line with name " + second_line);
 		}
 
 
-		return points[name] = new Point(lines[firstLine], lines[secondLine]);
+		return points[name] = new Point(lines[first_line], lines[second_line]);
 	}
 	else if (construction == "OnLine")
 	{
-		std::string line, firstPoint, secondPoint, coordX, coordY;
-		sstring >> line;
+		std::string points_, firstPoint, secondPoint, coordX, coordY;
+		sstring >> points_;
 		sstring >> firstPoint;
 		sstring >> secondPoint;
 		sstring >> coordX;
 		sstring >> coordY;
-		if (line.empty() || firstPoint.empty() || secondPoint.empty() || coordX.empty() || coordY.empty())
+		if (points_.empty() || firstPoint.empty() || secondPoint.empty() || coordX.empty() || coordY.empty())
 		{
 			throw((std::string)"Compile error: not enough args");
 		}
 		Vector2f position(std::stof(coordX), std::stof(coordY));
 
-		if (!lines[line])
+		if (!lines[points_])
 		{
-			throw((std::string)"Compile error: no line with name " + line);
+			throw((std::string)"Compile error: no line with name " + points_);
 		}
 		if (!points[firstPoint])
 		{
@@ -130,14 +130,14 @@ Object* Compiler::compilePoint(std::stringstream& sstring, std::string name, std
 			throw((std::string)"Compile error: no point with name " + secondPoint);
 		}
 
-		return points[name] = new Point(lines[line], points[firstPoint], points[secondPoint], position);
+		return points[name] = new Point(lines[points_], points[firstPoint], points[secondPoint], position);
 	}
 	else if (construction == "Projection")
 	{
-		std::string point, line;
+		std::string point, points_;
 		sstring >> point;
-		sstring >> line;
-		if (point.empty() || line.empty())
+		sstring >> points_;
+		if (point.empty() || points_.empty())
 		{
 			throw((std::string)"Compile error: not enough args");
 		}
@@ -145,12 +145,12 @@ Object* Compiler::compilePoint(std::stringstream& sstring, std::string name, std
 		{
 			throw((std::string)"Compile error: no point with name " + point);
 		}
-		if (!lines[line])
+		if (!lines[points_])
 		{
-			throw((std::string)"Compile error: no line with name " + line);
+			throw((std::string)"Compile error: no line with name " + points_);
 		}
 
-		return points[name] = new Point(points[point], lines[line]);
+		return points[name] = new Point(points[point], lines[points_]);
 
 	}
 	else if (construction == "byTwoPointsFixedRatio")
@@ -261,7 +261,7 @@ Object* Compiler::compilePoint(std::stringstream& sstring, std::string name, std
 	}
 }
 
-Object* Compiler::compileUnitPoint(std::stringstream& sstring, std::string name, std::string construction)
+Object* Compiler::CompileUnitPoint(std::stringstream& sstring, std::string name, std::string construction)
 {
 	if (construction == "OnCircle")
 	{
@@ -347,7 +347,7 @@ Object* Compiler::compileUnitPoint(std::stringstream& sstring, std::string name,
 	}
 }
 
-Object* Compiler::compileLine(std::stringstream& sstring, std::string name, std::string construction)
+Object* Compiler::CompileLine(std::stringstream& sstring, std::string name, std::string construction)
 {
 	if (lines[name])
 	{
@@ -394,43 +394,43 @@ Object* Compiler::compileLine(std::stringstream& sstring, std::string name, std:
 	}
 	else if (construction == "Parallel")
 	{
-		std::string line, point;
-		sstring >> line;
+		std::string points_, point;
+		sstring >> points_;
 		sstring >> point;
-		if (line.empty() || point.empty())
+		if (points_.empty() || point.empty())
 		{
 			throw((std::string)"Compile error: not enough args");
 		}
-		if (!lines[line])
+		if (!lines[points_])
 		{
-			throw((std::string)"Compile error: no line with name " + line);
+			throw((std::string)"Compile error: no line with name " + points_);
 		}
 		if (!points[point])
 		{
 			throw((std::string)"Compile error: no point with name " + point);
 		}
 
-		return lines[name] = new Line(lines[line], points[point]);
+		return lines[name] = new Line(lines[points_], points[point]);
 	}
 	else if (construction == "Perpendicular")
 	{
-		std::string line, point;
+		std::string points_, point;
 		sstring >> point;
-		sstring >> line;
-		if (line.empty() || point.empty())
+		sstring >> points_;
+		if (points_.empty() || point.empty())
 		{
 			throw((std::string)"Compile error: not enough args");
 		}
-		if (!lines[line])
+		if (!lines[points_])
 		{
-			throw((std::string)"Compile error: no line with name " + line);
+			throw((std::string)"Compile error: no line with name " + points_);
 		}
 		if (!points[point])
 		{
 			throw((std::string)"Compile error: no point with name " + point);
 		}
 
-		return lines[name] = new Line(points[point], lines[line]);
+		return lines[name] = new Line(points[point], lines[points_]);
 	}
 	else
 	{
@@ -439,7 +439,7 @@ Object* Compiler::compileLine(std::stringstream& sstring, std::string name, std:
 	}
 }
 
-Object* Compiler::compileChord(std::stringstream& sstring, std::string name, std::string construction)
+Object* Compiler::CompileChord(std::stringstream& sstring, std::string name, std::string construction)
 {
 	if (lines[name])
 	{
@@ -475,15 +475,15 @@ Object* Compiler::compileChord(std::stringstream& sstring, std::string name, std
 	}
 }
 
-void Compiler::codeLineCompile(std::string line)
+void Compiler::CodeLineCompile(std::string points_)
 {
 	std::stringstream sstring;
-	sstring << line;
+	sstring << points_;
 	std::string objectType;
 	sstring >> objectType;
 	if (objectType == "Settings")
 	{
-		compileSettings(sstring);
+		CompileSettings(sstring);
 		return;
 	}
 	std::string name;
@@ -503,19 +503,19 @@ void Compiler::codeLineCompile(std::string line)
 	Object* object;
 	if (objectType == "Point")
 	{
-		object = compilePoint(sstring, name, construction);
+		object = CompilePoint(sstring, name, construction);
 	}
 	else if (objectType == "UnitPoint")
 	{
-		object = compileUnitPoint(sstring, name, construction);
+		object = CompileUnitPoint(sstring, name, construction);
 	}
 	else if (objectType == "Line")
 	{
-		object = compileLine(sstring, name, construction);
+		object = CompileLine(sstring, name, construction);
 	}
 	else if ("Chord")
 	{
-		object = compileChord(sstring, name, construction);
+		object = CompileChord(sstring, name, construction);
 	}
 	else
 	{
@@ -524,11 +524,11 @@ void Compiler::codeLineCompile(std::string line)
 	}
 	if (object)
 	{
-		compileProperties(sstring, object);
+		CompileProperties(sstring, object);
 	}
 }
 
-void Compiler::compile(std::string filePath)
+void Compiler::Compile(std::string filePath)
 {
 	points["O"] = CenterPoint::getInstance();
 	std::ifstream file;
@@ -536,20 +536,20 @@ void Compiler::compile(std::string filePath)
 	int lineNumber = 0;
 	while (!file.eof())
 	{
-		std::string line;
+		std::string points_;
 		lineNumber++;
-		std::getline(file, line);
-		if (line.empty() || line[0] == '#')
+		std::getline(file, points_);
+		if (points_.empty() || points_[0] == '#')
 		{
 			continue;
 		}
 		try
 		{
-			codeLineCompile(line);
+			CodeLineCompile(points_);
 		}
 		catch (std::string error)
 		{
-			std::cout << error << " in line " << lineNumber << std::endl << line << std::endl;
+			std::cout << error << " in line " << lineNumber << std::endl << points_ << std::endl;
 			mainWindow.close();
 			system("pause");
 			exit(0);

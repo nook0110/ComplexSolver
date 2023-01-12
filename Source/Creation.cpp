@@ -46,11 +46,11 @@ void Drawer::drawObjects()
 {
 	if (UnitCircle::getInstance()->getVisibility() || Creation::getInstance()->getCurrentMode() == MODE_HIDE)
 	{
-		UnitCircle::getInstance()->draw();
+		UnitCircle::getInstance()->Draw();
 	}
 	if (CenterPoint::getInstance()->getVisibility() || Creation::getInstance()->getCurrentMode() == MODE_HIDE)
 	{
-		CenterPoint::getInstance()->draw();
+		CenterPoint::getInstance()->Draw();
 	}
 	if (Creation::getInstance()->getCurrentMode() == MODE_CLEAR)
 	{
@@ -58,7 +58,7 @@ void Drawer::drawObjects()
 	}
 	if (Creation::getInstance()->getCurrentMode() != MODE_HIDE)
 	{
-		for (auto object : Drawer::allVisibleObjects)
+		for (auto object : Drawer::all_visible_objects)
 		{
 			if (object->getVisibility())
 			{
@@ -66,33 +66,33 @@ void Drawer::drawObjects()
 				{
 					return;
 				}
-				object->draw();
+				object->Draw();
 			}
 		}
 	}
 	else
 	{
-		for (auto object : Drawer::allVisibleObjects)
+		for (auto object : Drawer::all_visible_objects)
 		{
 			if (Creation::getInstance()->getCurrentMode() == MODE_CLEAR)
 			{
 				return;
 			}
-			object->draw();
+			object->Draw();
 		}
 	}
 }
 
 void Drawer::drawMenu()
 {
-	mainMenu.draw();
+	mainMenu.Draw();
 }
 
 void Drawer::drawDescriptions()
 {
-	for (auto description : Drawer::allDescriptions)
+	for (auto description_ : Drawer::allDescriptions)
 	{
-		description->draw();
+		description_->Draw();
 	}
 }
 
@@ -100,7 +100,7 @@ void Drawer::drawDialogBox()
 {
 	if (dialogBox)
 	{
-		dialogBox->draw();
+		dialogBox->Draw();
 	}
 }
 
@@ -151,7 +151,7 @@ void Drawer::resizeDialogBox(Event event)
 
 bool Drawer::VisibleObjectsContains(Object* ptr)
 {
-	for (auto obj : allVisibleObjects)
+	for (auto obj : all_visible_objects)
 	{
 		if (obj == ptr)
 		{
@@ -190,7 +190,7 @@ void Drawer::update(Event event)
 	}
 }
 
-void Drawer::draw()
+void Drawer::Draw()
 {
 	objectDestructionMutex.lock();
 	drawObjects();

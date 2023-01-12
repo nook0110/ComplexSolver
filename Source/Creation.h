@@ -77,7 +77,7 @@ class Drawer
 public:
 	Drawer() = delete;
 	//List of all objects
-	static std::list<Object*> allVisibleObjects;
+	static std::list<Object*> all_visible_objects;
 	static bool VisibleObjectsContains(Object* ptr);
 	static void delObject(Object* object);
 	static void addObject(Object* object);
@@ -90,7 +90,7 @@ public:
 	//Updates dialog box (Resize and cin);
 	static void update(Event event);
 	//Draws all objects
-	static void draw();
+	static void Draw();
 	//Draw menu
 	static void drawMenu();
 };

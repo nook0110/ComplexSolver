@@ -14,9 +14,9 @@ Object::~Object()
 {
 	erase();
 	delete construction;
-	if (description)
+	if (description_)
 	{
-		delete description;
+		delete description_;
 	}
 	deleteChildren();
 	deleteFiles(getLowerCaseName());
@@ -24,7 +24,7 @@ Object::~Object()
 
 void Object::reposeChildren()
 {
-	reposition();
+	Reposition();
 	for (auto child : children)
 	{
 		child->reposeChildren();
@@ -65,12 +65,12 @@ void Object::printExpr()
 {
 }
 
-void Object::setVisibility(bool visibility)
+void Object::SetVisibility(bool visibility)
 {
 	visible = visibility;
 }
 
-void Object::setVisibility()
+void Object::SetVisibility()
 {
 	visible = !visible;
 }
@@ -87,7 +87,7 @@ bool Object::getVisibility()
 
 void Object::erase()
 {
-	Drawer::allVisibleObjects.remove(this);
+	Drawer::all_visible_objects.remove(this);
 }
 
 bool Object::isOnCircle()
@@ -95,14 +95,14 @@ bool Object::isOnCircle()
 	return dynamic_cast<UnitPoint*>(this);
 }
 
-std::string Object::makeTeX()
+std::string Object::MakeTeX()
 {
 	return std::string();
 }
 
 void Object::updateTeX()
 {
-	TeX = makeTeX();
+	TeX_ = MakeTeX();
 }
 
 std::string Object::getLowerCaseName()
@@ -110,21 +110,21 @@ std::string Object::getLowerCaseName()
 	return std::string();
 }
 
-void Object::switchDescription(Vector2f position)
+void Object::SwitchDescription(Vector2f position)
 {
-	if (!description)
+	if (!description_)
 	{
-		if (equationPath.empty())
+		if (equation_path_.empty())
 		{
-			equationPath = makeTexture(TeX, getLowerCaseName() + std::to_string((uintptr_t)this));
+			equation_path_ = makeTexture(TeX_, getLowerCaseName() + std::to_string((uintptr_t)this));
 		}
-		description = new Description(equationPath, getLowerCaseName());
-		description->moveTo(position);
+		description_ = new Description(equation_path_, getLowerCaseName());
+		description_->moveTo(position);
 	}
 	else
 	{
-		delete description;
-		description = nullptr;
+		delete description_;
+		description_ = nullptr;
 	}
 }
 
@@ -132,25 +132,25 @@ void Object::add()
 {
 	if (Drawer::VisibleObjectsContains(this))
 		return;
-	Drawer::allVisibleObjects.push_back(this);
+	Drawer::all_visible_objects.push_back(this);
 	for (auto child : children)
 		child->add();
 }
 
 void Object::del()
 {
-	if (description)
+	if (description_)
 	{
-		delete description;
-		description = nullptr;
+		delete description_;
+		description_ = nullptr;
 	}
 	NameBox::names[getLowerCaseName()] = false;
-	Drawer::allVisibleObjects.remove(this);
+	Drawer::all_visible_objects.remove(this);
 	for (auto child : children)
 		child->del();
 }
 
-UnitCircle* UnitCircle::unitCircle = nullptr;
+UnitCircle* UnitCircle::unit_circle = nullptr;
 UnitCircle::UnitCircle()
 {
 	shape.setPointCount(100);
@@ -164,49 +164,49 @@ UnitCircle::UnitCircle()
 
 UnitCircle* UnitCircle::getInstance()
 {
-	if (unitCircle == nullptr) {
-		unitCircle = new UnitCircle();
+	if (unit_circle == nullptr) {
+		unit_circle = new UnitCircle();
 	}
-	return unitCircle;
+	return unit_circle;
 }
 
-float UnitCircle::distance(Vector2f point)
+float UnitCircle::DistanceTo(Vector2f point)
 {
 	Vector2f center = shape.getPosition();
 	float radius = shape.getRadius();
 	float distanceToCenter = sqrtf(
 		pow(point.x - 0, 2) +
 		pow(point.y - 0, 2));
-	float distance = abs(distanceToCenter - radius);
-	Vector2f delta = Vector2f(mainWindow.mapCoordsToPixel(Vector2f(0, distance), view) - mainWindow.mapCoordsToPixel(Vector2f(0, 0), view));
+	float DistanceTo = abs(distanceToCenter - radius);
+	Vector2f delta = Vector2f(mainWindow.mapCoordsToPixel(Vector2f(0, DistanceTo), view) - mainWindow.mapCoordsToPixel(Vector2f(0, 0), view));
 	return sqrt(delta.x * delta.x + delta.y * delta.y);
 }
 
-bool UnitCircle::isNearby(Vector2f position)
+bool UnitCircle::IsNearby(Vector2f position)
 {
-	return distance(position) < epsilon;
+	return DistanceTo(position) < epsilon;
 }
 
-void UnitCircle::draw()
+void UnitCircle::Draw()
 {
 	shape.setOutlineColor(getColor());
 	mainWindow.draw(shape);
 }
 
-void UnitCircle::switchDescription()
+void UnitCircle::SwitchDescription()
 {
 }
 
-void Circle::draw()
+void Circle::Draw()
 {
 	mainWindow.draw(shape);
 }
 
-void Circle::switchDescription()
+void Circle::SwitchDescription()
 {
 }
 
-void Circle::reposition()
+void Circle::Reposition()
 {
 	construction->recreate(equation);
 	CircleEquation* circleEquation = dynamic_cast<CircleEquation*>(equation);
@@ -218,12 +218,12 @@ void Circle::reposition()
 	shape.setOutlineThickness(outlineThickness);
 }
 
-float Circle::distance(Vector2f point)
+float Circle::DistanceTo(Vector2f point)
 {
 	return 0.0f;
 }
 
-bool Circle::isNearby(Vector2f position)
+bool Circle::IsNearby(Vector2f position)
 {
 	return false;
 }
@@ -239,18 +239,18 @@ Circle::Circle(Point* first, Point* second, Point* third, Point* fourth)
 	shape.setPointCount(100);
 	shape.setOutlineColor(getColor());
 	shape.setFillColor(Color(0, 0, 0, 0));
-	reposition();
+	Reposition();
 	Drawer::addObject(this);
 }
 
-float Line::distance(Vector2f point)
+float Line::DistanceTo(Vector2f point)
 {
 	LineEquation* lineEquation = dynamic_cast<LineEquation*>(getEquation());
 	float A = lineEquation->A;
 	float B = lineEquation->B;
 	float C = lineEquation->C;
-	float distance = abs((A * point.x + B * point.y + C) / sqrt(A * A + B * B));
-	Vector2f delta = Vector2f(mainWindow.mapCoordsToPixel(Vector2f(0, distance), view) - mainWindow.mapCoordsToPixel(Vector2f(0, 0), view));
+	float DistanceTo = abs((A * point.x + B * point.y + C) / sqrt(A * A + B * B));
+	Vector2f delta = Vector2f(mainWindow.mapCoordsToPixel(Vector2f(0, DistanceTo), view) - mainWindow.mapCoordsToPixel(Vector2f(0, 0), view));
 	return sqrt(delta.x * delta.x + delta.y * delta.y);
 }
 
@@ -271,7 +271,7 @@ Line::Line(Line* first, Point* second)
 	second->addChild(this);
 	construction = new Parallel(this, first, second);
 	equation = new LineEquation(0, 0, 0);
-	reposition();
+	Reposition();
 	Init();
 }
 
@@ -281,16 +281,16 @@ Line::Line(Point* first, Line* second)
 	second->addChild(this);
 	construction = new Perpendicular(this, first, second);
 	equation = new LineEquation(0, 0, 0);
-	reposition();
+	Reposition();
 	Init();
 }
 
-bool Line::isNearby(Vector2f position)
+bool Line::IsNearby(Vector2f position)
 {
-	return distance(position) < epsilon;
+	return DistanceTo(position) < epsilon;
 }
 
-void Line::draw()
+void Line::Draw()
 {
 	LineEquation lineEq = *(dynamic_cast<LineEquation*>(getEquation()));
 	float x1, x2, y1, y2;
@@ -327,7 +327,7 @@ void Line::draw()
 		}
 	}
 
-	if (dotted)
+	if (dotted_)
 	{
 		const int stripes = 75;
 		Vertex lines[stripes + 1];
@@ -339,22 +339,22 @@ void Line::draw()
 	}
 	else
 	{
-		line[0] = Vertex(Vector2f(x1, y1), getColor());
-		line[1] = Vertex(Vector2f(x2, y2), getColor());
-		mainWindow.draw(line, 2, Lines);
+		points_[0] = Vertex(Vector2f(x1, y1), getColor());
+		points_[1] = Vertex(Vector2f(x2, y2), getColor());
+		mainWindow.draw(points_, 2, Lines);
 	}
 
 	if (highlighted)
 	{
 		Vector2f delta = Vector2f(x2 - x1, y2 - y1);
 		float lineLength = sqrt(delta.x * delta.x + delta.y * delta.y);
-		RectangleShape outline(Vector2f(lineLength, outlineThikness * 2));
-		outline.setOrigin(Vector2f(0, outlineThikness));
+		RectangleShape outline(Vector2f(lineLength, outline_thickness_ * 2));
+		outline.setOrigin(Vector2f(0, outline_thickness_));
 		float angle = atan2(delta.y, delta.x);
 		const float radToDegRatio = 180 / (float)M_PI;
 		outline.setRotation(angle * radToDegRatio);
 		outline.move(Vector2f(x1, y1));
-		outline.setFillColor(hihglightedColor);
+		outline.setFillColor(highlighted_color_);
 		mainWindow.draw(outline);
 	}
 
@@ -362,36 +362,36 @@ void Line::draw()
 
 
 
-void Line::setDotted(bool dotted)
+void Line::SetDotted(bool dotted_)
 {
-	Line::dotted = dotted;
+	Line::dotted_ = dotted_;
 }
 
-std::string Line::makeTeX()
+std::string Line::MakeTeX()
 {
 	ConstructionLine* constr = dynamic_cast<ConstructionLine*>(construction);
-	std::string TeX;
-	TeX += constr->z_coef.getTEXformat() + "$$ \n $$";
-	TeX += constr->z_conj_coef.getTEXformat() + "$$ \n $$";
-	TeX += constr->free_coef.getTEXformat();
-	return TeX;
+	std::string TeX_;
+	TeX_ += constr->z_coef.getTEXformat() + "$$ \n $$";
+	TeX_ += constr->z_conj_coef.getTEXformat() + "$$ \n $$";
+	TeX_ += constr->free_coef.getTEXformat();
+	return TeX_;
 }
 
-void Line::switchDescription()
+void Line::SwitchDescription()
 {
 }
 
-void Line::reposition()
+void Line::Reposition()
 {
 	construction->recreate(equation);
 }
 
 void Line::Init()
 {
-	TeX = makeTeX();
+	TeX_ = MakeTeX();
 	Drawer::addObject(this);
-	line[0].color = getColor();
-	line[1].color = getColor();
+	points_[0].color = getColor();
+	points_[1].color = getColor();
 }
 
 
@@ -401,7 +401,7 @@ Line::Line(UnitCircle* first, Point* second)
 	second->addChild(this);
 	construction = new Tangent(this, first, second);
 	equation = new LineEquation(0, 0, 0);
-	reposition();
+	Reposition();
 	Init();
 }
 
@@ -411,7 +411,7 @@ Line::Line(Point* first, Point* second)
 	second->addChild(this);
 	construction = new ByTwoPoints(this, first, second);
 	equation = new LineEquation(0, 0, 0);
-	reposition();
+	Reposition();
 	Init();
 }
 
@@ -421,23 +421,23 @@ LineSegment::LineSegment(Point* first, Point* second)
 	second->addChild(this);
 	equation = new SegmentEquation(Vector2f(), Vector2f());
 	construction = new ByTwoEnds(this, first, second);
-	line[0].color = first->getColor();
-	line[1].color = second->getColor();
-	reposition();
+	points_[0].color = first->getColor();
+	points_[1].color = second->getColor();
+	Reposition();
 	Drawer::addObject(this);
 }
 
-void LineSegment::reposition()
+void LineSegment::Reposition()
 {
 	construction->recreate(equation);
 	SegmentEquation* segmentEquation = dynamic_cast<SegmentEquation*>(equation);
-	line[0].position = segmentEquation->pointFirst;
-	line[1].position = segmentEquation->pointSecond;
+	points_[0].position = segmentEquation->pointFirst;
+	points_[1].position = segmentEquation->pointSecond;
 }
 
-void LineSegment::draw()
+void LineSegment::Draw()
 {
-	mainWindow.draw(line, 2, Lines);
+	mainWindow.draw(points_, 2, Lines);
 }
 
 Chord::Chord(UnitPoint* first, UnitPoint* second)
@@ -446,12 +446,12 @@ Chord::Chord(UnitPoint* first, UnitPoint* second)
 	second->addChild(this);
 	construction = new ByTwoUnitPoints(this, first, second);
 	equation = new LineEquation(0, 0, 0);
-	reposition();
+	Reposition();
 	Init();
 }
 
 
-float Point::distance(Vector2f point)
+float Point::DistanceTo(Vector2f point)
 {
 	point = Vector2f(mainWindow.mapCoordsToPixel(point, view));
 	Vector2f coord = Vector2f(mainWindow.mapCoordsToPixel(shape.getPosition(), view));
@@ -478,7 +478,7 @@ Point::~Point()
 	deleteFiles(getLowerCaseName());
 }
 
-void Point::reposition()
+void Point::Reposition()
 {
 	construction->recreate(equation);
 	PointEquation* pointEquation = dynamic_cast<PointEquation*>(equation);
@@ -499,13 +499,13 @@ void Point::moveTo(Vector2f coords)
 
 void Point::Init()
 {
-	TeX = makeTeX();
+	TeX_ = MakeTeX();
 	font.loadFromFile("Textures\\Font\\font.ttf");
 	nameText.setFillColor(textColor);
 	nameText.setScale(textScale);
 	equation = new PointEquation(Vector2f(0, 0));
 	shape.setOrigin(pointSize, pointSize);
-	reposition();
+	Reposition();
 	shape.setFillColor(getColor());
 	Drawer::addObject(this);
 }
@@ -527,24 +527,24 @@ Point::Point(Line* first, Line* second)
 	Init();
 }
 
-Point::Point(Line* line, Point* first, Point* second, Vector2f position)
+Point::Point(Line* points_, Point* first, Point* second, Vector2f position)
 {
 	setColor(movableColor);
 	setName();
-	construction = new OnLine(this, first, second, 0, line);
+	construction = new OnLine(this, first, second, 0, points_);
 	first->addChild(this);
 	second->addChild(this);
-	line->addChild(this);
+	points_->addChild(this);
 	Init();
 	moveTo(position);
 }
 
-Point::Point(Point* point, Line* line)
+Point::Point(Point* point, Line* points_)
 {
 	setName();
-	construction = new Projection(this, point, line);
+	construction = new Projection(this, point, points_);
 	point->addChild(this);
-	line->addChild(this);
+	points_->addChild(this);
 	Init();
 }
 
@@ -593,9 +593,9 @@ Point::Point(Point* center, Point* preimage, int sign)
 	Init();
 }
 
-bool Point::isNearby(Vector2f position)
+bool Point::IsNearby(Vector2f position)
 {
-	return distance(position) < epsilon;
+	return DistanceTo(position) < epsilon;
 }
 
 bool Point::contains(Vector2f position)
@@ -625,7 +625,7 @@ void Point::setName()
 	}
 }
 
-void Point::draw()
+void Point::Draw()
 {
 	shape.setFillColor(getColor());
 	nameText.setPosition(shape.getPosition());
@@ -633,7 +633,7 @@ void Point::draw()
 	mainWindow.draw(nameText);
 }
 
-std::string Point::makeTeX()
+std::string Point::MakeTeX()
 {
 	return dynamic_cast<ConstructionPoint*>(construction)->coord.getTEXformat();
 }
@@ -648,8 +648,8 @@ std::string Point::getLowerCaseName()
 
 void Point::highlight()
 {
-	shape.setOutlineThickness(outlineThikness);
-	shape.setOutlineColor(hihglightedColor);
+	shape.setOutlineThickness(outline_thickness_);
+	shape.setOutlineColor(highlighted_color_);
 }
 
 void Point::unhighlight()
@@ -690,13 +690,13 @@ Center::Center(Point* object) : OnPlane(object)
 
 void IntersectionOfTwoLines::recreate(Equation* equation)
 {
-	LineEquation* firstEquation = dynamic_cast<LineEquation*>(firstParent->getEquation());
-	LineEquation* secondEquation = dynamic_cast<LineEquation*>(secondParent->getEquation());
+	LineEquation* first_equation = dynamic_cast<LineEquation*>(firstParent->getEquation());
+	LineEquation* second_equation = dynamic_cast<LineEquation*>(secondParent->getEquation());
 	Vector2f pointCoord = Vector2f(
-		(firstEquation->B * secondEquation->C - firstEquation->C * secondEquation->B)
-		/ (firstEquation->A * secondEquation->B - firstEquation->B * secondEquation->A),
-		(firstEquation->C * secondEquation->A - firstEquation->A * secondEquation->C)
-		/ (firstEquation->A * secondEquation->B - firstEquation->B * secondEquation->A)
+		(first_equation->B * second_equation->C - first_equation->C * second_equation->B)
+		/ (first_equation->A * second_equation->B - first_equation->B * second_equation->A),
+		(first_equation->C * second_equation->A - first_equation->A * second_equation->C)
+		/ (first_equation->A * second_equation->B - first_equation->B * second_equation->A)
 	);
 	*dynamic_cast<PointEquation*>(equation) = (PointEquation(pointCoord));
 }
@@ -713,10 +713,10 @@ IntersectionOfTwoLines::~IntersectionOfTwoLines()
 
 void CentralProjection::recreate(Equation* equation)
 {
-	PointEquation* firstEquation = dynamic_cast<PointEquation*>(secondParent->getEquation());
-	PointEquation* secondEquation = dynamic_cast<PointEquation*>(thirdParent->getEquation());
-	Vector2f firstCoord = firstEquation->point;
-	Vector2f secondCoord = secondEquation->point;
+	PointEquation* first_equation = dynamic_cast<PointEquation*>(secondParent->getEquation());
+	PointEquation* second_equation = dynamic_cast<PointEquation*>(thirdParent->getEquation());
+	Vector2f firstCoord = first_equation->point;
+	Vector2f secondCoord = second_equation->point;
 	float A = -firstCoord.y + secondCoord.y;
 	float B = -(-firstCoord.x + secondCoord.x);
 	float C = firstCoord.x * (firstCoord.y - secondCoord.y) - firstCoord.y * (firstCoord.x - secondCoord.x);
@@ -742,10 +742,10 @@ byTwoPointsFixedRatio::~byTwoPointsFixedRatio()
 
 void byTwoPointsFixedRatio::recreate(Equation* equation)
 {
-	PointEquation* firstEquation = dynamic_cast<PointEquation*>(firstParent->getEquation());
-	PointEquation* secondEquation = dynamic_cast<PointEquation*>(secondParent->getEquation());
-	Vector2f firstCoord = firstEquation->point;
-	Vector2f secondCoord = secondEquation->point;
+	PointEquation* first_equation = dynamic_cast<PointEquation*>(firstParent->getEquation());
+	PointEquation* second_equation = dynamic_cast<PointEquation*>(secondParent->getEquation());
+	Vector2f firstCoord = first_equation->point;
+	Vector2f secondCoord = second_equation->point;
 	Vector2f pointCoord = (secondCoord * (float)masses.first + firstCoord * (float)masses.second) / (float)(masses.first + masses.second);
 	*dynamic_cast<PointEquation*>(equation) = PointEquation(pointCoord);
 }
@@ -761,10 +761,10 @@ void ByTwoPoints::recreate(Equation* equation)
 	{
 		equation = new LineEquation(0, 0, 0);
 	}
-	PointEquation* firstEquation = dynamic_cast<PointEquation*>(firstParent->getEquation());
-	PointEquation* secondEquation = dynamic_cast<PointEquation*>(secondParent->getEquation());
-	Vector2f firstCoord = firstEquation->point;
-	Vector2f secondCoord = secondEquation->point;
+	PointEquation* first_equation = dynamic_cast<PointEquation*>(firstParent->getEquation());
+	PointEquation* second_equation = dynamic_cast<PointEquation*>(secondParent->getEquation());
+	Vector2f firstCoord = first_equation->point;
+	Vector2f secondCoord = second_equation->point;
 	float A = -firstCoord.y + secondCoord.y;
 	float B = -(-firstCoord.x + secondCoord.x);
 	float C = firstCoord.x * (firstCoord.y - secondCoord.y) - firstCoord.y * (firstCoord.x - secondCoord.x);
@@ -791,12 +791,12 @@ Perpendicular::~Perpendicular()
 
 void Perpendicular::recreate(Equation* equation)
 {
-	PointEquation* firstEquation = dynamic_cast<PointEquation*>(firstParent->getEquation());
-	LineEquation* secondEquation = dynamic_cast<LineEquation*>(secondParent->getEquation());
-	Vector2f coord = firstEquation->point;
-	float A = -(*secondEquation).B;
-	float B = (*secondEquation).A;
-	float C = (*secondEquation).B * coord.x - (*secondEquation).A * coord.y;
+	PointEquation* first_equation = dynamic_cast<PointEquation*>(firstParent->getEquation());
+	LineEquation* second_equation = dynamic_cast<LineEquation*>(secondParent->getEquation());
+	Vector2f coord = first_equation->point;
+	float A = -(*second_equation).B;
+	float B = (*second_equation).A;
+	float C = (*second_equation).B * coord.x - (*second_equation).A * coord.y;
 	*dynamic_cast<LineEquation*>(equation) = LineEquation(A, B, C);
 }
 
@@ -830,8 +830,8 @@ Tangent::~Tangent()
 
 void Tangent::recreate(Equation* equation)
 {
-	PointEquation* secondEquation = dynamic_cast<PointEquation*>(secondParent->getEquation());
-	Vector2f coord = secondEquation->point;
+	PointEquation* second_equation = dynamic_cast<PointEquation*>(secondParent->getEquation());
+	Vector2f coord = second_equation->point;
 	float A = coord.x;
 	float B = coord.y;
 	float C = -(coord.x * coord.x + coord.y * coord.y);
@@ -887,19 +887,19 @@ Vector2f projectionOnLine(LineEquation lineEquation, PointEquation pointEquation
 void OnLine::moveTo(Vector2f coord)
 {
 	Vector2f proj = projectionOnLine(*dynamic_cast<LineEquation*>(thirdParent->getEquation()), coord);
-	PointEquation* firstEquation = dynamic_cast<PointEquation*>(firstParent->getEquation());
-	PointEquation* secondEquation = dynamic_cast<PointEquation*>(secondParent->getEquation());
-	Vector2f firstCoord = firstEquation->point;
-	Vector2f secondCoord = secondEquation->point;
+	PointEquation* first_equation = dynamic_cast<PointEquation*>(firstParent->getEquation());
+	PointEquation* second_equation = dynamic_cast<PointEquation*>(secondParent->getEquation());
+	Vector2f firstCoord = first_equation->point;
+	Vector2f secondCoord = second_equation->point;
 	ratio = -(proj - firstCoord).x / (proj - secondCoord).x;
 }
 
 void OnLine::recreate(Equation* equation)
 {
-	PointEquation* firstEquation = dynamic_cast<PointEquation*>(firstParent->getEquation());
-	PointEquation* secondEquation = dynamic_cast<PointEquation*>(secondParent->getEquation());
-	Vector2f firstCoord = firstEquation->point;
-	Vector2f secondCoord = secondEquation->point;
+	PointEquation* first_equation = dynamic_cast<PointEquation*>(firstParent->getEquation());
+	PointEquation* second_equation = dynamic_cast<PointEquation*>(secondParent->getEquation());
+	Vector2f firstCoord = first_equation->point;
+	Vector2f secondCoord = second_equation->point;
 	Vector2f pointCoord = (secondCoord * ratio + firstCoord * 1.f) / (ratio + 1.f);
 	*dynamic_cast<PointEquation*>(equation) = PointEquation(pointCoord);
 }
@@ -935,12 +935,12 @@ CenterPoint::CenterPoint() : Point()
 	equation = new PointEquation(Vector2f(0, 0));
 	shape.setOrigin(pointSize, pointSize);
 	shape.setFillColor(Color::Black);
-	Drawer::allVisibleObjects.push_front(this);
+	Drawer::all_visible_objects.push_front(this);
 	nameText.setScale(textScale);
 	updateTeX();
 }
 
-void CenterPoint::reposition()
+void CenterPoint::Reposition()
 {
 	shape.setPosition(Vector2f(0, 0));
 }
@@ -963,41 +963,41 @@ void CenterPoint::moveTo(Vector2f coords)
 {
 }
 
-UnitPoint::UnitPoint(UnitCircle* unitCircle, Vector2f position)
+UnitPoint::UnitPoint(UnitCircle* unit_circle, Vector2f position)
 {
 	setColor(movableColor);
 	setName();
 	float angle = atan2(position.y, position.x);
-	construction = new OnCircle(this, unitCircle, angle);
-	unitCircle->addChild(this);
+	construction = new OnCircle(this, unit_circle, angle);
+	unit_circle->addChild(this);
 	Init();
 }
 
-UnitPoint::UnitPoint(UnitCircle* unitCircle, Point* first, UnitPoint* second)
+UnitPoint::UnitPoint(UnitCircle* unit_circle, Point* first, UnitPoint* second)
 {
 	setName();
-	construction = new CentralProjection(this, unitCircle, first, second);
-	unitCircle->addChild(this);
+	construction = new CentralProjection(this, unit_circle, first, second);
+	unit_circle->addChild(this);
 	first->addChild(this);
 	second->addChild(this);
 	Init();
 }
 
-UnitPoint::UnitPoint(UnitCircle* unitCircle, UnitPoint* point, Chord* chord)
+UnitPoint::UnitPoint(UnitCircle* unit_circle, UnitPoint* point, Chord* chord)
 {
 	setName();
-	construction = new IntersectionPerpendicularChord(this, unitCircle, point, chord);
-	unitCircle->addChild(this);
+	construction = new IntersectionPerpendicularChord(this, unit_circle, point, chord);
+	unit_circle->addChild(this);
 	chord->addChild(this);
 	point->addChild(this);
 	Init();
 }
 
-UnitPoint::UnitPoint(UnitCircle* unitCircle, Chord* chord, UnitPoint* point)
+UnitPoint::UnitPoint(UnitCircle* unit_circle, Chord* chord, UnitPoint* point)
 {
 	setName();
-	construction = new IntersectionParallelChord(this, unitCircle, chord, point);
-	unitCircle->addChild(this);
+	construction = new IntersectionParallelChord(this, unit_circle, chord, point);
+	unit_circle->addChild(this);
 	chord->addChild(this);
 	point->addChild(this);
 	Init();
@@ -1051,18 +1051,18 @@ CircleEquation::CircleEquation(Vector2f center, float radius)
 
 IntersectionParallelChord::~IntersectionParallelChord()
 {
-	unitCircle->eraseChild(object);
+	unit_circle->eraseChild(object);
 	firstParent->eraseChild(object);
 	secondParent->eraseChild(object);
 }
 
 void IntersectionParallelChord::recreate(Equation* equation)
 {
-	LineEquation* firstEquation = dynamic_cast<LineEquation*>(firstParent->getEquation());
-	PointEquation* secondEquation = dynamic_cast<PointEquation*>(secondParent->getEquation());
-	Vector2f coord = secondEquation->point;
-	float A = firstEquation->A;
-	float B = firstEquation->B;
+	LineEquation* first_equation = dynamic_cast<LineEquation*>(firstParent->getEquation());
+	PointEquation* second_equation = dynamic_cast<PointEquation*>(secondParent->getEquation());
+	Vector2f coord = second_equation->point;
+	float A = first_equation->A;
+	float B = first_equation->B;
 	float C = -(A * coord.x + B * coord.y);
 	LineEquation lineEquation(A, B, C);
 	Vector2f projection = projectionOnLine(lineEquation, PointEquation(Vector2f(0, 0)));
@@ -1072,18 +1072,18 @@ void IntersectionParallelChord::recreate(Equation* equation)
 
 IntersectionPerpendicularChord::~IntersectionPerpendicularChord()
 {
-	unitCircle->eraseChild(object);
+	unit_circle->eraseChild(object);
 	firstParent->eraseChild(object);
 	secondParent->eraseChild(object);
 }
 
 void IntersectionPerpendicularChord::recreate(Equation* equation)
 {
-	PointEquation* firstEquation = dynamic_cast<PointEquation*>(firstParent->getEquation());
-	LineEquation* secondEquation = dynamic_cast<LineEquation*>(secondParent->getEquation());
-	Vector2f coord = firstEquation->point;
-	float A = secondEquation->B;
-	float B = -secondEquation->A;
+	PointEquation* first_equation = dynamic_cast<PointEquation*>(firstParent->getEquation());
+	LineEquation* second_equation = dynamic_cast<LineEquation*>(secondParent->getEquation());
+	Vector2f coord = first_equation->point;
+	float A = second_equation->B;
+	float B = -second_equation->A;
 	float C = -(A * coord.x + B * coord.y);
 	LineEquation lineEquation(A, B, C);
 	Vector2f projection = projectionOnLine(lineEquation, PointEquation(Vector2f(0, 0)));
@@ -1093,10 +1093,10 @@ void IntersectionPerpendicularChord::recreate(Equation* equation)
 
 void Rotation90::recreate(Equation* equation)
 {
-	PointEquation* firstEquation = dynamic_cast<PointEquation*>(firstParent->getEquation());
-	PointEquation* secondEquation = dynamic_cast<PointEquation*>(secondParent->getEquation());
-	Vector2f center = firstEquation->point;
-	Vector2f preimage = secondEquation->point;
+	PointEquation* first_equation = dynamic_cast<PointEquation*>(firstParent->getEquation());
+	PointEquation* second_equation = dynamic_cast<PointEquation*>(secondParent->getEquation());
+	Vector2f center = first_equation->point;
+	Vector2f preimage = second_equation->point;
 	Vector2f delta = preimage - center;
 	Vector2f deltaRot;
 	deltaRot.x = -delta.y;
@@ -1126,9 +1126,9 @@ ByTwoEnds::ByTwoEnds(Object* object, Point* first, Point* second)
 
 void ByTwoEnds::recreate(Equation* equation)
 {
-	PointEquation* firstEquation = dynamic_cast<PointEquation*>(firstParent->getEquation());
-	PointEquation* secondEquation = dynamic_cast<PointEquation*>(secondParent->getEquation());
-	*dynamic_cast<SegmentEquation*>(equation) = SegmentEquation(firstEquation->point, secondEquation->point);
+	PointEquation* first_equation = dynamic_cast<PointEquation*>(firstParent->getEquation());
+	PointEquation* second_equation = dynamic_cast<PointEquation*>(secondParent->getEquation());
+	*dynamic_cast<SegmentEquation*>(equation) = SegmentEquation(first_equation->point, second_equation->point);
 }
 
 ByTwoEnds::~ByTwoEnds()
@@ -1150,10 +1150,10 @@ Orthocenter::~Orthocenter()
 
 void Orthocenter::recreate(Equation* equation)
 {
-	PointEquation* firstEquation = dynamic_cast<PointEquation*>(firstParent->getEquation());
-	PointEquation* secondEquation = dynamic_cast<PointEquation*>(secondParent->getEquation());
+	PointEquation* first_equation = dynamic_cast<PointEquation*>(firstParent->getEquation());
+	PointEquation* second_equation = dynamic_cast<PointEquation*>(secondParent->getEquation());
 	PointEquation* thirdEquation = dynamic_cast<PointEquation*>(thirdParent->getEquation());
-	*dynamic_cast<PointEquation*>(equation) = PointEquation(firstEquation->point + secondEquation->point + thirdEquation->point);
+	*dynamic_cast<PointEquation*>(equation) = PointEquation(first_equation->point + second_equation->point + thirdEquation->point);
 }
 
 Incenter::~Incenter()
@@ -1165,17 +1165,17 @@ Incenter::~Incenter()
 
 void Incenter::recreate(Equation* equation)
 {
-	PointEquation* firstEquation = dynamic_cast<PointEquation*>(firstParent->getEquation());
-	PointEquation* secondEquation = dynamic_cast<PointEquation*>(secondParent->getEquation());
+	PointEquation* first_equation = dynamic_cast<PointEquation*>(firstParent->getEquation());
+	PointEquation* second_equation = dynamic_cast<PointEquation*>(secondParent->getEquation());
 	PointEquation* thirdEquation = dynamic_cast<PointEquation*>(thirdParent->getEquation());
-	Vector2f firstPoint = firstEquation->point;
-	Vector2f secondPoint = secondEquation->point;
+	Vector2f firstPoint = first_equation->point;
+	Vector2f secondPoint = second_equation->point;
 	Vector2f thirdPoint = thirdEquation->point;
 	float sideA = sqrt((secondPoint - thirdPoint).x * (secondPoint - thirdPoint).x + (secondPoint - thirdPoint).y * (secondPoint - thirdPoint).y);
 	float sideB = sqrt((firstPoint - thirdPoint).x * (firstPoint - thirdPoint).x + (firstPoint - thirdPoint).y * (firstPoint - thirdPoint).y);
 	float sideC = sqrt((secondPoint - firstPoint).x * (secondPoint - firstPoint).x + (secondPoint - firstPoint).y * (secondPoint - firstPoint).y);
 
-	*dynamic_cast<PointEquation*>(equation) = PointEquation((firstEquation->point * sideA + secondEquation->point * sideB + thirdEquation->point * sideC) / (sideA + sideB + sideC));
+	*dynamic_cast<PointEquation*>(equation) = PointEquation((first_equation->point * sideA + second_equation->point * sideB + thirdEquation->point * sideC) / (sideA + sideB + sideC));
 
 }
 
@@ -1188,8 +1188,8 @@ Barycenter::~Barycenter()
 
 void Barycenter::recreate(Equation* equation)
 {
-	PointEquation* firstEquation = dynamic_cast<PointEquation*>(firstParent->getEquation());
-	PointEquation* secondEquation = dynamic_cast<PointEquation*>(secondParent->getEquation());
+	PointEquation* first_equation = dynamic_cast<PointEquation*>(firstParent->getEquation());
+	PointEquation* second_equation = dynamic_cast<PointEquation*>(secondParent->getEquation());
 	PointEquation* thirdEquation = dynamic_cast<PointEquation*>(thirdParent->getEquation());
-	*dynamic_cast<PointEquation*>(equation) = PointEquation((firstEquation->point + secondEquation->point + thirdEquation->point) / 3.f);
+	*dynamic_cast<PointEquation*>(equation) = PointEquation((first_equation->point + second_equation->point + thirdEquation->point) / 3.f);
 }

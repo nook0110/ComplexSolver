@@ -14,17 +14,18 @@ extern presets::Construction preset;
 
 class Compiler
 {
-private:
-	static void compileProperties(std::stringstream& sstring, Object* object);
-	static void compileSettings(std::stringstream& sstring);
-	static Object* compilePoint(std::stringstream& sstring, std::string name, std::string construction);
-	static Object* compileUnitPoint(std::stringstream& sstring, std::string name, std::string construction);
-	static Object* compileLine(std::stringstream& sstring, std::string name, std::string construction);
-	static Object* compileChord(std::stringstream& sstring, std::string name, std::string construction);
-	static Object* compileProve(std::stringstream& sstring, std::string name, std::string construction);
 public:
 	static std::map<std::string, Point*> points;
 	static std::map<std::string, Line*> lines;
-	static void codeLineCompile(std::string line);
-	static void compile(std::string filePath);
+
+	static void CodeLineCompile(std::string points_);
+	static void Compile(std::string filePath);
+private:
+	static void CompileProperties(std::stringstream& sstring, Object* object);
+	static void CompileSettings(std::stringstream& sstring);
+	static Object* CompilePoint(std::stringstream& sstring, std::string name, std::string construction);
+	static Object* CompileUnitPoint(std::stringstream& sstring, std::string name, std::string construction);
+	static Object* CompileLine(std::stringstream& sstring, std::string name, std::string construction);
+	static Object* CompileChord(std::stringstream& sstring, std::string name, std::string construction);
+	static Object* CompileProve(std::stringstream& sstring, std::string name, std::string construction);
 };

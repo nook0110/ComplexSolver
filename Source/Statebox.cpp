@@ -39,7 +39,7 @@ void Statebox::setSize(float sizeY)
 	size *= sizeY / size.y;
 }
 
-bool Statebox::mouseCheck(View clickView = view)
+bool Statebox::CheckMouse(View clickView = view)
 {
 	Vector2f point = mainWindow.mapPixelToCoords(WrapMouse::getClickedCoord(Mouse::Button::Left), clickView);
 	return background.getGlobalBounds().contains(point);
@@ -47,7 +47,7 @@ bool Statebox::mouseCheck(View clickView = view)
 
 bool Statebox::clickCheck(View clickView = view)
 {
-	if (mouseCheck(clickView) && Mouse::isButtonPressed(Mouse::Button::Left))
+	if (CheckMouse(clickView) && Mouse::isButtonPressed(Mouse::Button::Left))
 	{
 		state++;
 		state %= maxState;
@@ -56,7 +56,7 @@ bool Statebox::clickCheck(View clickView = view)
 	else return false;
 }
 
-void Statebox::draw()
+void Statebox::Draw()
 {
 	mainWindow.draw(background);
 	mainWindow.draw(statesSprites[state]);
@@ -141,10 +141,10 @@ Statebox* StateMenu::clickCheck()
 	return nullptr;
 }
 
-void StateMenu::draw()
+void StateMenu::Draw()
 {
 	for (auto& stBox : stateboxes)
 	{
-		stBox->draw();
+		stBox->Draw();
 	}
 }

@@ -23,19 +23,47 @@ class Object;
 //Use getObjectCreationMethod() to get funñtion. 
 class Button
 {
+public:
+	Button(Vector2f position, Vector2f size, RenderWindow& window,
+		std::string texture_location, Vector2i texture_start = Vector2i(0, 0), Vector2i textureSize = Vector2i(0, 0),
+		MODES mode = MODE_NOTHING, std::function<Object* (void)> modeFunction = []()->Object* {});
+	Button(Vector2f position, Vector2f size, RenderWindow& window,
+		std::string texture_location, std::string texturePressedLocation,
+		MODES mode = MODE_NOTHING, std::function<Object* (void)> modeFunction = []()->Object* {});
+	Button(Vector2f position, Vector2f size, RenderWindow& window,
+		std::string texture_location, Vector2i texture_start, Vector2i textureSize,
+		std::string texturePressedLocation, Vector2i texturePressedStart, Vector2i texturePressedSize,
+		MODES mode = MODE_NOTHING, std::function<Object* (void)> modeFunction = []()->Object* {});
+	Button(RenderWindow& window, std::string texture_location,
+		MODES mode = MODE_NOTHING, std::function<Object* (void)> modeFunction = []()->Object* {});
+	void set_position(Vector2f);
+	void set_size(Vector2f size);
+	bool getPressed();
+
+	void Draw();
+	bool CheckMouse(View);
+	bool leftClickCheck(View);
+	bool rightClickCheck(View);
+	Vector2f getSize();
+	Vector2f getLocalPosition();
+	Vector2f getGlobalPosition();
+	void press();
+	void unpress();
+	std::function<Object* (void)> getObjectCreationMethod();
 private:
+	void setMode();
 
-	const Color unpressedColor = Color(255, 255, 255, 255);
-	const Color pressedColor = Color(128, 128, 128, 255);
+	const Color kUnpressedColor = Color(255, 255, 255, 255);
+	const Color kPressedColor = Color(128, 128, 128, 255);
 
-	Vector2f position;
-	Vector2f size;
-	Vector2i textureSize = Vector2i(0, 0), texturePressedSize = Vector2i(0, 0);
-	Vector2i textureStart = Vector2i(0, 0), texturePressedStart = Vector2i(0, 0);
-	std::string textureLocation, texturePressedLocation;
-	RenderWindow* window;
-	Texture texture;
-	Sprite sprite;
+	Vector2f position_;
+	Vector2f size_;
+	Vector2i texture_size_ = Vector2i(0, 0), texture_pressed_size_ = Vector2i(0, 0);
+	Vector2i texture_start_ = Vector2i(0, 0), texture_pressed_start_ = Vector2i(0, 0);
+	std::string texture_location_, texture_pressed_location_;
+	RenderWindow& window_;
+	Texture texture_;
+	Sprite sprite_;
 
 	//Button mode
 	MODES mode = MODE_NOTHING;
@@ -47,36 +75,8 @@ private:
 	bool texturePressed = false;
 
 	void updateSprite();
-	void setTexture(std::string textureLocation, Vector2i textureStart, Vector2i textureSize);
-public:
-	Button(Vector2f position, Vector2f size, RenderWindow* window,
-		std::string textureLocation, Vector2i textureStart = Vector2i(0, 0), Vector2i textureSize = Vector2i(0, 0),
-		MODES mode = MODE_NOTHING, std::function<Object* (void)> modeFunction = []()->Object* {});
-	Button(Vector2f position, Vector2f size, RenderWindow* window,
-		std::string textureLocation, std::string texturePressedLocation,
-		MODES mode = MODE_NOTHING, std::function<Object* (void)> modeFunction = []()->Object* {});
-	Button(Vector2f position, Vector2f size, RenderWindow* window,
-		std::string textureLocation, Vector2i textureStart, Vector2i textureSize,
-		std::string texturePressedLocation, Vector2i texturePressedStart, Vector2i texturePressedSize,
-		MODES mode = MODE_NOTHING, std::function<Object* (void)> modeFunction = []()->Object* {});
-	Button(RenderWindow* window, std::string textureLocation,
-		MODES mode = MODE_NOTHING, std::function<Object* (void)> modeFunction = []()->Object* {});
-	void setPosition(Vector2f);
-	void setSize(Vector2f size);
-	void draw();
-	bool mouseCheck(View);
-	bool leftClickCheck(View);
-	bool rightClickCheck(View);
-	Vector2f getSize();
-	Vector2f getLocalPosition();
-	Vector2f getGlobalPosition();
-private:
-	void setMode();
-public:
-	void press();
-	void unpress();
-	bool getPressed();
-	std::function<Object* (void)> getObjectCreationMethod();
+	void setTexture(std::string texture_location, Vector2i texture_start, Vector2i textureSize);
+
 };
 
 
@@ -84,13 +84,13 @@ public:
 class Menu
 {
 private:
-	View menuView;
+	View menu_view;
 	RenderWindow* window;
 	const float shiftRatio = 0.1f;
 	Vector2i buttonTable;
 	FloatRect viewport = FloatRect(0.f, 0.f, 1.0f, mainWindowRect.top);
-	const FloatRect normalViewport = FloatRect(0.f, 0.f, 1.0f, mainWindowRect.top);
-	View normalView;
+	const FloatRect normal_viewport = FloatRect(0.f, 0.f, 1.0f, mainWindowRect.top);
+	View normal_view;
 	const Color color = Color(160, 160, 160, 255);
 	const Vector2f position = Vector2f(0, 0);
 	int layer = 0;
@@ -111,7 +111,7 @@ public:
 	Button* leftClickCheck();
 	void unpress();
 	void switchLayer(unsigned int layer);
-	void draw();
+	void Draw();
 };
 
 class DialogBox
@@ -144,7 +144,7 @@ public:
 	void setSize(Vector2f size);
 	// Cin into the box
 	virtual void cin(Event event);
-	virtual void draw();
+	virtual void Draw();
 	// Returns if "Enter" was entered
 	bool isFinished();
 
@@ -182,7 +182,7 @@ public:
 	TextBox();
 	void setText(std::string text);
 	void setColor(Color color);
-	void draw();
+	void Draw();
 };
 
 // A LaTeX description of an Object
@@ -194,7 +194,7 @@ class Description
 	Vector2f position = Vector2f();
 	Vector2f size;
 	const Vector2f backgroundDelta = Vector2f(5, 5);
-	const float outlineThikness = 1;
+	const float outline_thickness_ = 1;
 	std::string name;
 public:
 	Description(std::string filePath, std::string name);
@@ -203,5 +203,5 @@ public:
 	void moveTo(Vector2f position);
 	//Return delta of a (Left-Upper) Corner and Position
 	Vector2f getDelta(Vector2f position);
-	void draw();
+	void Draw();
 };

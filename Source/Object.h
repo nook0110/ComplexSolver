@@ -13,8 +13,6 @@
 //The "heart" of the programm. This file is about objects.
 
 
-using namespace sf;
-
 extern float const epsilon;
 extern float const unitSeg;
 extern std::thread Creator;
@@ -86,7 +84,7 @@ private:
 public:
 	ConstructionData* construction = nullptr;
 protected:
-	virtual void reposition() = 0;
+	virtual void Reposition() = 0;
 	bool visible = true;
 public:
 	Color getColor();
@@ -94,24 +92,24 @@ public:
 	//Debug
 	virtual void printExpr();
 	//
-	virtual float distance(Vector2f point) = 0;
-	virtual bool isNearby(Vector2f position) = 0;
-	virtual void draw() = 0;
-	void setVisibility(bool newVisibility);
-	void setVisibility();
+	virtual float DistanceTo(Vector2f point) = 0;
+	virtual bool IsNearby(Vector2f position) = 0;
+	virtual void Draw() = 0;
+	void SetVisibility(bool newVisibility);
+	void SetVisibility();
 	void setColor(Color color);
 	bool getVisibility();
 	bool isOnCircle();
 protected:
-	Description* description = nullptr;
+	Description* description_ = nullptr;
 	//If empty - No File created
-	std::string equationPath = "";
-	std::string TeX;
-	virtual std::string makeTeX();
+	std::string equation_path_ = "";
+	std::string TeX_;
+	virtual std::string MakeTeX();
 public:
 	void updateTeX();
 	virtual std::string getLowerCaseName();
-	void switchDescription(Vector2f position);
+	void SwitchDescription(Vector2f position);
 
 public:
 	void add();
@@ -295,11 +293,11 @@ public:
 class Chord;
 class IntersectionParallelChord : public ConstructionPoint
 {
-	UnitCircle* unitCircle;
+	UnitCircle* unit_circle;
 	Chord* firstParent;
 	UnitPoint* secondParent;
 public:
-	IntersectionParallelChord(Object* object, UnitCircle* unitCircle, Chord* firstParent, UnitPoint* secondParent);
+	IntersectionParallelChord(Object* object, UnitCircle* unit_circle, Chord* firstParent, UnitPoint* secondParent);
 	~IntersectionParallelChord();
 	void moveTo(Vector2f coords) {};
 	void recreate(Equation* equation) override;
@@ -307,11 +305,11 @@ public:
 
 class IntersectionPerpendicularChord : public ConstructionPoint
 {
-	UnitCircle* unitCircle;
+	UnitCircle* unit_circle;
 	UnitPoint* firstParent;
 	Chord* secondParent;
 public:
-	IntersectionPerpendicularChord(Object* object, UnitCircle* unitCircle, UnitPoint* firstParent, Chord* secondParent);
+	IntersectionPerpendicularChord(Object* object, UnitCircle* unit_circle, UnitPoint* firstParent, Chord* secondParent);
 	~IntersectionPerpendicularChord();
 	void moveTo(Vector2f coords) {};
 	void recreate(Equation* equation) override;
@@ -429,15 +427,15 @@ private:
 	const float outlineThickness = unitSeg / 100;
 	//Pattern singleton
 	UnitCircle();
-	static UnitCircle* unitCircle;
+	static UnitCircle* unit_circle;
 	CircleShape shape;
 public:
-	float distance(Vector2f point);
+	float DistanceTo(Vector2f point);
 	static UnitCircle* getInstance();
-	void reposition() {};
-	bool isNearby(Vector2f position);
-	void draw();
-	void switchDescription();
+	void Reposition() {};
+	bool IsNearby(Vector2f position);
+	void Draw();
+	void SwitchDescription();
 };
 
 //Circle can only be constructed to prove the problem
@@ -445,34 +443,29 @@ class Circle : public Object
 {
 	const float outlineThickness = unitSeg / 100;
 	CircleShape shape;
-	void reposition() override;
+	void Reposition() override;
 public:
-	float distance(Vector2f point);
-	bool isNearby(Vector2f position);
+	float DistanceTo(Vector2f point);
+	bool IsNearby(Vector2f position);
 	Circle(Point* first, Point* second, Point* third, Point* fourth);
-	void draw();
-	void switchDescription();
+	void Draw();
+	void SwitchDescription();
 };
 
 class LineSegment : public Object
 {
-	Vertex line[2];
-	void reposition() override;
+	Vertex points_[2];
+	void Reposition() override;
 public:
 	LineSegment(Point* first, Point* second);
-	float distance(Vector2f point) { return 0; };
-	bool isNearby(Vector2f position) { return false; };
-	void draw();
+	float DistanceTo(Vector2f point) { return 0; };
+	bool IsNearby(Vector2f position) { return false; };
+	void Draw();
 };
 
 class Point;
 class Line : public Object
 {
-	Vertex line[2];
-protected:
-	void reposition() override;
-	void Init();
-	bool dotted = false;
 public:
 	//DEBUG
 	void printExpr();
@@ -486,15 +479,21 @@ public:
 	Line(Line* first, Point* second);
 	// Perpendicular
 	Line(Point* first, Line* second);
-	float distance(Vector2f point);
-	bool isNearby(Vector2f position);
-	void draw() override;
-	void switchDescription();
-	void setDotted(bool dotted);
-	std::string makeTeX();
+
+	float DistanceTo(Vector2f point);
+	bool IsNearby(Vector2f position);
+	void Draw() override;
+	void SwitchDescription();
+	void SetDotted(bool dotted_);
+	std::string MakeTeX();
+protected:
+	void Reposition() override;
+	void Init();
+	bool dotted_ = false;
 private:
-	float outlineThikness = 5;
-	Color hihglightedColor = Color(64, 64, 64, 64);
+	Vertex points_[2];
+	float outline_thickness_ = 5;
+	Color highlighted_color_ = Color(64, 64, 64, 64);
 public:
 };
 
@@ -519,7 +518,7 @@ protected:
 	Point();
 	const float pointSize = unitSeg / 30;
 	CircleShape shape = CircleShape(pointSize);
-	void reposition() override;
+	void Reposition() override;
 	void setName();
 	void Init();
 public:
@@ -534,9 +533,9 @@ public:
 	// Intersection of two lines
 	Point(Line* first, Line* second);
 	// Point on a line
-	Point(Line* line, Point* first, Point* second, Vector2f position);
+	Point(Line* points_, Point* first, Point* second, Vector2f position);
 	// Projection on a line
-	Point(Point* point, Line* line);
+	Point(Point* point, Line* points_);
 	// Point by two points and scalar
 	Point(Point* first, Point* second, std::pair<int, int> masses);
 	// Rotation on 90 degrees
@@ -550,15 +549,15 @@ public:
 	Point(UnitPoint* first, UnitPoint* second, UnitPoint* third, triangleCenter center);
 	// Barycenter
 	Point(Point* first, Point* second, Point* third);
-	float distance(Vector2f point);
-	bool isNearby(Vector2f position) override;
+	float DistanceTo(Vector2f point);
+	bool IsNearby(Vector2f position) override;
 	bool contains(Vector2f position);
-	void draw() override;
+	void Draw() override;
 	std::string getLowerCaseName() override;
-	std::string makeTeX() override;
+	std::string MakeTeX() override;
 private:
-	float outlineThikness = 5;
-	Color hihglightedColor = Color(64, 64, 64, 64);
+	float outline_thickness_ = 5;
+	Color highlighted_color_ = Color(64, 64, 64, 64);
 public:
 	void highlight();
 	void unhighlight();
@@ -567,7 +566,7 @@ public:
 
 class CenterPoint : public Point
 {
-	void reposition() override;
+	void Reposition() override;
 	CenterPoint();
 	static CenterPoint* centerPoint;
 public:
@@ -579,10 +578,10 @@ public:
 class UnitPoint : public Point
 {
 public:
-	UnitPoint(UnitCircle* unitCircle, Vector2f position);
-	UnitPoint(UnitCircle* unitCircle, Point* first, UnitPoint* second);
+	UnitPoint(UnitCircle* unit_circle, Vector2f position);
+	UnitPoint(UnitCircle* unit_circle, Point* first, UnitPoint* second);
 	// Intersection of parallel chord and Unit Circle (though a UnitPoint)
-	UnitPoint(UnitCircle* unitCircle, Chord* first, UnitPoint* second);
+	UnitPoint(UnitCircle* unit_circle, Chord* first, UnitPoint* second);
 	// Intersection of perpendicular chord and Unit Circle (though a UnitPoint)
-	UnitPoint(UnitCircle* unitCircle, UnitPoint* first, Chord* second);
+	UnitPoint(UnitCircle* unit_circle, UnitPoint* first, Chord* second);
 };

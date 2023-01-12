@@ -133,8 +133,8 @@ OnCircle::OnCircle(Point* object, UnitCircle* firstParent, float angle)
 	coord = expr(make_unit_term(object->getLowerCaseName()));
 }
 
-IntersectionParallelChord::IntersectionParallelChord(Object* object, UnitCircle* unitCircle, Chord* firstParent, UnitPoint* secondParent)
-	: unitCircle(unitCircle), firstParent(firstParent), secondParent(secondParent), ConstructionPoint(object)
+IntersectionParallelChord::IntersectionParallelChord(Object* object, UnitCircle* unit_circle, Chord* firstParent, UnitPoint* secondParent)
+	: unit_circle(unit_circle), firstParent(firstParent), secondParent(secondParent), ConstructionPoint(object)
 {
 
 	const ConstructionPoint* point_data = static_cast<ConstructionPoint*>(secondParent->construction);
@@ -144,8 +144,8 @@ IntersectionParallelChord::IntersectionParallelChord(Object* object, UnitCircle*
 	coord = B / m;
 }
 
-IntersectionPerpendicularChord::IntersectionPerpendicularChord(Object* object, UnitCircle* unitCircle, UnitPoint* firstParent, Chord* secondParent)
-	:unitCircle(unitCircle), firstParent(firstParent), secondParent(secondParent), ConstructionPoint(object)
+IntersectionPerpendicularChord::IntersectionPerpendicularChord(Object* object, UnitCircle* unit_circle, UnitPoint* firstParent, Chord* secondParent)
+	:unit_circle(unit_circle), firstParent(firstParent), secondParent(secondParent), ConstructionPoint(object)
 {
 
 	const ConstructionPoint* point_data = static_cast<ConstructionPoint*>(firstParent->construction);

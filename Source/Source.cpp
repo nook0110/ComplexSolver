@@ -7,7 +7,6 @@
 #include <iostream>
 #include <iomanip>
 
-using namespace sf;
 
 extern RenderWindow mainWindow;
 extern View view;
@@ -154,7 +153,7 @@ void settings()
 		}
 		mainWindow.clear(Color::White);
 		mainWindow.setView(view);
-		stateMenu.draw();
+		stateMenu.Draw();
 		mainWindow.display();
 		std::this_thread::sleep_for(std::chrono::microseconds(1));
 	}
@@ -295,7 +294,7 @@ void constructingTheDrawing()
 		}
 		mainWindow.clear(Color::White);
 		mainWindow.setView(view);
-		Drawer::draw();
+		Drawer::Draw();
 		Drawer::drawMenu();
 		mainWindow.display();
 		std::this_thread::sleep_for(std::chrono::microseconds(1));
@@ -343,7 +342,7 @@ void provingTheProblem()
 		mainWindow.clear(Color::White);
 		mainWindow.setView(view);
 		Prover::updateTextBox();
-		Drawer::draw();
+		Drawer::Draw();
 		mainWindow.display();
 		std::this_thread::sleep_for(std::chrono::microseconds(1));
 	}
@@ -356,7 +355,7 @@ int main(int argc, char** argv)
 	if (argc == 2)
 	{
 		mainWindow.setFramerateLimit(60);
-		Compiler::compile(argv[1]);
+		Compiler::Compile(argv[1]);
 		preInit();
 	}
 	else

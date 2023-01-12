@@ -32,9 +32,9 @@ public:
 	void setStateTexture(int state, std::string textState, std::string texturePath);
 	void setPosition(Vector2f postion);
 	void setSize(float sizeY);
-	bool mouseCheck(View);
+	bool CheckMouse(View);
 	bool clickCheck(View);
-	void draw();
+	void Draw();
 	int getState();
 };
 
@@ -49,6 +49,6 @@ public:
 	StateMenu();
 	void pushStatebox(Statebox* newStatebox);
 	Statebox* clickCheck();
-	void draw();
+	void Draw();
 };
 

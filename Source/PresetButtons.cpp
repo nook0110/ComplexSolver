@@ -2,9 +2,9 @@
 using namespace sf;
 
 
-std::list<Object*> Drawer::allVisibleObjects;
+std::list<Object*> Drawer::all_visible_objects;
 
-Button moveButton = Button(&mainWindow,
+Button moveButton = Button(mainWindow,
 	"Textures\\Button_textures\\Move.png", MODE_MOVE, []()->Object* {
 		Waiter wait;
 		InterruptionChecker interruptionChecker;
@@ -57,7 +57,7 @@ Button moveButton = Button(&mainWindow,
 			Vector2i delta = Mouse::getPosition(mainWindow) - startMousePosition;
 			if (sqrt(delta.x * delta.x + delta.y * delta.y) < epsilon && clock.getElapsedTime().asMilliseconds() < clickTime)
 			{
-				object->switchDescription(mainWindow.mapPixelToCoords(Mouse::getPosition(mainWindow), view));
+				object->SwitchDescription(mainWindow.mapPixelToCoords(Mouse::getPosition(mainWindow), view));
 			}
 		}
 		wait.sleep();
@@ -65,7 +65,7 @@ Button moveButton = Button(&mainWindow,
 		return nullptr;
 	});
 
-Button pointButton = Button(&mainWindow,
+Button pointButton = Button(mainWindow,
 	"Textures\\Button_textures\\Point.png",
 	MODE_POINT, []()->Object* {
 		Waiter wait;
@@ -74,17 +74,17 @@ Button pointButton = Button(&mainWindow,
 		{
 			return nullptr;
 		}
-		Vector2f mousePosition = mainWindow.mapPixelToCoords(Mouse::getPosition(mainWindow), view);
-		Point* point = find.nearbyConstructedPoint(mousePosition);
+		Vector2f mouse_position = mainWindow.mapPixelToCoords(Mouse::getPosition(mainWindow), view);
+		Point* point = find.nearbyConstructedPoint(mouse_position);
 		if (point)
 		{
 			return nullptr;
 		}
-		point = find.nearbyNewPoint(mousePosition);
+		point = find.nearbyNewPoint(mouse_position);
 		return point;
 	});
 
-Button lineButton = Button(&mainWindow,
+Button lineButton = Button(mainWindow,
 	"Textures\\Button_textures\\Line.png",
 	MODE_LINE, []()->Object* {
 		Waiter wait;
@@ -97,11 +97,11 @@ Button lineButton = Button(&mainWindow,
 			{
 				return nullptr;
 			}
-			Vector2f mousePosition = mainWindow.mapPixelToCoords(Mouse::getPosition(mainWindow), view);
-			Point* point = find.nearbyConstructedPoint(mousePosition);
+			Vector2f mouse_position = mainWindow.mapPixelToCoords(Mouse::getPosition(mainWindow), view);
+			Point* point = find.nearbyConstructedPoint(mouse_position);
 			if (!point)
 			{
-				point = find.nearbyNewPoint(mousePosition);
+				point = find.nearbyNewPoint(mouse_position);
 			}
 			Highlighter::highlight(point);
 			if (std::get<0>(points))
@@ -123,20 +123,20 @@ Button lineButton = Button(&mainWindow,
 				continue;
 			}
 		}
-		Line* line;
+		Line* points_;
 		if (points.first->isOnCircle() && points.second->isOnCircle())
 		{
-			line = new Chord(dynamic_cast<UnitPoint*>(points.first), dynamic_cast<UnitPoint*>(points.second));
+			points_ = new Chord(dynamic_cast<UnitPoint*>(points.first), dynamic_cast<UnitPoint*>(points.second));
 		}
 		else
 		{
-			line = new Line(points.first, points.second);
+			points_ = new Line(points.first, points.second);
 		}
 		Highlighter::unhighlight();
-		return line;
+		return points_;
 	});
 
-Button pointBetweenPoints = Button(&mainWindow,
+Button pointBetweenPoints = Button(mainWindow,
 	"Textures\\Button_textures\\PointBetweenPoints.png",
 	MODE_POINT_BETWEEN_POINTS, []()->Object* {
 		Waiter wait;
@@ -149,11 +149,11 @@ Button pointBetweenPoints = Button(&mainWindow,
 			{
 				return nullptr;
 			}
-			Vector2f mousePosition = mainWindow.mapPixelToCoords(Mouse::getPosition(mainWindow), view);
-			Point* point = find.nearbyConstructedPoint(mousePosition);
+			Vector2f mouse_position = mainWindow.mapPixelToCoords(Mouse::getPosition(mainWindow), view);
+			Point* point = find.nearbyConstructedPoint(mouse_position);
 			if (!point)
 			{
-				point = find.nearbyNewPoint(mousePosition);
+				point = find.nearbyNewPoint(mouse_position);
 			}
 			Highlighter::highlight(point);
 			if (std::get<0>(points))
@@ -175,27 +175,27 @@ Button pointBetweenPoints = Button(&mainWindow,
 				continue;
 			}
 		}
-		Line* line;
+		Line* points_;
 		if (points.first->isOnCircle() && points.second->isOnCircle())
 		{
-			line = new Chord(dynamic_cast<UnitPoint*>(points.first), dynamic_cast<UnitPoint*>(points.second));
+			points_ = new Chord(dynamic_cast<UnitPoint*>(points.first), dynamic_cast<UnitPoint*>(points.second));
 		}
 		else
 		{
-			line = new Line(points.first, points.second);
+			points_ = new Line(points.first, points.second);
 		}
 		if (wait.untilClick())
 		{
 			return nullptr;
 		}
-		Vector2f mousePosition = mainWindow.mapPixelToCoords(Mouse::getPosition(mainWindow), view);
+		Vector2f mouse_position = mainWindow.mapPixelToCoords(Mouse::getPosition(mainWindow), view);
 
-		Point* point = new Point(line, points.first, points.second, mousePosition);
+		Point* point = new Point(points_, points.first, points.second, mouse_position);
 		Highlighter::unhighlight();
 		return point;
 	});
 
-Button centralProjectionButton = Button(&mainWindow,
+Button centralProjectionButton = Button(mainWindow,
 	"Textures\\Button_textures\\CentralProjection.png",
 	MODE_CENTRAL_PROJECTION, []()->Object* {
 		Waiter wait;
@@ -204,11 +204,11 @@ Button centralProjectionButton = Button(&mainWindow,
 		{
 			return nullptr;
 		}
-		Vector2f mousePosition = mainWindow.mapPixelToCoords(Mouse::getPosition(mainWindow), view);
-		Point* firstPoint = find.nearbyConstructedPoint(mousePosition);
+		Vector2f mouse_position = mainWindow.mapPixelToCoords(Mouse::getPosition(mainWindow), view);
+		Point* firstPoint = find.nearbyConstructedPoint(mouse_position);
 		if (!firstPoint)
 		{
-			firstPoint = find.nearbyNewPoint(mousePosition);
+			firstPoint = find.nearbyNewPoint(mouse_position);
 		}
 		Highlighter::highlight(firstPoint);
 		UnitPoint* secondPoint = nullptr;
@@ -218,11 +218,11 @@ Button centralProjectionButton = Button(&mainWindow,
 			{
 				return nullptr;
 			}
-			mousePosition = mainWindow.mapPixelToCoords(Mouse::getPosition(mainWindow), view);
-			secondPoint = find.nearbyConstructedPointOnCircle(mousePosition);
+			mouse_position = mainWindow.mapPixelToCoords(Mouse::getPosition(mainWindow), view);
+			secondPoint = find.nearbyConstructedPointOnCircle(mouse_position);
 			if (!secondPoint)
 			{
-				secondPoint = find.nearbyNewPointOnCircle(mousePosition);
+				secondPoint = find.nearbyNewPointOnCircle(mouse_position);
 			}
 		}
 		UnitPoint* point = new UnitPoint(UnitCircle::getInstance(), firstPoint, secondPoint);
@@ -230,7 +230,7 @@ Button centralProjectionButton = Button(&mainWindow,
 		return point;
 	});
 
-Button perpendicularButton = Button(&mainWindow,
+Button perpendicularButton = Button(mainWindow,
 	"Textures\\Button_textures\\Perpendicular.png",
 	MODE_PERPENDICULAR, []()->Object* {
 		Waiter wait;
@@ -240,34 +240,34 @@ Button perpendicularButton = Button(&mainWindow,
 		{
 			return nullptr;
 		}
-		Vector2f mousePosition = mainWindow.mapPixelToCoords(Mouse::getPosition(mainWindow), view);
-		Point* point = find.nearbyConstructedPoint(mousePosition);
+		Vector2f mouse_position = mainWindow.mapPixelToCoords(Mouse::getPosition(mainWindow), view);
+		Point* point = find.nearbyConstructedPoint(mouse_position);
 		if (!point)
 		{
-			point = find.nearbyNewPoint(mousePosition);
+			point = find.nearbyNewPoint(mouse_position);
 		}
 		Highlighter::highlight(point);
-		Line* line = nullptr;
-		while (!line)
+		Line* points_ = nullptr;
+		while (!points_)
 		{
 			if (wait.untilClick())
 			{
 				return nullptr;
 			}
-			mousePosition = mainWindow.mapPixelToCoords(Mouse::getPosition(mainWindow), view);
-			line = find.nearbyLine(mousePosition);
+			mouse_position = mainWindow.mapPixelToCoords(Mouse::getPosition(mainWindow), view);
+			points_ = find.nearbyLine(mouse_position);
 			wait.sleep();
 		}
 		Highlighter::unhighlight();
-		if (dynamic_cast<UnitPoint*>(point) && dynamic_cast<Chord*>(line))
+		if (dynamic_cast<UnitPoint*>(point) && dynamic_cast<Chord*>(points_))
 		{
-			UnitPoint* unitPoint = new UnitPoint(UnitCircle::getInstance(), dynamic_cast<UnitPoint*>(point), dynamic_cast<Chord*>(line));
+			UnitPoint* unitPoint = new UnitPoint(UnitCircle::getInstance(), dynamic_cast<UnitPoint*>(point), dynamic_cast<Chord*>(points_));
 			return new Chord(dynamic_cast<UnitPoint*>(point), unitPoint);
 		}
-		return new Line(point, line);
+		return new Line(point, points_);
 	});
 
-Button midPointButton = Button(&mainWindow,
+Button midPointButton = Button(mainWindow,
 	"Textures\\Button_textures\\Midpoint.png",
 	MODE_MIDPOINT, []()->Object* {
 		Waiter wait;
@@ -280,11 +280,11 @@ Button midPointButton = Button(&mainWindow,
 			{
 				return nullptr;
 			}
-			Vector2f mousePosition = mainWindow.mapPixelToCoords(Mouse::getPosition(mainWindow), view);
-			Point* point = find.nearbyConstructedPoint(mousePosition);
+			Vector2f mouse_position = mainWindow.mapPixelToCoords(Mouse::getPosition(mainWindow), view);
+			Point* point = find.nearbyConstructedPoint(mouse_position);
 			if (!point)
 			{
-				point = find.nearbyNewPoint(mousePosition);
+				point = find.nearbyNewPoint(mouse_position);
 			}
 			if (std::get<0>(points))
 			{
@@ -309,7 +309,7 @@ Button midPointButton = Button(&mainWindow,
 		return point;
 	});
 
-Button symmetryButton = Button(&mainWindow,
+Button symmetryButton = Button(mainWindow,
 	"Textures\\Button_textures\\Symmetry.png",
 	MODE_SYMMETRY, []()->Object* {
 		Waiter wait;
@@ -322,11 +322,11 @@ Button symmetryButton = Button(&mainWindow,
 			{
 				return nullptr;
 			}
-			Vector2f mousePosition = mainWindow.mapPixelToCoords(Mouse::getPosition(mainWindow), view);
-			Point* point = find.nearbyConstructedPoint(mousePosition);
+			Vector2f mouse_position = mainWindow.mapPixelToCoords(Mouse::getPosition(mainWindow), view);
+			Point* point = find.nearbyConstructedPoint(mouse_position);
 			if (!point)
 			{
-				point = find.nearbyNewPoint(mousePosition);
+				point = find.nearbyNewPoint(mouse_position);
 			}
 			Highlighter::highlight(point);
 			if (std::get<0>(points))
@@ -353,7 +353,7 @@ Button symmetryButton = Button(&mainWindow,
 		return point;
 	});
 
-Button rotateLeftButton = Button(&mainWindow,
+Button rotateLeftButton = Button(mainWindow,
 	"Textures\\Button_textures\\RotateLeft.png",
 	MODE_ROTATION_LEFT, []()->Object* {
 		Waiter wait;
@@ -366,11 +366,11 @@ Button rotateLeftButton = Button(&mainWindow,
 			{
 				return nullptr;
 			}
-			Vector2f mousePosition = mainWindow.mapPixelToCoords(Mouse::getPosition(mainWindow), view);
-			Point* point = find.nearbyConstructedPoint(mousePosition);
+			Vector2f mouse_position = mainWindow.mapPixelToCoords(Mouse::getPosition(mainWindow), view);
+			Point* point = find.nearbyConstructedPoint(mouse_position);
 			if (!point)
 			{
-				point = find.nearbyNewPoint(mousePosition);
+				point = find.nearbyNewPoint(mouse_position);
 			}
 			Highlighter::highlight(point);
 			if (std::get<0>(points))
@@ -397,7 +397,7 @@ Button rotateLeftButton = Button(&mainWindow,
 		return point;
 	});
 
-Button rotateRightButton = Button(&mainWindow,
+Button rotateRightButton = Button(mainWindow,
 	"Textures\\Button_textures\\RotateRight.png",
 	MODE_ROTATION_RIGHT, []()->Object* {
 		Waiter wait;
@@ -410,11 +410,11 @@ Button rotateRightButton = Button(&mainWindow,
 			{
 				return nullptr;
 			}
-			Vector2f mousePosition = mainWindow.mapPixelToCoords(Mouse::getPosition(mainWindow), view);
-			Point* point = find.nearbyConstructedPoint(mousePosition);
+			Vector2f mouse_position = mainWindow.mapPixelToCoords(Mouse::getPosition(mainWindow), view);
+			Point* point = find.nearbyConstructedPoint(mouse_position);
 			if (!point)
 			{
-				point = find.nearbyNewPoint(mousePosition);
+				point = find.nearbyNewPoint(mouse_position);
 			}
 			Highlighter::highlight(point);
 			if (std::get<0>(points))
@@ -441,7 +441,7 @@ Button rotateRightButton = Button(&mainWindow,
 		return point;
 	});
 
-Button projectionButton = Button(&mainWindow,
+Button projectionButton = Button(mainWindow,
 	"Textures\\Button_textures\\Projection.png",
 	MODE_PROJECTION, []()->Object* {
 		Waiter wait;
@@ -451,65 +451,65 @@ Button projectionButton = Button(&mainWindow,
 		{
 			return nullptr;
 		}
-		Vector2f mousePosition = mainWindow.mapPixelToCoords(Mouse::getPosition(mainWindow), view);
-		Point* point = find.nearbyConstructedPoint(mousePosition);
+		Vector2f mouse_position = mainWindow.mapPixelToCoords(Mouse::getPosition(mainWindow), view);
+		Point* point = find.nearbyConstructedPoint(mouse_position);
 		if (!point)
 		{
-			point = find.nearbyNewPoint(mousePosition);
+			point = find.nearbyNewPoint(mouse_position);
 		}
 		Highlighter::highlight(point);
-		Line* line = nullptr;
-		while (!line)
+		Line* points_ = nullptr;
+		while (!points_)
 		{
 			if (wait.untilClick())
 			{
 				return nullptr;
 			}
-			mousePosition = mainWindow.mapPixelToCoords(Mouse::getPosition(mainWindow), view);
-			line = find.nearbyLine(mousePosition);
+			mouse_position = mainWindow.mapPixelToCoords(Mouse::getPosition(mainWindow), view);
+			points_ = find.nearbyLine(mouse_position);
 			wait.sleep();
 		}
 		Highlighter::unhighlight();
-		return new Point(point, line);
+		return new Point(point, points_);
 	});
 
-Button parallelButton = Button(&mainWindow,
+Button parallelButton = Button(mainWindow,
 	"Textures\\Button_textures\\Parallel.png",
 	MODE_PARALLEL, []()->Object* {
 		Waiter wait;
 		InterruptionChecker interruptionChecker;
 		Finder find;
-		Line* line = nullptr;
-		while (!line)
+		Line* points_ = nullptr;
+		while (!points_)
 		{
 			if (wait.untilClick())
 			{
 				return nullptr;
 			}
-			Vector2f mousePosition = mainWindow.mapPixelToCoords(Mouse::getPosition(mainWindow), view);
-			line = find.nearbyLine(mousePosition);
+			Vector2f mouse_position = mainWindow.mapPixelToCoords(Mouse::getPosition(mainWindow), view);
+			points_ = find.nearbyLine(mouse_position);
 		}
-		Highlighter::highlight(line);
+		Highlighter::highlight(points_);
 		if (wait.untilClick())
 		{
 			return nullptr;
 		}
-		Vector2f mousePosition = mainWindow.mapPixelToCoords(Mouse::getPosition(mainWindow), view);
-		Point* point = find.nearbyConstructedPoint(mousePosition);
+		Vector2f mouse_position = mainWindow.mapPixelToCoords(Mouse::getPosition(mainWindow), view);
+		Point* point = find.nearbyConstructedPoint(mouse_position);
 		if (!point)
 		{
-			point = find.nearbyNewPoint(mousePosition);
+			point = find.nearbyNewPoint(mouse_position);
 		}
 		Highlighter::unhighlight();
-		if (dynamic_cast<Chord*>(line) && dynamic_cast<UnitPoint*>(point))
+		if (dynamic_cast<Chord*>(points_) && dynamic_cast<UnitPoint*>(point))
 		{
-			UnitPoint* unitPoint = new UnitPoint(UnitCircle::getInstance(), dynamic_cast<Chord*>(line), dynamic_cast<UnitPoint*>(point));
+			UnitPoint* unitPoint = new UnitPoint(UnitCircle::getInstance(), dynamic_cast<Chord*>(points_), dynamic_cast<UnitPoint*>(point));
 			return new Chord(dynamic_cast<UnitPoint*>(point), unitPoint);
 		}
-		return new Line(line, point);
+		return new Line(points_, point);
 	});
 
-Button scalarButton = Button(&mainWindow,
+Button scalarButton = Button(mainWindow,
 	"Textures\\Button_textures\\Scalar.png",
 	MODE_MIDPOINT, []()->Object* {
 		InterruptionChecker checker;
@@ -523,11 +523,11 @@ Button scalarButton = Button(&mainWindow,
 			{
 				return nullptr;
 			}
-			Vector2f mousePosition = mainWindow.mapPixelToCoords(Mouse::getPosition(mainWindow), view);
-			Point* point = find.nearbyConstructedPoint(mousePosition);
+			Vector2f mouse_position = mainWindow.mapPixelToCoords(Mouse::getPosition(mainWindow), view);
+			Point* point = find.nearbyConstructedPoint(mouse_position);
 			if (!point)
 			{
-				point = find.nearbyNewPoint(mousePosition);
+				point = find.nearbyNewPoint(mouse_position);
 			}
 			Highlighter::highlight(point);
 			if (std::get<0>(points))
@@ -564,7 +564,7 @@ Button scalarButton = Button(&mainWindow,
 		return new Point(points.first, points.second, masses);
 	});
 
-Button tangentButton = Button(&mainWindow,
+Button tangentButton = Button(mainWindow,
 	"Textures\\Button_textures\\Tangent.png",
 	MODE_TANGENT, []()->Object* {
 		Waiter wait;
@@ -573,21 +573,21 @@ Button tangentButton = Button(&mainWindow,
 		{
 			return nullptr;
 		}
-		Vector2f mousePosition = mainWindow.mapPixelToCoords(Mouse::getPosition(mainWindow), view);
-		Point* point = find.nearbyConstructedPointOnCircle(mousePosition);
+		Vector2f mouse_position = mainWindow.mapPixelToCoords(Mouse::getPosition(mainWindow), view);
+		Point* point = find.nearbyConstructedPointOnCircle(mouse_position);
 		if (!point)
 		{
-			point = find.nearbyNewPointOnCircle(mousePosition);
+			point = find.nearbyNewPointOnCircle(mouse_position);
 		}
 		if (point)
 		{
-			auto unitCircle = UnitCircle::getInstance();
-			new Line(unitCircle, point);
+			auto unit_circle = UnitCircle::getInstance();
+			new Line(unit_circle, point);
 		}
 		return nullptr;
 	});
 
-Button deleteButton = Button(&mainWindow,
+Button deleteButton = Button(mainWindow,
 	"Textures\\Button_textures\\Delete.png",
 	MODE_DELETE, []()->Object* {
 		Waiter wait;
@@ -596,8 +596,8 @@ Button deleteButton = Button(&mainWindow,
 		{
 			return nullptr;
 		}
-		Vector2f mousePosition = mainWindow.mapPixelToCoords(Mouse::getPosition(mainWindow), view);
-		Object* object = find.nearbyNotUnitCircleObject(mousePosition);
+		Vector2f mouse_position = mainWindow.mapPixelToCoords(Mouse::getPosition(mainWindow), view);
+		Object* object = find.nearbyNotUnitCircleObject(mouse_position);
 		if (object)
 		{
 			Drawer::delObject(object);
@@ -605,7 +605,7 @@ Button deleteButton = Button(&mainWindow,
 		return nullptr;
 	});
 
-Button hideButton = Button(&mainWindow,
+Button hideButton = Button(mainWindow,
 	"Textures\\Button_textures\\Hide.png",
 	MODE_HIDE, []()->Object* {
 		Waiter wait;
@@ -614,16 +614,16 @@ Button hideButton = Button(&mainWindow,
 		{
 			return nullptr;
 		}
-		Vector2f mousePosition = mainWindow.mapPixelToCoords(Mouse::getPosition(mainWindow), view);
-		Object* object = find.nearbyObject(mousePosition);
+		Vector2f mouse_position = mainWindow.mapPixelToCoords(Mouse::getPosition(mainWindow), view);
+		Object* object = find.nearbyObject(mouse_position);
 		if (object)
 		{
-			object->setVisibility();
+			object->SetVisibility();
 		}
 		return nullptr;
 	});
 
-Button clearButton = Button(&mainWindow,
+Button clearButton = Button(mainWindow,
 	"Textures\\Button_textures\\Clear.png",
 	MODE_CLEAR, []()->Object* {
 		Waiter wait;
@@ -631,7 +631,7 @@ Button clearButton = Button(&mainWindow,
 		wait.sleep();
 		return nullptr;
 	});
-Button switchButton = Button(&mainWindow,
+Button switchButton = Button(mainWindow,
 	"Textures\\Button_textures\\Switch.png",
 	MODE_SWITCH, []()->Object* {
 		mainMenu.switchLayer(0);
@@ -639,14 +639,14 @@ Button switchButton = Button(&mainWindow,
 	});
 
 
-Button switchTriangleButton = Button(&mainWindow,
+Button switchTriangleButton = Button(mainWindow,
 	"Textures\\Button_textures\\SwitchTriangle.png",
 	MODE_SWITCH, []()->Object* {
 		mainMenu.switchLayer(3);
 		return nullptr;
 	});
 
-Button orthocenterButton = Button(&mainWindow,
+Button orthocenterButton = Button(mainWindow,
 	"Textures\\Button_textures\\Orthocenter.png",
 	MODE_ORTHOCENTER, []()->Object* {
 		Waiter wait;
@@ -659,8 +659,8 @@ Button orthocenterButton = Button(&mainWindow,
 			{
 				return nullptr;
 			}
-			Vector2f mousePosition = mainWindow.mapPixelToCoords(Mouse::getPosition(mainWindow), view);
-			UnitPoint* point = find.nearbyConstructedPointOnCircle(mousePosition);
+			Vector2f mouse_position = mainWindow.mapPixelToCoords(Mouse::getPosition(mainWindow), view);
+			UnitPoint* point = find.nearbyConstructedPointOnCircle(mouse_position);
 			if (!point)
 			{
 				continue;
@@ -672,7 +672,7 @@ Button orthocenterButton = Button(&mainWindow,
 		return new Point(points[0], points[1], points[2], Point::ORTHOCENTER);
 	});
 
-Button barycenterButton = Button(&mainWindow,
+Button barycenterButton = Button(mainWindow,
 	"Textures\\Button_textures\\Barycenter.png",
 	MODE_BARYCENTER, []()->Object* {
 		Waiter wait;
@@ -685,8 +685,8 @@ Button barycenterButton = Button(&mainWindow,
 			{
 				return nullptr;
 			}
-			Vector2f mousePosition = mainWindow.mapPixelToCoords(Mouse::getPosition(mainWindow), view);
-			Point* point = find.nearbyConstructedPoint(mousePosition);
+			Vector2f mouse_position = mainWindow.mapPixelToCoords(Mouse::getPosition(mainWindow), view);
+			Point* point = find.nearbyConstructedPoint(mouse_position);
 			if (!point)
 			{
 				continue;
@@ -698,14 +698,14 @@ Button barycenterButton = Button(&mainWindow,
 		return new Point(points[0], points[1], points[2]);
 	});
 
-Button switchConstructionButton = Button(&mainWindow,
+Button switchConstructionButton = Button(mainWindow,
 	"Textures\\Button_textures\\SwitchConstruction.png",
 	MODE_SWITCH, []()->Object* {
 		mainMenu.switchLayer(1);
 		return nullptr;
 	});
 
-Button inscription = Button(&mainWindow,
+Button inscription = Button(mainWindow,
 	"Textures\\Button_textures\\Inscription.png",
 	MODE_FOUR_POINTS, []()->Object* {
 		Waiter wait;
@@ -721,8 +721,8 @@ Button inscription = Button(&mainWindow,
 				{
 					return nullptr;
 				}
-				Vector2f mousePosition = mainWindow.mapPixelToCoords(Mouse::getPosition(mainWindow), view);
-				point = find.nearbyConstructedPoint(mousePosition);
+				Vector2f mouse_position = mainWindow.mapPixelToCoords(Mouse::getPosition(mainWindow), view);
+				point = find.nearbyConstructedPoint(mouse_position);
 			}
 			points.push_back(point);
 			Highlighter::highlight(point);
@@ -733,7 +733,7 @@ Button inscription = Button(&mainWindow,
 		return nullptr;
 	});
 
-Button twoLineSegments = Button(&mainWindow,
+Button twoLineSegments = Button(mainWindow,
 	"Textures\\Button_textures\\TwoLineSegments.png",
 	MODE_TWO_LINE_SEGMENTS, []()->Object* {
 		Waiter wait;
@@ -749,8 +749,8 @@ Button twoLineSegments = Button(&mainWindow,
 				{
 					return nullptr;
 				}
-				Vector2f mousePosition = mainWindow.mapPixelToCoords(Mouse::getPosition(mainWindow), view);
-				point = find.nearbyConstructedPoint(mousePosition);
+				Vector2f mouse_position = mainWindow.mapPixelToCoords(Mouse::getPosition(mainWindow), view);
+				point = find.nearbyConstructedPoint(mouse_position);
 			}
 			points.push_back(point);
 			Highlighter::highlight(point);
@@ -766,8 +766,8 @@ Button twoLineSegments = Button(&mainWindow,
 				{
 					return nullptr;
 				}
-				Vector2f mousePosition = mainWindow.mapPixelToCoords(Mouse::getPosition(mainWindow), view);
-				point = find.nearbyConstructedPoint(mousePosition);
+				Vector2f mouse_position = mainWindow.mapPixelToCoords(Mouse::getPosition(mainWindow), view);
+				point = find.nearbyConstructedPoint(mouse_position);
 			}
 			points.push_back(point);
 			Highlighter::highlight(point);
@@ -778,7 +778,7 @@ Button twoLineSegments = Button(&mainWindow,
 		return nullptr;
 	});
 
-Button concurrencyOfLines = Button(&mainWindow,
+Button concurrencyOfLines = Button(mainWindow,
 	"Textures\\Button_textures\\Concurrency.png",
 	MODE_THREE_LINES, []()->Object* {
 		Waiter wait;
@@ -787,25 +787,25 @@ Button concurrencyOfLines = Button(&mainWindow,
 		std::vector<Line*> lines;
 		for (int i = 0; i < threeTimes; ++i)
 		{
-			Line* line = nullptr;
-			while (!line)
+			Line* points_ = nullptr;
+			while (!points_)
 			{
 				if (wait.untilClick())
 				{
 					return nullptr;
 				}
-				Vector2f mousePosition = mainWindow.mapPixelToCoords(Mouse::getPosition(mainWindow), view);
-				line = find.nearbyLine(mousePosition);
+				Vector2f mouse_position = mainWindow.mapPixelToCoords(Mouse::getPosition(mainWindow), view);
+				points_ = find.nearbyLine(mouse_position);
 			}
-			lines.push_back(line);
-			Highlighter::highlight(line);
+			lines.push_back(points_);
+			Highlighter::highlight(points_);
 		}
 		Prover::proveConcurrency(lines[0], lines[1], lines[2]);
 		Highlighter::unhighlight();
 		return nullptr;
 	});
 
-Button proveParallel = Button(&mainWindow,
+Button proveParallel = Button(mainWindow,
 	"Textures\\Button_textures\\ProveParallel.png",
 	MODE_THREE_LINES, []()->Object* {
 		Waiter wait;
@@ -814,25 +814,25 @@ Button proveParallel = Button(&mainWindow,
 		std::vector<Line*> lines;
 		for (int i = 0; i < twoTimes; ++i)
 		{
-			Line* line = nullptr;
-			while (!line)
+			Line* points_ = nullptr;
+			while (!points_)
 			{
 				if (wait.untilClick())
 				{
 					return nullptr;
 				}
-				Vector2f mousePosition = mainWindow.mapPixelToCoords(Mouse::getPosition(mainWindow), view);
-				line = find.nearbyLine(mousePosition);
+				Vector2f mouse_position = mainWindow.mapPixelToCoords(Mouse::getPosition(mainWindow), view);
+				points_ = find.nearbyLine(mouse_position);
 			}
-			lines.push_back(line);
-			Highlighter::highlight(line);
+			lines.push_back(points_);
+			Highlighter::highlight(points_);
 		}
 		Prover::proveParallel(lines[0], lines[1]);
 		Highlighter::unhighlight();
 		return nullptr;
 	});
 
-Button proveOrthogonality = Button(&mainWindow,
+Button proveOrthogonality = Button(mainWindow,
 	"Textures\\Button_textures\\ProveOrthogonality.png",
 	MODE_THREE_LINES, []()->Object* {
 		Waiter wait;
@@ -841,25 +841,25 @@ Button proveOrthogonality = Button(&mainWindow,
 		std::vector<Line*> lines;
 		for (int i = 0; i < twoTimes; ++i)
 		{
-			Line* line = nullptr;
-			while (!line)
+			Line* points_ = nullptr;
+			while (!points_)
 			{
 				if (wait.untilClick())
 				{
 					return nullptr;
 				}
-				Vector2f mousePosition = mainWindow.mapPixelToCoords(Mouse::getPosition(mainWindow), view);
-				line = find.nearbyLine(mousePosition);
+				Vector2f mouse_position = mainWindow.mapPixelToCoords(Mouse::getPosition(mainWindow), view);
+				points_ = find.nearbyLine(mouse_position);
 			}
-			lines.push_back(line);
-			Highlighter::highlight(line);
+			lines.push_back(points_);
+			Highlighter::highlight(points_);
 		}
 		Prover::proveOrthogonality(lines[0], lines[1]);
 		Highlighter::unhighlight();
 		return nullptr;
 	});
 
-Button collinearityOfPoints = Button(&mainWindow,
+Button collinearityOfPoints = Button(mainWindow,
 	"Textures\\Button_textures\\Collinearity.png",
 	MODE_THREE_POINTS, []()->Object* {
 		Waiter wait;
@@ -875,20 +875,20 @@ Button collinearityOfPoints = Button(&mainWindow,
 				{
 					return nullptr;
 				}
-				Vector2f mousePosition = mainWindow.mapPixelToCoords(Mouse::getPosition(mainWindow), view);
-				point = find.nearbyConstructedPoint(mousePosition);
+				Vector2f mouse_position = mainWindow.mapPixelToCoords(Mouse::getPosition(mainWindow), view);
+				point = find.nearbyConstructedPoint(mouse_position);
 			}
 			points.push_back(point);
 			Highlighter::highlight(point);
 		}
-		auto line = new Line(points[0], points[1]);
-		line->setDotted(true);
+		auto points_ = new Line(points[0], points[1]);
+		points_->SetDotted(true);
 		Prover::proveCollinearity(points[0], points[1], points[2]);
 		Highlighter::unhighlight();
 		return nullptr;
 	});
 
-Button proveConstructionButton = Button(&mainWindow,
+Button proveConstructionButton = Button(mainWindow,
 	"Textures\\Button_textures\\ProveConstruction.png",
 	MODE_PROVE_CONSTRUCTION, []()->Object* {
 		Waiter wait;
@@ -901,8 +901,8 @@ Button proveConstructionButton = Button(&mainWindow,
 			{
 				return nullptr;
 			}
-			Vector2f mousePosition = mainWindow.mapPixelToCoords(Mouse::getPosition(mainWindow), view);
-			firstObject = find.nearbyConstructedPoint(mousePosition);
+			Vector2f mouse_position = mainWindow.mapPixelToCoords(Mouse::getPosition(mainWindow), view);
+			firstObject = find.nearbyConstructedPoint(mouse_position);
 		}
 		
 		mainMenu.switchLayer(2);
@@ -925,7 +925,7 @@ Button proveConstructionButton = Button(&mainWindow,
 		wait.sleep();
 	});
 
-Button debugButton = Button(&mainWindow,
+Button debugButton = Button(mainWindow,
 	"Textures\\Button_textures\\Test.png",
 	MODE_PROVE_CONSTRUCTION, []()->Object* {
 		Waiter wait;
@@ -938,17 +938,17 @@ Button debugButton = Button(&mainWindow,
 			{
 				return nullptr;
 			}
-			Vector2f mousePosition = mainWindow.mapPixelToCoords(Mouse::getPosition(mainWindow), view);
-			object = find.nearbyNotUnitCircleObject(mousePosition);
+			Vector2f mouse_position = mainWindow.mapPixelToCoords(Mouse::getPosition(mainWindow), view);
+			object = find.nearbyNotUnitCircleObject(mouse_position);
 		}
 		object->printExpr();
 	});
 
-Description* Finder::nearbyDescription(Vector2f mousePosition)
+Description* Finder::nearbyDescription(Vector2f mouse_position)
 {
 	for (Description* descr : Drawer::allDescriptions)
 	{
-		if (descr->contains(mousePosition))
+		if (descr->contains(mouse_position))
 		{
 			return descr;
 		}
@@ -956,191 +956,191 @@ Description* Finder::nearbyDescription(Vector2f mousePosition)
 	return nullptr;
 }
 
-Object* Finder::nearbyNotUnitCircleObject(Vector2f mousePosition)
+Object* Finder::nearbyNotUnitCircleObject(Vector2f mouse_position)
 {
-	float lastDistancePoint = INFINITY;
-	float lastDistanceLine = INFINITY;
-	Object* nearestObjectPoint = nullptr;
-	Object* nearestObjectLine = nullptr;
-	for (Object* object : Drawer::allVisibleObjects)
+	float last_distance_point = INFINITY;
+	float last_distance_line = INFINITY;
+	Object* nearest_object_point = nullptr;
+	Object* nearest_object_line = nullptr;
+	for (Object* object : Drawer::all_visible_objects)
 	{
-		if (dynamic_cast<Point*>(object) && object->isNearby(mousePosition) && object->getVisibility())
+		if (dynamic_cast<Point*>(object) && object->IsNearby(mouse_position) && object->getVisibility())
 		{
-			if (object->distance(mousePosition) < lastDistancePoint)
+			if (object->DistanceTo(mouse_position) < last_distance_point)
 			{
-				lastDistancePoint = object->distance(mousePosition);
-				nearestObjectPoint = object;
+				last_distance_point = object->DistanceTo(mouse_position);
+				nearest_object_point = object;
 			}
 		}
 	}
-	for (Object* object : Drawer::allVisibleObjects)
+	for (Object* object : Drawer::all_visible_objects)
 	{
-		if (dynamic_cast<Line*>(object) && object->isNearby(mousePosition) && object->getVisibility())
+		if (dynamic_cast<Line*>(object) && object->IsNearby(mouse_position) && object->getVisibility())
 		{
-			if (object->distance(mousePosition) < lastDistanceLine)
+			if (object->DistanceTo(mouse_position) < last_distance_line)
 			{
-				lastDistanceLine = object->distance(mousePosition);
-				nearestObjectLine = object;
+				last_distance_line = object->DistanceTo(mouse_position);
+				nearest_object_line = object;
 			}
 		}
 	}
-	if (nearestObjectPoint && dynamic_cast<Point*>(nearestObjectPoint)->contains(mousePosition))
+	if (nearest_object_point && dynamic_cast<Point*>(nearest_object_point)->contains(mouse_position))
 	{
-		return nearestObjectPoint;
+		return nearest_object_point;
 	}
-	if (lastDistanceLine < lastDistancePoint)
+	if (last_distance_line < last_distance_point)
 	{
-		return nearestObjectLine;
+		return nearest_object_line;
 	}
 	else
 	{
-		return nearestObjectPoint;
+		return nearest_object_point;
 	}
 }
 
-Object* Finder::nearbyObject(Vector2f mousePosition)
+Object* Finder::nearbyObject(Vector2f mouse_position)
 {
-	float lastDistancePoint = INFINITY;
-	float lastDistanceLine = INFINITY;
-	Object* nearestObjectPoint = nullptr;
-	Object* nearestObjectLine = nullptr;
-	for (Object* object : Drawer::allVisibleObjects)
+	float last_distance_point = INFINITY;
+	float last_distance_line = INFINITY;
+	Object* nearest_object_point = nullptr;
+	Object* nearest_object_line = nullptr;
+	for (Object* object : Drawer::all_visible_objects)
 	{
-		if (dynamic_cast<Point*>(object) && object->isNearby(mousePosition))
+		if (dynamic_cast<Point*>(object) && object->IsNearby(mouse_position))
 		{
-			if (object->distance(mousePosition) < lastDistancePoint)
+			if (object->DistanceTo(mouse_position) < last_distance_point)
 			{
-				lastDistancePoint = object->distance(mousePosition);
-				nearestObjectPoint = object;
+				last_distance_point = object->DistanceTo(mouse_position);
+				nearest_object_point = object;
 			}
 		}
 	}
-	for (Object* object : Drawer::allVisibleObjects)
+	for (Object* object : Drawer::all_visible_objects)
 	{
-		if (dynamic_cast<Line*>(object) && object->isNearby(mousePosition))
+		if (dynamic_cast<Line*>(object) && object->IsNearby(mouse_position))
 		{
-			if (object->distance(mousePosition) < lastDistanceLine)
+			if (object->DistanceTo(mouse_position) < last_distance_line)
 			{
-				lastDistanceLine = object->distance(mousePosition);
-				nearestObjectLine = object;
+				last_distance_line = object->DistanceTo(mouse_position);
+				nearest_object_line = object;
 			}
 		}
 	}
-	if (nearestObjectPoint && dynamic_cast<Point*>(nearestObjectPoint)->contains(mousePosition))
+	if (nearest_object_point && dynamic_cast<Point*>(nearest_object_point)->contains(mouse_position))
 	{
-		return nearestObjectPoint;
+		return nearest_object_point;
 	}
-	UnitCircle* unitCircle = UnitCircle::getInstance();
-	if (unitCircle->isNearby(mousePosition))
+	UnitCircle* unit_circle = UnitCircle::getInstance();
+	if (unit_circle->IsNearby(mouse_position))
 	{
-		if (unitCircle->distance(mousePosition) < lastDistancePoint)
+		if (unit_circle->DistanceTo(mouse_position) < last_distance_point)
 		{
-			return unitCircle;
+			return unit_circle;
 		}
 	}
-	if (lastDistanceLine < lastDistancePoint)
+	if (last_distance_line < last_distance_point)
 	{
-		return nearestObjectLine;
+		return nearest_object_line;
 	}
 	else
 	{
-		return nearestObjectPoint;
+		return nearest_object_point;
 	}
 }
 
-Point* Finder::nearbyConstructedPoint(Vector2f mousePosition)
+Point* Finder::nearbyConstructedPoint(Vector2f mouse_position)
 {
-	float lastDistance = INFINITY;
+	float last_distance = INFINITY;
 	Point* point = nullptr;
-	for (Object* object : Drawer::allVisibleObjects)
+	for (Object* object : Drawer::all_visible_objects)
 	{
-		Point* anotherPoint = dynamic_cast<Point*>(object);
-		if (anotherPoint && anotherPoint->isNearby(mousePosition) && anotherPoint->getVisibility())
+		Point* another_point = dynamic_cast<Point*>(object);
+		if (another_point && another_point->IsNearby(mouse_position) && another_point->getVisibility())
 		{
-			if (anotherPoint->distance(mousePosition) < lastDistance)
+			if (another_point->DistanceTo(mouse_position) < last_distance)
 			{
-				lastDistance = anotherPoint->distance(mousePosition);
-				point = anotherPoint;
+				last_distance = another_point->DistanceTo(mouse_position);
+				point = another_point;
 			}
 		}
 	}
 	return point;
 }
 
-UnitPoint* Finder::nearbyConstructedPointOnCircle(Vector2f mousePosition)
+UnitPoint* Finder::nearbyConstructedPointOnCircle(Vector2f mouse_position)
 {
-	float lastDistance = INFINITY;
+	float last_distance = INFINITY;
 	UnitPoint* point = nullptr;
-	for (Object* object : Drawer::allVisibleObjects)
+	for (Object* object : Drawer::all_visible_objects)
 	{
-		UnitPoint* anotherPoint = dynamic_cast<UnitPoint*>(object);
-		if (anotherPoint && anotherPoint->isNearby(mousePosition) && anotherPoint->getVisibility())
+		UnitPoint* another_point = dynamic_cast<UnitPoint*>(object);
+		if (another_point && another_point->IsNearby(mouse_position) && another_point->getVisibility())
 		{
-			if (anotherPoint->distance(mousePosition) < lastDistance)
+			if (another_point->DistanceTo(mouse_position) < last_distance)
 			{
-				lastDistance = anotherPoint->distance(mousePosition);
-				point = anotherPoint;
+				last_distance = another_point->DistanceTo(mouse_position);
+				point = another_point;
 			}
 		}
 	}
 	return point;
 }
 
-Point* Finder::nearbyNewPoint(Vector2f mousePosition)
+Point* Finder::nearbyNewPoint(Vector2f mouse_position)
 {
-	Point* point = nearbyIntersection(mousePosition);
+	Point* point = nearbyIntersection(mouse_position);
 	if (point)
 	{
 		return point;
 	}
-	UnitCircle* unitCircle = UnitCircle::getInstance();
-	if (unitCircle->isNearby(mousePosition) && unitCircle->getVisibility())
+	UnitCircle* unit_circle = UnitCircle::getInstance();
+	if (unit_circle->IsNearby(mouse_position) && unit_circle->getVisibility())
 	{
-		return new UnitPoint(unitCircle, mousePosition);
+		return new UnitPoint(unit_circle, mouse_position);
 	}
-	return new Point(mousePosition);
+	return new Point(mouse_position);
 }
 
-UnitPoint* Finder::nearbyNewPointOnCircle(Vector2f mousePosition)
+UnitPoint* Finder::nearbyNewPointOnCircle(Vector2f mouse_position)
 {
-	auto unitCircle = UnitCircle::getInstance();
-	if (unitCircle->isNearby(mousePosition))
+	auto unit_circle = UnitCircle::getInstance();
+	if (unit_circle->IsNearby(mouse_position))
 	{
-		return new UnitPoint(unitCircle, mousePosition);
+		return new UnitPoint(unit_circle, mouse_position);
 	}
 	return nullptr;
 }
 
-Line* Finder::nearbyLine(Vector2f mousePosition)
+Line* Finder::nearbyLine(Vector2f mouse_position)
 {
-	float lastDistance = INFINITY;
-	Line* line = nullptr;
-	for (Object* object : Drawer::allVisibleObjects)
+	float last_distance = INFINITY;
+	Line* points_ = nullptr;
+	for (Object* object : Drawer::all_visible_objects)
 	{
 		Line* anotherLine = dynamic_cast<Line*>(object);
-		if (anotherLine && anotherLine->isNearby(mousePosition) && anotherLine->getVisibility())
+		if (anotherLine && anotherLine->IsNearby(mouse_position) && anotherLine->getVisibility())
 		{
-			if (anotherLine->distance(mousePosition) < lastDistance)
+			if (anotherLine->DistanceTo(mouse_position) < last_distance)
 			{
-				lastDistance = anotherLine->distance(mousePosition);
-				line = anotherLine;
+				last_distance = anotherLine->DistanceTo(mouse_position);
+				points_ = anotherLine;
 			}
 		}
 	}
-	return line;
+	return points_;
 }
 
-std::vector<Line*> Finder::nearbyLines(Vector2f mousePosition)
+std::vector<Line*> Finder::nearbyLines(Vector2f mouse_position)
 {
 	std::vector<Line*> lines;
-	for (Object* object : Drawer::allVisibleObjects)
+	for (Object* object : Drawer::all_visible_objects)
 	{
-		Line* line = dynamic_cast<Line*>(object);
-		if (line)
+		Line* points_ = dynamic_cast<Line*>(object);
+		if (points_)
 		{
-			if (line->isNearby(mousePosition) && line->getVisibility())
+			if (points_->IsNearby(mouse_position) && points_->getVisibility())
 			{
-				lines.push_back(line);
+				lines.push_back(points_);
 			}
 		}
 	}
@@ -1149,43 +1149,43 @@ std::vector<Line*> Finder::nearbyLines(Vector2f mousePosition)
 
 
 
-Point* Finder::nearbyIntersection(Vector2f mousePosition)
+Point* Finder::nearbyIntersection(Vector2f mouse_position)
 {
-	std::vector<Line*> lines = nearbyLines(mousePosition);
+	std::vector<Line*> lines = nearbyLines(mouse_position);
 	std::sort(lines.begin(), lines.end(),
-		[mousePosition](Line* first, Line* second)
+		[mouse_position](Line* first, Line* second)
 		{
-			return first->distance(mousePosition) < second->distance(mousePosition);
+			return first->DistanceTo(mouse_position) < second->DistanceTo(mouse_position);
 		});
-	for (auto firstLine : lines)
+	for (auto first_line : lines)
 	{
-		for (auto secondLine : lines)
+		for (auto second_line : lines)
 		{
-			if (firstLine == secondLine)
+			if (first_line == second_line)
 			{
 				continue;
 			}
-			LineEquation* firstEquation = dynamic_cast<LineEquation*>(firstLine->getEquation());
-			LineEquation* secondEquation = dynamic_cast<LineEquation*>(secondLine->getEquation());
+			LineEquation* first_equation = dynamic_cast<LineEquation*>(first_line->getEquation());
+			LineEquation* second_equation = dynamic_cast<LineEquation*>(second_line->getEquation());
 			Vector2f pointCoord = Vector2f(
-				(firstEquation->B * secondEquation->C - firstEquation->C * secondEquation->B)
-				/ (firstEquation->A * secondEquation->B - firstEquation->B * secondEquation->A),
-				(firstEquation->C * secondEquation->A - firstEquation->A * secondEquation->C)
-				/ (firstEquation->A * secondEquation->B - firstEquation->B * secondEquation->A)
+				(first_equation->B * second_equation->C - first_equation->C * second_equation->B)
+				/ (first_equation->A * second_equation->B - first_equation->B * second_equation->A),
+				(first_equation->C * second_equation->A - first_equation->A * second_equation->C)
+				/ (first_equation->A * second_equation->B - first_equation->B * second_equation->A)
 			);
-			Vector2f mousePixelPosition = Vector2f(mainWindow.mapCoordsToPixel(mousePosition, view));
+			Vector2f mouse_pixel_position = Vector2f(mainWindow.mapCoordsToPixel(mouse_position, view));
 			Vector2f coord = Vector2f(mainWindow.mapCoordsToPixel(pointCoord, view));
-			float distance = sqrtf(pow((coord.x - mousePixelPosition.x), 2) + pow((coord.y - mousePixelPosition.y), 2));
-			if (distance < epsilon)
+			float DistanceTo = sqrtf(pow((coord.x - mouse_pixel_position.x), 2) + pow((coord.y - mouse_pixel_position.y), 2));
+			if (DistanceTo < epsilon)
 			{
-				return new Point(firstLine, secondLine);
+				return new Point(first_line, second_line);
 			}
 		}
 	}
 	return nullptr;
 }
 
-UnitCircle* Finder::nearbyUnitCircle(Vector2f mousePosition)
+UnitCircle* Finder::nearbyUnitCircle(Vector2f mouse_position)
 {
 	return nullptr;
 }
@@ -1207,14 +1207,14 @@ bool InterruptionChecker::checkInterruption()
 
 bool Waiter::mouseOnTheScreen()
 {
-	Vector2f mousePosition = mainWindow.mapPixelToCoords(Mouse::getPosition(mainWindow), view);
+	Vector2f mouse_position = mainWindow.mapPixelToCoords(Mouse::getPosition(mainWindow), view);
 	Vector2f center = view.getCenter();
 	Vector2f size = view.getSize();
-	Vector2f leftUpCorner = center - size / 2.f;
-	Vector2f rightDownCorner = (center + size / 2.f);
-	rightDownCorner.y += size.y * (mainWindowRect.height - mainWindowRect.top) - size.y;
-	return mousePosition.x > leftUpCorner.x && mousePosition.y > leftUpCorner.y &&
-		mousePosition.x < rightDownCorner.x&& mousePosition.y < rightDownCorner.y;
+	Vector2f left_up_corner = center - size / 2.f;
+	Vector2f right_down_corner = (center + size / 2.f);
+	right_down_corner.y += size.y * (mainWindowRect.height - mainWindowRect.top) - size.y;
+	return mouse_position.x > left_up_corner.x && mouse_position.y > left_up_corner.y &&
+		mouse_position.x < right_down_corner.x&& mouse_position.y < right_down_corner.y;
 }
 
 void Waiter::sleep()
