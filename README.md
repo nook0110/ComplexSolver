@@ -1,7 +1,7 @@
 # ComplexSolver
 # Introduction
 
-ComplexSolver uses LaTeX. It is optional to be installed. With LaTeX you can click on objects to see their equations.
+ComplexSolver uses ```LaTeX```. It is optional to be installed. With ```LaTeX``` you can click on objects to see their equations.
 
 # Using the program
 
