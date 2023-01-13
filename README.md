@@ -1,4 +1,42 @@
 # ComplexSolver
+### Introduction
+
+ComplexSolver uses LaTeX. It is optional to be installed. With LaTeX you can click on objects to see their equations.
+
+# Using the program
+
+* Start ```.exe```
+* Set the settings
+
+  Max framerate:
+  * ```60``` - Fps is limited to 60
+  * ```Vertical Sync``` - Vertical Synchronization
+  * ```Unlimited``` - Fps has no limits
+
+  Presets:
+  * ```Empty``` - Nothing is presetted (only O-point and unit circle)
+  * ```Triangle``` - Creates Triangle ```ABC``` inscribed into unit circle
+  * ```Incenter``` - Creates Triangle ```ABC``` inscribed into unit circle,incenter ```I```, and centers of arcs: ```Da```, ```Db```, ```Dc```
+  * ```Orthocenter``` - Creates Triangle ```ABC``` inscribed into unit circle and orthocenter ```H```
+
+* Press ```Enter```
+* Build the problem with instruments at the top of the screen
+
+![image](https://user-images.githubusercontent.com/77803419/183294735-ea2387ea-ad7c-4346-bb99-cba8fe3504e2.png)
+
+* To prove the theorem use this button:
+
+![SwitchConstruction](https://user-images.githubusercontent.com/77803419/183294703-56ab02ab-7287-4126-8716-179e3651d0da.png)
+
+* Choose what you need to prove
+
+![image](https://user-images.githubusercontent.com/77803419/183294857-6f444bde-d722-4a56-93f8-3f89dda62f99.png)
+
+
+* Wait until the box on the bottom right gives you the result
+
+![image](https://user-images.githubusercontent.com/77803419/183294843-7d186c4f-6ea3-449f-9e6d-b46f947432ef.png)
+
 ### Building with CMake and MinGW
 
 ComplexSolver uses SFML library, so you need it to be installed. There is a ```Find_SFML.cmake``` script (took from [here](https://github.com/eXpl0it3r/game-off-2016)) 
@@ -42,41 +80,6 @@ sfml-graphics-2.dll was not found
 
 You need to put bin files (These files can be found in ```<sfml-install-path/bin>```) near ```.exe```
 ___
-
-# Using the program
-
-* Start ```.exe```
-* Set the settings
-
-  Max framerate:
-  * ```60``` - Fps is limited to 60
-  * ```Vertical Sync``` - Vertical Synchronization
-  * ```Unlimited``` - Fps has no limits
-
-  Presets:
-  * ```Empty``` - Nothing is presetted (only O-point and unit circle)
-  * ```Triangle``` - Creates Triangle ```ABC``` inscribed into unit circle
-  * ```Incenter``` - Creates Triangle ```ABC``` inscribed into unit circle,incenter ```I```, and centers of arcs: ```Da```, ```Db```, ```Dc```
-  * ```Orthocenter``` - Creates Triangle ```ABC``` inscribed into unit circle and orthocenter ```H```
-
-* Press ```Enter```
-* Build the problem with instruments at the top of the screen
-
-![image](https://user-images.githubusercontent.com/77803419/183294735-ea2387ea-ad7c-4346-bb99-cba8fe3504e2.png)
-
-* To prove the theorem use this button:
-
-![SwitchConstruction](https://user-images.githubusercontent.com/77803419/183294703-56ab02ab-7287-4126-8716-179e3651d0da.png)
-
-* Choose what you need to prove
-
-![image](https://user-images.githubusercontent.com/77803419/183294857-6f444bde-d722-4a56-93f8-3f89dda62f99.png)
-
-
-* Wait until the box on the bottom right gives you the result
-
-![image](https://user-images.githubusercontent.com/77803419/183294843-7d186c4f-6ea3-449f-9e6d-b46f947432ef.png)
-
 
 # Compiling files
 
