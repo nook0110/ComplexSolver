@@ -44,11 +44,11 @@ MODES Creation::getCurrentMode()
 
 void Drawer::drawObjects()
 {
-	if (UnitCircle::getInstance()->getVisibility() || Creation::getInstance()->getCurrentMode() == MODE_HIDE)
+	if (UnitCircle::getInstance()->GetVisibility() || Creation::getInstance()->getCurrentMode() == MODE_HIDE)
 	{
 		UnitCircle::getInstance()->Draw();
 	}
-	if (CenterPoint::getInstance()->getVisibility() || Creation::getInstance()->getCurrentMode() == MODE_HIDE)
+	if (CenterPoint::getInstance()->GetVisibility() || Creation::getInstance()->getCurrentMode() == MODE_HIDE)
 	{
 		CenterPoint::getInstance()->Draw();
 	}
@@ -60,7 +60,7 @@ void Drawer::drawObjects()
 	{
 		for (auto object : Drawer::all_visible_objects)
 		{
-			if (object->getVisibility())
+			if (object->GetVisibility())
 			{
 				if (Creation::getInstance()->getCurrentMode() == MODE_CLEAR)
 				{
@@ -164,13 +164,13 @@ bool Drawer::VisibleObjectsContains(Object* ptr)
 void Drawer::delObject(Object* object)
 {
 	new MementoDeletion(object);
-	object->del();
+	object->DeleteFromDrawer();
 }
 
 void Drawer::addObject(Object* object)
 {
 	new MementoAddition(object);
-	object->add();
+	object->AddToDrawer();
 }
 
 void Drawer::update(Event event)

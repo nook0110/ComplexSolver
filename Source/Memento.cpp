@@ -92,14 +92,14 @@ MementoDeletion::MementoDeletion(Object* object) : Memento(object)
 
 void MementoDeletion::doMemento()
 {
-	NameBox::names[object->getLowerCaseName()] = false;
-	object->del();
+	NameBox::names[object->GetLowerCaseName()] = false;
+	object->DeleteFromDrawer();
 }
 
 void MementoDeletion::undoMemento()
 {
-	NameBox::names[object->getLowerCaseName()] = true;
-	object->add();
+	NameBox::names[object->GetLowerCaseName()] = true;
+	object->AddToDrawer();
 }
 
 MementoAddition::MementoAddition(Object* object) : Memento(object)
@@ -108,12 +108,12 @@ MementoAddition::MementoAddition(Object* object) : Memento(object)
 
 void MementoAddition::doMemento()
 {
-	NameBox::names[object->getLowerCaseName()] = true;
+	NameBox::names[object->GetLowerCaseName()] = true;
 	Drawer::all_visible_objects.push_back(object);
 }
 
 void MementoAddition::undoMemento()
 {
-	NameBox::names[object->getLowerCaseName()] = false;
-	object->del();
+	NameBox::names[object->GetLowerCaseName()] = false;
+	object->DeleteFromDrawer();
 }

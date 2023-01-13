@@ -618,7 +618,7 @@ Button hideButton = Button(mainWindow,
 		Object* object = find.nearbyObject(mouse_position);
 		if (object)
 		{
-			object->SetVisibility();
+			object->ChangeVisibility();
 		}
 		return nullptr;
 	});
@@ -964,7 +964,7 @@ Object* Finder::nearbyNotUnitCircleObject(Vector2f mouse_position)
 	Object* nearest_object_line = nullptr;
 	for (Object* object : Drawer::all_visible_objects)
 	{
-		if (dynamic_cast<Point*>(object) && object->IsNearby(mouse_position) && object->getVisibility())
+		if (dynamic_cast<Point*>(object) && object->IsNearby(mouse_position) && object->GetVisibility())
 		{
 			if (object->DistanceTo(mouse_position) < last_distance_point)
 			{
@@ -975,7 +975,7 @@ Object* Finder::nearbyNotUnitCircleObject(Vector2f mouse_position)
 	}
 	for (Object* object : Drawer::all_visible_objects)
 	{
-		if (dynamic_cast<Line*>(object) && object->IsNearby(mouse_position) && object->getVisibility())
+		if (dynamic_cast<Line*>(object) && object->IsNearby(mouse_position) && object->GetVisibility())
 		{
 			if (object->DistanceTo(mouse_position) < last_distance_line)
 			{
@@ -1055,7 +1055,7 @@ Point* Finder::nearbyConstructedPoint(Vector2f mouse_position)
 	for (Object* object : Drawer::all_visible_objects)
 	{
 		Point* another_point = dynamic_cast<Point*>(object);
-		if (another_point && another_point->IsNearby(mouse_position) && another_point->getVisibility())
+		if (another_point && another_point->IsNearby(mouse_position) && another_point->GetVisibility())
 		{
 			if (another_point->DistanceTo(mouse_position) < last_distance)
 			{
@@ -1074,7 +1074,7 @@ UnitPoint* Finder::nearbyConstructedPointOnCircle(Vector2f mouse_position)
 	for (Object* object : Drawer::all_visible_objects)
 	{
 		UnitPoint* another_point = dynamic_cast<UnitPoint*>(object);
-		if (another_point && another_point->IsNearby(mouse_position) && another_point->getVisibility())
+		if (another_point && another_point->IsNearby(mouse_position) && another_point->GetVisibility())
 		{
 			if (another_point->DistanceTo(mouse_position) < last_distance)
 			{
@@ -1094,7 +1094,7 @@ Point* Finder::nearbyNewPoint(Vector2f mouse_position)
 		return point;
 	}
 	UnitCircle* unit_circle = UnitCircle::getInstance();
-	if (unit_circle->IsNearby(mouse_position) && unit_circle->getVisibility())
+	if (unit_circle->IsNearby(mouse_position) && unit_circle->GetVisibility())
 	{
 		return new UnitPoint(unit_circle, mouse_position);
 	}
@@ -1118,7 +1118,7 @@ Line* Finder::nearbyLine(Vector2f mouse_position)
 	for (Object* object : Drawer::all_visible_objects)
 	{
 		Line* anotherLine = dynamic_cast<Line*>(object);
-		if (anotherLine && anotherLine->IsNearby(mouse_position) && anotherLine->getVisibility())
+		if (anotherLine && anotherLine->IsNearby(mouse_position) && anotherLine->GetVisibility())
 		{
 			if (anotherLine->DistanceTo(mouse_position) < last_distance)
 			{
@@ -1138,7 +1138,7 @@ std::vector<Line*> Finder::nearbyLines(Vector2f mouse_position)
 		Line* points_ = dynamic_cast<Line*>(object);
 		if (points_)
 		{
-			if (points_->IsNearby(mouse_position) && points_->getVisibility())
+			if (points_->IsNearby(mouse_position) && points_->GetVisibility())
 			{
 				lines.push_back(points_);
 			}
@@ -1165,8 +1165,8 @@ Point* Finder::nearbyIntersection(Vector2f mouse_position)
 			{
 				continue;
 			}
-			LineEquation* first_equation = dynamic_cast<LineEquation*>(first_line->getEquation());
-			LineEquation* second_equation = dynamic_cast<LineEquation*>(second_line->getEquation());
+			LineEquation* first_equation = dynamic_cast<LineEquation*>(first_line->GetEquation());
+			LineEquation* second_equation = dynamic_cast<LineEquation*>(second_line->GetEquation());
 			Vector2f pointCoord = Vector2f(
 				(first_equation->B * second_equation->C - first_equation->C * second_equation->B)
 				/ (first_equation->A * second_equation->B - first_equation->B * second_equation->A),

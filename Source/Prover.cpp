@@ -144,10 +144,10 @@ void Prover::proveInscription(Point* first, Point* second, Point* third, Point* 
 	}
 	started = true;
 
-	ConstructionPoint* first_point_data = dynamic_cast<ConstructionPoint*>(first->construction);
-	ConstructionPoint* second_point_data = dynamic_cast<ConstructionPoint*>(second->construction);
-	ConstructionPoint* third_point_data = dynamic_cast<ConstructionPoint*>(third->construction);
-	ConstructionPoint* fourth_point_data = dynamic_cast<ConstructionPoint*>(fourth->construction);
+	ConstructionPoint* first_point_data = dynamic_cast<ConstructionPoint*>(first->GetConstruction());
+	ConstructionPoint* second_point_data = dynamic_cast<ConstructionPoint*>(second->GetConstruction());
+	ConstructionPoint* third_point_data = dynamic_cast<ConstructionPoint*>(third->GetConstruction());
+	ConstructionPoint* fourth_point_data = dynamic_cast<ConstructionPoint*>(fourth->GetConstruction());
 
 	expr A = first_point_data->coord;
 	expr B = second_point_data->coord;
@@ -182,9 +182,9 @@ void Prover::proveCollinearity(Point* first, Point* second, Point* third)
 	{
 		throw "Already proving";
 	}
-	ConstructionPoint* first_point_data = dynamic_cast<ConstructionPoint*>(first->construction);
-	ConstructionPoint* second_point_data = dynamic_cast<ConstructionPoint*>(second->construction);
-	ConstructionPoint* third_point_data = dynamic_cast<ConstructionPoint*>(third->construction);
+	ConstructionPoint* first_point_data = dynamic_cast<ConstructionPoint*>(first->GetConstruction());
+	ConstructionPoint* second_point_data = dynamic_cast<ConstructionPoint*>(second->GetConstruction());
+	ConstructionPoint* third_point_data = dynamic_cast<ConstructionPoint*>(third->GetConstruction());
 	expr A = first_point_data->coord;
 	expr B = second_point_data->coord;
 	expr C = third_point_data->coord;
@@ -204,9 +204,9 @@ void Prover::proveConcurrency(Line* first, Line* second, Line* third)
 		throw "Already proving";
 	}
 
-	ConstructionLine* first_line_data = dynamic_cast<ConstructionLine*>(first->construction);
-	ConstructionLine* second_line_data = dynamic_cast<ConstructionLine*>(second->construction);
-	ConstructionLine* third_line_data = dynamic_cast<ConstructionLine*>(third->construction);
+	ConstructionLine* first_line_data = dynamic_cast<ConstructionLine*>(first->GetConstruction());
+	ConstructionLine* second_line_data = dynamic_cast<ConstructionLine*>(second->GetConstruction());
+	ConstructionLine* third_line_data = dynamic_cast<ConstructionLine*>(third->GetConstruction());
 	expr zFirst = first_line_data->z_coef;
 	expr zConjFirst = first_line_data->z_conj_coef;
 	expr freeFirst = first_line_data->free_coef;
@@ -261,8 +261,8 @@ void Prover::proveConstruction(Point* first, Point* second)
 		throw "Already proving";
 	}
 
-	ConstructionPoint* first_point_data = dynamic_cast<ConstructionPoint*>(first->construction);
-	ConstructionPoint* second_point_data = dynamic_cast<ConstructionPoint*>(second->construction);
+	ConstructionPoint* first_point_data = dynamic_cast<ConstructionPoint*>(first->GetConstruction());
+	ConstructionPoint* second_point_data = dynamic_cast<ConstructionPoint*>(second->GetConstruction());
 	expr A = first_point_data->coord;
 	expr B = second_point_data->coord;
 	provingThread = new std::thread(
@@ -281,10 +281,10 @@ void Prover::proveEquivalence(Point* first, Point* second, Point* third, Point* 
 		throw "Already proving";
 	}
 
-	ConstructionPoint* first_point_data = dynamic_cast<ConstructionPoint*>(first->construction);
-	ConstructionPoint* second_point_data = dynamic_cast<ConstructionPoint*>(second->construction);
-	ConstructionPoint* third_point_data = dynamic_cast<ConstructionPoint*>(third->construction);
-	ConstructionPoint* fourth_point_data = dynamic_cast<ConstructionPoint*>(fourth->construction);
+	ConstructionPoint* first_point_data = dynamic_cast<ConstructionPoint*>(first->GetConstruction());
+	ConstructionPoint* second_point_data = dynamic_cast<ConstructionPoint*>(second->GetConstruction());
+	ConstructionPoint* third_point_data = dynamic_cast<ConstructionPoint*>(third->GetConstruction());
+	ConstructionPoint* fourth_point_data = dynamic_cast<ConstructionPoint*>(fourth->GetConstruction());
 
 	expr A = first_point_data->coord;
 	expr B = second_point_data->coord;
@@ -307,8 +307,8 @@ void Prover::proveParallel(Line* first, Line* second)
 		throw "Already proving";
 	}
 
-	ConstructionLine* first_line_data = dynamic_cast<ConstructionLine*>(first->construction);
-	ConstructionLine* second_line_data = dynamic_cast<ConstructionLine*>(second->construction);
+	ConstructionLine* first_line_data = dynamic_cast<ConstructionLine*>(first->GetConstruction());
+	ConstructionLine* second_line_data = dynamic_cast<ConstructionLine*>(second->GetConstruction());
 	expr zFirst = first_line_data->z_coef;
 	expr zConjFirst = first_line_data->z_conj_coef;
 	expr zSecond = second_line_data->z_coef;
@@ -330,8 +330,8 @@ void Prover::proveOrthogonality(Line* first, Line* second)
 		throw "Already proving";
 	}
 
-	ConstructionLine* first_line_data = dynamic_cast<ConstructionLine*>(first->construction);
-	ConstructionLine* second_line_data = dynamic_cast<ConstructionLine*>(second->construction);
+	ConstructionLine* first_line_data = dynamic_cast<ConstructionLine*>(first->GetConstruction());
+	ConstructionLine* second_line_data = dynamic_cast<ConstructionLine*>(second->GetConstruction());
 	expr zFirst = first_line_data->z_coef;
 	expr zConjFirst = first_line_data->z_conj_coef;
 	expr zSecond = second_line_data->z_coef;
