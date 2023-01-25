@@ -2,9 +2,9 @@
 
 std::string makeTexture(std::string TeXText, std::string fileName)
 {
-	std::string filePath = "Textures\\TeX\\";
+	std::string filePath = "Textures/TeX/";
 	std::string filePNG = fileName + "1.png";
-	std::string filePathPNG = "Textures\\Equations\\" + filePNG;
+	std::string filePathPNG = "Textures/Equations/" + filePNG;
 	std::string fileTeX = fileName + ".tex";
 	std::string filePathTeX = filePath + fileTeX;
 	std::ofstream fileTEX(filePathTeX);
@@ -36,9 +36,9 @@ std::string makeTexture(std::string TeXText, std::string fileName)
 
 void deleteFiles(std::string fileName)
 {
-	std::string filePath = "Textures\\TeX\\";
+	std::string filePath = "Textures/TeX/";
 	std::string filePNG = fileName + "1.png";
-	std::string filePathPNG = "Textures\\Equations\\" + filePNG;
+	std::string filePathPNG = "Textures/Equations/" + filePNG;
 	std::string fileTeX = fileName + ".tex";
 	std::string filePathTeX = filePath + fileTeX;
 
