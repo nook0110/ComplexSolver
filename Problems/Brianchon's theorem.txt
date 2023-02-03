@@ -1,0 +1,24 @@
+#Brianchons's theorem
+Settings 60 Empty
+
+#These strange numbers are used to make picture more 'realistic'
+UnitPoint A OnCircle -4 -5
+UnitPoint B OnCircle -1 10 
+UnitPoint C OnCircle 9 -7
+UnitPoint D OnCircle -3 5
+UnitPoint E OnCircle 1 -15
+UnitPoint F OnCircle 5 7
+
+Line A Tangent A
+Line B Tangent B
+Line C Tangent C
+Line D Tangent D
+Line E Tangent E
+Line F Tangent F
+
+Point X IntersectionOfTwoLines A B
+Point Y IntersectionOfTwoLines B C
+Point Z IntersectionOfTwoLines C D
+Point T IntersectionOfTwoLines D E
+Point P IntersectionOfTwoLines E F
+Point Q IntersectionOfTwoLines F A

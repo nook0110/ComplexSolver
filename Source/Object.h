@@ -12,7 +12,6 @@
 
 //The "heart" of the programm. This file is about objects.
 
-
 extern float const epsilon;
 extern float const unitSeg;
 extern std::thread Creator;
@@ -102,7 +101,7 @@ protected:
   virtual void Reposition() = 0;
   virtual std::string MakeTeX();
 
-  ConstructionData* construction = nullptr;
+  ConstructionData* construction_ = nullptr;
   Equation* equation_;
   bool visible_ = true;
   Description* description_ = nullptr;
@@ -111,17 +110,13 @@ protected:
   std::string equation_path_ = "";
   std::string TeX_;
 
-
   bool highlighted_ = false;
 private:
   std::list<Object*> children_;
   void deleteChildren();
   Color visible_color_ = Color::Black;
-  const Color unvisibleColor = Color(0, 0, 255, 128);
+  const Color invisible_color_ = Color(0, 0, 255, 128);
   void erase();
-
-
-
 };
 
 class Object;
@@ -132,15 +127,16 @@ class UnitCircle;
 //Data - how object was created (By two points and so on)
 class ConstructionData
 {
-protected:
-  Object* object;
-  ConstructionData(Object* object);
-  std::string TeXFormula;
 public:
-  //Return equation of the objects 
+  virtual ~ConstructionData() {};
+  //Change equation of the objects
   //The equation can be changed if parents were moved
   virtual void recreate(Equation* equation) = 0;
-  virtual ~ConstructionData() {};
+protected:
+  ConstructionData(Object* object);
+
+  std::string TeX_formula_;
+  Object* object;
 };
 
 class ConstructionSegment : public ConstructionData
@@ -516,7 +512,6 @@ public:
     INCENTER
   };
 
-  
   // On a plane
   Point(Vector2f position);
   // Intersection of two lines
@@ -572,7 +567,6 @@ private:
   Color highlighted_color_ = Color(64, 64, 64, 64);
 };
 
-
 class CenterPoint : public Point
 {
 public:
@@ -585,7 +579,6 @@ private:
   void Reposition() override;
 
   static CenterPoint* center_point_;
-
 };
 
 class UnitPoint : public Point

@@ -1,0 +1,43 @@
+#Pascal's theorem
+Settings 60 Incenter
+
+Line AB ByTwoPoints A B
+Line BC ByTwoPoints B C 
+Line CA ByTwoPoints C A
+
+Line AI ByTwoPoints A I invisible
+Line BI ByTwoPoints B I invisible
+Line CI ByTwoPoints C I invisible
+
+
+Line ExtBisA Perpendicular A AI invisible
+Line ExtBisB Perpendicular B BI invisible
+Line ExtBisC Perpendicular C CI invisible
+
+Point Ia IntersectionOfTwoLines AI ExtBisB
+Point Ib IntersectionOfTwoLines BI ExtBisC
+Point Ic IntersectionOfTwoLines CI ExtBisA
+
+Point Hia Projection Ia BC invisible
+Point Hib Projection Ib CA invisible
+Point Hic Projection Ic AB invisible
+
+Point Ia` byTwoPointsFixedRatio Ia Hia 2 -1
+Point Ib` byTwoPointsFixedRatio Ib Hib 2 -1
+Point Ic` byTwoPointsFixedRatio Ic Hic 2 -1
+
+#LA - reflection of (A, Ia`)  AI
+
+Point Hia` Projection Ia` AI invisible
+Point Hib` Projection Ib` BI invisible
+Point Hic` Projection Ic` CI invisible
+
+Point Ia`` byTwoPointsFixedRatio Ia` Hia` 2 -1 invisible
+Point Ib`` byTwoPointsFixedRatio Ib` Hib` 2 -1 invisible
+Point Ic`` byTwoPointsFixedRatio Ic` Hic` 2 -1 invisible
+
+Line La ByTwoPoints Ia`` A
+Line Lb ByTwoPoints Ib`` B
+Line Lc ByTwoPoints Ic`` C
+
+Point P IntersectionOfTwoLines La Lb

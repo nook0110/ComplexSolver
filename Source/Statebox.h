@@ -11,44 +11,43 @@ extern View view;
 class Statebox
 {
 private:
-	const float ratio = 0.2f;
-	Vector2f position;
-	Vector2f size;
-	std::string name;
-	Color backgroundColor = Color(200, 200, 200);
-	Color textColor = Color::Black;
-	unsigned int textSize;
-	Font font;
-	Text text;
-	RectangleShape background;
-	std::vector<Texture> statesTextures;
-	std::vector<Sprite> statesSprites;
-	std::vector<Text> statesTexts;
-	int state;
-	int maxState;
-	void update();
+  const float ratio = 0.2f;
+  Vector2f position;
+  Vector2f size;
+  std::string name;
+  Color backgroundColor = Color(200, 200, 200);
+  Color textColor = Color::Black;
+  unsigned int textSize;
+  Font font;
+  Text text;
+  RectangleShape background;
+  std::vector<Texture> statesTextures;
+  std::vector<Sprite> statesSprites;
+  std::vector<Text> statesTexts;
+  int state;
+  int maxState;
+  void update();
 public:
-	Statebox(Vector2f position, Vector2f size, std::string name, int states);
-	void setStateTexture(int state, std::string textState, std::string texturePath);
-	void setPosition(Vector2f postion);
-	void setSize(float sizeY);
-	bool CheckMouse(View);
-	bool clickCheck(View);
-	void Draw();
-	int getState();
+  Statebox(Vector2f position, Vector2f size, std::string name, int states);
+  void setStateTexture(int state, std::string textState, std::string texturePath);
+  void setPosition(Vector2f postion);
+  void setSize(float sizeY);
+  bool CheckMouse(View);
+  bool clickCheck(View);
+  void Draw();
+  int getState();
 };
 
 class StateMenu
 {
 private:
-	std::vector<Statebox*> stateboxes;
-	void updateBoxes();
-	float shiftRatio = 0.1f;
+  std::vector<Statebox*> stateboxes;
+  void updateBoxes();
+  float shiftRatio = 0.1f;
 public:
-	void update();
-	StateMenu();
-	void pushStatebox(Statebox* newStatebox);
-	Statebox* clickCheck();
-	void Draw();
+  void update();
+  StateMenu();
+  void pushStatebox(Statebox* newStatebox);
+  Statebox* clickCheck();
+  void Draw();
 };
-

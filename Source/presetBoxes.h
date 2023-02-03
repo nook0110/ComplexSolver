@@ -3,30 +3,28 @@
 class Statebox;
 namespace presets
 {
-	enum isEnabled
-	{
-		OFF,
-		ON
-	};
+  enum isEnabled
+  {
+    OFF,
+    ON
+  };
 
-	enum FPS
-	{
-		FRAMES_60,
-		VS,
-		UNLIMITED
-	};
+  enum FPS
+  {
+    FRAMES_60,
+    VS,
+    UNLIMITED
+  };
 
-	enum Construction
-	{
-		EMPTY,
-		TRIANGLE,
-		INCENTER,
-		ORTHOCENTER
-	};
+  enum Construction
+  {
+    EMPTY,
+    TRIANGLE,
+    INCENTER,
+    ORTHOCENTER
+  };
 
+  void stateboxesInit();
 
-
-	void stateboxesInit();
-
-	void stateboxesApply();
+  void stateboxesApply();
 }
