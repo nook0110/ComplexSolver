@@ -7,6 +7,7 @@
 #include <complex>
 #include <algorithm>
 #include <utility>
+#include <memory>
 
 // * output
 #include <iostream>
