@@ -5,7 +5,7 @@ using namespace sf;
 std::list<Object*> Drawer::allVisibleObjects;
 
 Button moveButton = Button(&mainWindow,
-	"Textures\\Button_textures\\Move.png", MODE_MOVE, []()->Object* {
+	"Textures/Button_textures/Move.png", MODE_MOVE, []()->Object* {
 		Waiter wait;
 		InterruptionChecker interruptionChecker;
 		Finder find;
@@ -66,7 +66,7 @@ Button moveButton = Button(&mainWindow,
 	});
 
 Button pointButton = Button(&mainWindow,
-	"Textures\\Button_textures\\Point.png",
+	"Textures/Button_textures/Point.png",
 	MODE_POINT, []()->Object* {
 		Waiter wait;
 		Finder find;
@@ -85,7 +85,7 @@ Button pointButton = Button(&mainWindow,
 	});
 
 Button lineButton = Button(&mainWindow,
-	"Textures\\Button_textures\\Line.png",
+	"Textures/Button_textures/Line.png",
 	MODE_LINE, []()->Object* {
 		Waiter wait;
 		Finder find;
@@ -137,7 +137,7 @@ Button lineButton = Button(&mainWindow,
 	});
 
 Button pointBetweenPoints = Button(&mainWindow,
-	"Textures\\Button_textures\\PointBetweenPoints.png",
+	"Textures/Button_textures/PointBetweenPoints.png",
 	MODE_POINT_BETWEEN_POINTS, []()->Object* {
 		Waiter wait;
 		Finder find;
@@ -196,7 +196,7 @@ Button pointBetweenPoints = Button(&mainWindow,
 	});
 
 Button centralProjectionButton = Button(&mainWindow,
-	"Textures\\Button_textures\\CentralProjection.png",
+	"Textures/Button_textures/CentralProjection.png",
 	MODE_CENTRAL_PROJECTION, []()->Object* {
 		Waiter wait;
 		Finder find;
@@ -231,7 +231,7 @@ Button centralProjectionButton = Button(&mainWindow,
 	});
 
 Button perpendicularButton = Button(&mainWindow,
-	"Textures\\Button_textures\\Perpendicular.png",
+	"Textures/Button_textures/Perpendicular.png",
 	MODE_PERPENDICULAR, []()->Object* {
 		Waiter wait;
 		InterruptionChecker interruptionChecker;
@@ -268,7 +268,7 @@ Button perpendicularButton = Button(&mainWindow,
 	});
 
 Button midPointButton = Button(&mainWindow,
-	"Textures\\Button_textures\\Midpoint.png",
+	"Textures/Button_textures/Midpoint.png",
 	MODE_MIDPOINT, []()->Object* {
 		Waiter wait;
 		Finder find;
@@ -310,7 +310,7 @@ Button midPointButton = Button(&mainWindow,
 	});
 
 Button symmetryButton = Button(&mainWindow,
-	"Textures\\Button_textures\\Symmetry.png",
+	"Textures/Button_textures/Symmetry.png",
 	MODE_SYMMETRY, []()->Object* {
 		Waiter wait;
 		Finder find;
@@ -354,7 +354,7 @@ Button symmetryButton = Button(&mainWindow,
 	});
 
 Button rotateLeftButton = Button(&mainWindow,
-	"Textures\\Button_textures\\RotateLeft.png",
+	"Textures/Button_textures/RotateLeft.png",
 	MODE_ROTATION_LEFT, []()->Object* {
 		Waiter wait;
 		Finder find;
@@ -398,7 +398,7 @@ Button rotateLeftButton = Button(&mainWindow,
 	});
 
 Button rotateRightButton = Button(&mainWindow,
-	"Textures\\Button_textures\\RotateRight.png",
+	"Textures/Button_textures/RotateRight.png",
 	MODE_ROTATION_RIGHT, []()->Object* {
 		Waiter wait;
 		Finder find;
@@ -442,7 +442,7 @@ Button rotateRightButton = Button(&mainWindow,
 	});
 
 Button projectionButton = Button(&mainWindow,
-	"Textures\\Button_textures\\Projection.png",
+	"Textures/Button_textures/Projection.png",
 	MODE_PROJECTION, []()->Object* {
 		Waiter wait;
 		InterruptionChecker interruptionChecker;
@@ -474,7 +474,7 @@ Button projectionButton = Button(&mainWindow,
 	});
 
 Button parallelButton = Button(&mainWindow,
-	"Textures\\Button_textures\\Parallel.png",
+	"Textures/Button_textures/Parallel.png",
 	MODE_PARALLEL, []()->Object* {
 		Waiter wait;
 		InterruptionChecker interruptionChecker;
@@ -510,7 +510,7 @@ Button parallelButton = Button(&mainWindow,
 	});
 
 Button scalarButton = Button(&mainWindow,
-	"Textures\\Button_textures\\Scalar.png",
+	"Textures/Button_textures/Scalar.png",
 	MODE_MIDPOINT, []()->Object* {
 		InterruptionChecker checker;
 		Waiter wait;
@@ -565,7 +565,7 @@ Button scalarButton = Button(&mainWindow,
 	});
 
 Button tangentButton = Button(&mainWindow,
-	"Textures\\Button_textures\\Tangent.png",
+	"Textures/Button_textures/Tangent.png",
 	MODE_TANGENT, []()->Object* {
 		Waiter wait;
 		Finder find;
@@ -588,7 +588,7 @@ Button tangentButton = Button(&mainWindow,
 	});
 
 Button deleteButton = Button(&mainWindow,
-	"Textures\\Button_textures\\Delete.png",
+	"Textures/Button_textures/Delete.png",
 	MODE_DELETE, []()->Object* {
 		Waiter wait;
 		Finder find;
@@ -606,7 +606,7 @@ Button deleteButton = Button(&mainWindow,
 	});
 
 Button hideButton = Button(&mainWindow,
-	"Textures\\Button_textures\\Hide.png",
+	"Textures/Button_textures/Hide.png",
 	MODE_HIDE, []()->Object* {
 		Waiter wait;
 		Finder find;
@@ -624,7 +624,7 @@ Button hideButton = Button(&mainWindow,
 	});
 
 Button clearButton = Button(&mainWindow,
-	"Textures\\Button_textures\\Clear.png",
+	"Textures/Button_textures/Clear.png",
 	MODE_CLEAR, []()->Object* {
 		Waiter wait;
 		Memento::clear();
@@ -632,7 +632,7 @@ Button clearButton = Button(&mainWindow,
 		return nullptr;
 	});
 Button switchButton = Button(&mainWindow,
-	"Textures\\Button_textures\\Switch.png",
+	"Textures/Button_textures/Switch.png",
 	MODE_SWITCH, []()->Object* {
 		mainMenu.switchLayer(0);
 		return nullptr;
@@ -640,14 +640,14 @@ Button switchButton = Button(&mainWindow,
 
 
 Button switchTriangleButton = Button(&mainWindow,
-	"Textures\\Button_textures\\SwitchTriangle.png",
+	"Textures/Button_textures/SwitchTriangle.png",
 	MODE_SWITCH, []()->Object* {
 		mainMenu.switchLayer(3);
 		return nullptr;
 	});
 
 Button orthocenterButton = Button(&mainWindow,
-	"Textures\\Button_textures\\Orthocenter.png",
+	"Textures/Button_textures/Orthocenter.png",
 	MODE_ORTHOCENTER, []()->Object* {
 		Waiter wait;
 		Finder find;
@@ -673,7 +673,7 @@ Button orthocenterButton = Button(&mainWindow,
 	});
 
 Button barycenterButton = Button(&mainWindow,
-	"Textures\\Button_textures\\Barycenter.png",
+	"Textures/Button_textures/Barycenter.png",
 	MODE_BARYCENTER, []()->Object* {
 		Waiter wait;
 		Finder find;
@@ -699,14 +699,14 @@ Button barycenterButton = Button(&mainWindow,
 	});
 
 Button switchConstructionButton = Button(&mainWindow,
-	"Textures\\Button_textures\\SwitchConstruction.png",
+	"Textures/Button_textures/SwitchConstruction.png",
 	MODE_SWITCH, []()->Object* {
 		mainMenu.switchLayer(1);
 		return nullptr;
 	});
 
 Button inscription = Button(&mainWindow,
-	"Textures\\Button_textures\\Inscription.png",
+	"Textures/Button_textures/Inscription.png",
 	MODE_FOUR_POINTS, []()->Object* {
 		Waiter wait;
 		Finder find;
@@ -734,7 +734,7 @@ Button inscription = Button(&mainWindow,
 	});
 
 Button twoLineSegments = Button(&mainWindow,
-	"Textures\\Button_textures\\TwoLineSegments.png",
+	"Textures/Button_textures/TwoLineSegments.png",
 	MODE_TWO_LINE_SEGMENTS, []()->Object* {
 		Waiter wait;
 		Finder find;
@@ -779,7 +779,7 @@ Button twoLineSegments = Button(&mainWindow,
 	});
 
 Button concurrencyOfLines = Button(&mainWindow,
-	"Textures\\Button_textures\\Concurrency.png",
+	"Textures/Button_textures/Concurrency.png",
 	MODE_THREE_LINES, []()->Object* {
 		Waiter wait;
 		Finder find;
@@ -806,7 +806,7 @@ Button concurrencyOfLines = Button(&mainWindow,
 	});
 
 Button proveParallel = Button(&mainWindow,
-	"Textures\\Button_textures\\ProveParallel.png",
+	"Textures/Button_textures/ProveParallel.png",
 	MODE_THREE_LINES, []()->Object* {
 		Waiter wait;
 		Finder find;
@@ -833,7 +833,7 @@ Button proveParallel = Button(&mainWindow,
 	});
 
 Button proveOrthogonality = Button(&mainWindow,
-	"Textures\\Button_textures\\ProveOrthogonality.png",
+	"Textures/Button_textures/ProveOrthogonality.png",
 	MODE_THREE_LINES, []()->Object* {
 		Waiter wait;
 		Finder find;
@@ -860,7 +860,7 @@ Button proveOrthogonality = Button(&mainWindow,
 	});
 
 Button collinearityOfPoints = Button(&mainWindow,
-	"Textures\\Button_textures\\Collinearity.png",
+	"Textures/Button_textures/Collinearity.png",
 	MODE_THREE_POINTS, []()->Object* {
 		Waiter wait;
 		Finder find;
@@ -889,7 +889,7 @@ Button collinearityOfPoints = Button(&mainWindow,
 	});
 
 Button proveConstructionButton = Button(&mainWindow,
-	"Textures\\Button_textures\\ProveConstruction.png",
+	"Textures/Button_textures/ProveConstruction.png",
 	MODE_PROVE_CONSTRUCTION, []()->Object* {
 		Waiter wait;
 		Finder find;
@@ -926,7 +926,7 @@ Button proveConstructionButton = Button(&mainWindow,
 	});
 
 Button debugButton = Button(&mainWindow,
-	"Textures\\Button_textures\\Test.png",
+	"Textures/Button_textures/Test.png",
 	MODE_PROVE_CONSTRUCTION, []()->Object* {
 		Waiter wait;
 		Finder find;

@@ -6,7 +6,7 @@ Statebox::Statebox(Vector2f position, Vector2f size, std::string name, int state
 	statesTextures.resize(states);
 	statesSprites.resize(states);
 	statesTexts.resize(states);
-	font.loadFromFile("Textures\\Font\\font.ttf");
+	font.loadFromFile("Textures/Font/font.ttf");
 	textSize = size.y / 3;
 	text = Text(name, font, textSize);
 	text.setFillColor(textColor);

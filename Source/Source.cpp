@@ -65,10 +65,10 @@ void preInit()
 
 	view.setViewport(mainWindowRect);
 	view.move(-view.getCenter());
-	system("rd /s /q Textures\\TeX");
-	system("md Textures\\TeX");
-	system("rd /s /q Textures\\Equations");
-	system("md Textures\\Equations");
+	system("rd /s /q Textures/TeX");
+	system("md Textures/TeX");
+	system("rd /s /q Textures/Equations");
+	system("md Textures/Equations");
 }
 
 void menuInit()

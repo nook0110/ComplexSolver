@@ -500,7 +500,7 @@ void Point::moveTo(Vector2f coords)
 void Point::Init()
 {
 	TeX = makeTeX();
-	font.loadFromFile("Textures\\Font\\font.ttf");
+	font.loadFromFile("Textures/Font/font.ttf");
 	nameText.setFillColor(textColor);
 	nameText.setScale(textScale);
 	equation = new PointEquation(Vector2f(0, 0));
@@ -928,7 +928,7 @@ void OnCircle::recreate(Equation* equation)
 CenterPoint::CenterPoint() : Point()
 {
 	pointName = "O";
-	font.loadFromFile("Textures\\Font\\font.ttf");
+	font.loadFromFile("Textures/Font/font.ttf");
 	nameText = Text(pointName, font, textSize);
 	nameText.setFillColor(textColor);
 	construction = new Center(this);
